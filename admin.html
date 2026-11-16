@@ -2,36 +2,34 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f766e" />
-  <title>BodyBalance — ממשק ניהול לקוחות</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BodyBalance — ממשק ניהול ומאמן</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Heebo', sans-serif; background-color: #f8fafc; }
-    .admin-tab.active { background-color: #0f766e !important; color: #ffffff !important; }
   </style>
 </head>
 <body class="text-slate-800 antialiased">
 
-  <!-- Admin Header with Custom Logo -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 overflow-hidden border border-slate-200 shadow-2xs">
-          <img id="adminLogoImg" src="./logo.png" alt="BodyBalance לוגו" class="w-full h-full object-cover scale-110" onerror="this.style.display='none'; document.getElementById('adminLogoFallback').classList.remove('hidden');" />
-          <span id="adminLogoFallback" class="hidden font-extrabold text-teal-700 text-sm">BB</span>
+        <div class="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center shrink-0 overflow-hidden border border-slate-200">
+          <img src="./logo.png" alt="BodyBalance לוגו" class="w-full h-full object-cover" onerror="this.style.display='none'; document.getElementById('adminLogoFallback').classList.remove('hidden');" />
+          <span id="adminLogoFallback" class="hidden font-extrabold text-teal-700 text-base">BB</span>
         </div>
         <div>
-          <h1 id="adminHeaderTitle" class="text-lg sm:text-xl font-extrabold text-slate-900">BodyBalance · ממשק ניהול לקוחות</h1>
-          <p class="text-xs text-slate-500">הוספת לקוחות, מחירי מנויים, יעדים יומיים, יומן ארוחות ותוכנית אימונים</p>
+          <h1 class="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">BodyBalance — ניהול מאמן</h1>
+          <p class="text-xs text-slate-500">בניית תוכניות אימון שבועיות, יעדי תזונה וניהול מתאמנים</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <input id="clientCodeInput" type="text" placeholder="קוד מתאמן (למשל yoav-01)" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-mono" />
-        <button type="button" onclick="loadClient()" class="bg-teal-700 hover:bg-teal-800 text-white text-xs sm:text-sm font-bold px-3.5 py-2 rounded-xl cursor-pointer">
-          טען לקוח
+      <div class="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl">
+        <label for="adminClientCode" class="text-xs font-bold text-slate-600 pr-2">קוד מתאמן:</label>
+        <input id="adminClientCode" type="text" value="yoav-01" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs font-mono font-bold w-28" />
+        <button type="button" onclick="switchAdminClient()" class="bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg cursor-pointer">
+          טען מתאמן
         </button>
       </div>
     </div>
@@ -39,857 +37,383 @@
 
   <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
 
-    <!-- Saved Clients Quick Selector Bar -->
-    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <span class="text-xs font-extrabold text-slate-700">לקוחות רשומים במערכת (לחץ לטעינה):</span>
-        <span id="clientsCountBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">0 לקוחות</span>
-      </div>
-      <div id="savedClientsChips" class="flex flex-wrap gap-2"></div>
-    </div>
-
-    <!-- Client Header Card + Plan & Active/Inactive Subscription Toggle -->
-    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
-      <div class="space-y-1">
-        <div class="flex flex-wrap items-center gap-2.5">
-          <h2 id="adminClientTitle" class="text-lg font-extrabold text-slate-900">לקוח: -</h2>
-          <span id="subStatusBadge" class="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800">מנוי פעיל</span>
-          <span id="clientPlanBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-800">מסלול: -</span>
-        </div>
-        <p id="adminClientMeta" class="text-xs text-slate-500">משקל: - · גובה: - · גיל: -</p>
-      </div>
-
-      <div class="flex flex-wrap items-center gap-3">
-        <div class="flex items-center gap-1.5">
-          <label for="clientPlanSelect" class="text-xs font-bold text-slate-600">מסלול:</label>
-          <select id="clientPlanSelect" onchange="assignPlanToCurrentClient(this.value)" class="border border-slate-300 rounded-xl px-2.5 py-1.5 text-xs font-bold bg-white"></select>
-        </div>
-        <button type="button" id="subToggleBtn" onclick="toggleSubscription()" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold border cursor-pointer">
-          הפוך ללא פעיל
-        </button>
-        <div class="flex items-center gap-2">
-          <label for="adminDatePicker" class="text-xs font-bold text-slate-600">תאריך מעקב:</label>
-          <input id="adminDatePicker" type="date" onchange="renderAdminAll()" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-semibold" />
-        </div>
-      </div>
-    </div>
-
-    <!-- Admin Section Tabs -->
-    <div class="flex flex-wrap gap-2">
-      <button type="button" data-atab="workouts" onclick="switchAdminTab('workouts')" class="admin-tab active px-4 py-2.5 rounded-xl text-sm font-bold bg-white border border-slate-200 text-slate-700 cursor-pointer">
-        💪 אימונים ויעדים יומיים
-      </button>
-      <button type="button" data-atab="meals" onclick="switchAdminTab('meals')" class="admin-tab px-4 py-2.5 rounded-xl text-sm font-bold bg-white border border-slate-200 text-slate-700 cursor-pointer">
-        🍽️ מעקב יומן ארוחות
-      </button>
-      <button type="button" data-atab="add-client" onclick="switchAdminTab('add-client')" class="admin-tab px-4 py-2.5 rounded-xl text-sm font-bold bg-white border border-slate-200 text-slate-700 cursor-pointer">
-        ➕ הוספת לקוח חדש
-      </button>
-      <button type="button" data-atab="pricing" onclick="switchAdminTab('pricing')" class="admin-tab px-4 py-2.5 rounded-xl text-sm font-bold bg-white border border-slate-200 text-slate-700 cursor-pointer">
-        💳 מחירי מנויים
-      </button>
-      <button type="button" data-atab="settings" onclick="switchAdminTab('settings')" class="admin-tab px-4 py-2.5 rounded-xl text-sm font-bold bg-white border border-slate-200 text-slate-700 cursor-pointer">
-        ⚙️ הגדרות
-      </button>
-    </div>
-
-    <!-- ADMIN TAB 1: WORKOUTS + EXERCISE BANK + DAILY NUTRITION TARGETS -->
-    <section id="admin-sec-workouts" class="admin-section space-y-6">
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+    <!-- פרטי מתאמן ויעדי מאקרו -->
+    <section class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
         <div>
-          <h3 class="text-lg font-extrabold text-slate-900">הגדרת יעדים תזונתיים יומיים ללקוח</h3>
-          <p class="text-xs text-slate-500">הזן כמות קלוריות יומית וערכי חלבון, פחמימה ושומן</p>
+          <h2 class="text-lg font-extrabold text-slate-900">פרטי מתאמן ויעדי תזונה יומיים</h2>
+          <p class="text-xs text-slate-500">עריכת פרופיל ויעדי קלוריות/מאקרו עבור קוד: <span id="activeCodeBadge" class="font-mono font-bold text-teal-800">yoav-01</span></p>
         </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">קלוריות יומיות (קק"ל)</label>
-            <input id="targetCalInput" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">חלבון יומי (גרם)</label>
-            <input id="targetProInput" type="number" step="0.1" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">פחמימה יומית (גרם)</label>
-            <input id="targetCarbInput" type="number" step="0.1" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">שומן יומי (גרם)</label>
-            <input id="targetFatInput" type="number" step="0.1" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold" />
-          </div>
-        </div>
-
-        <button type="button" onclick="saveNutritionTargets()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-5 py-2.5 rounded-xl text-sm cursor-pointer">
-          שמור יעדים יומיים ללקוח
-        </button>
+        <label class="flex items-center gap-2 text-xs font-bold bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl cursor-pointer">
+          <input id="subActiveInput" type="checkbox" checked class="accent-teal-700" />
+          <span>מנוי פעיל</span>
+        </label>
       </div>
 
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
-          <div>
-            <h3 class="text-lg font-extrabold text-slate-900">תוכנית האימונים של הלקוח ומעקב ביצוע</h3>
-            <p class="text-xs text-slate-500">עדכן סטים, חזרות ותיבת הערות לטכניקת התרגיל</p>
-          </div>
-          <span id="adminWorkoutCompletion" class="text-xs font-extrabold px-3 py-1 rounded-full bg-teal-50 text-teal-800">0/0 בוצעו היום</span>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">שם המתאמן</label>
+          <input id="clientNameInput" type="text" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
         </div>
-        <div id="adminAssignedPlanList" class="space-y-4"></div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">יעד קלוריות (קק"ל)</label>
+          <input id="targetCalInput" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">יעד חלבון (גרם)</label>
+          <input id="targetProInput" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">יעד פחמימות (גרם)</label>
+          <input id="targetCarbInput" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">יעד שומנים (גרם)</label>
+          <input id="targetFatInput" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold" />
+        </div>
       </div>
 
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+      <button type="button" onclick="saveClientTargets()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs sm:text-sm cursor-pointer">
+        ✓ שמור פרטי מתאמן ויעדים
+      </button>
+    </section>
+
+    <!-- בניית תוכנית אימונים שבועית -->
+    <section class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">בניית תוכנית אימונים לפי מספר אימונים בשבוע</h2>
+          <p class="text-xs text-slate-500">בחר כמה אימונים בשבוע המתאמן מבצע, הגדר לכל אימון כותרת (למשל A / B / C) והוסף תרגילים</p>
+        </div>
+
+        <div class="flex items-center gap-2 bg-teal-50 border border-teal-200 px-3.5 py-2 rounded-xl">
+          <label for="workoutsPerWeekSelect" class="text-xs font-extrabold text-teal-900">מספר אימונים בשבוע:</label>
+          <select id="workoutsPerWeekSelect" onchange="changeWorkoutsPerWeek(this.value)" class="bg-white border border-teal-300 rounded-lg px-3 py-1 text-sm font-extrabold text-teal-900">
+            <option value="1">אימון 1 בשבוע</option>
+            <option value="2">2 אימונים בשבוע</option>
+            <option value="3" selected>3 אימונים בשבוע</option>
+            <option value="4">4 אימונים בשבוע</option>
+            <option value="5">5 אימונים בשבוע</option>
+            <option value="6">6 אימונים בשבוע</option>
+            <option value="7">7 אימונים בשבוע</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- לשוניות בחירת אימון מתוך השבוע -->
+      <div id="adminSessionTabs" class="flex flex-wrap gap-2"></div>
+
+      <!-- עריכת האימון הנבחר בשבוע -->
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h3 class="text-lg font-extrabold text-slate-900">מאגר תרגילים מלא (כולל סרטונים וטכניקה)</h3>
-            <p class="text-xs text-slate-500">סנן לפי קבוצת שריר, צפה בסרטון הדגמה והוסף לתוכנית של הלקוח</p>
+          <div class="flex-1 min-w-[240px]">
+            <label class="block text-xs font-bold text-slate-600 mb-1">שם / כותרת האימון הנבחר (למשל: אימון A — פלג גוף עליון)</label>
+            <div class="flex gap-2">
+              <input id="sessionTitleInput" type="text" class="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-bold" />
+              <button type="button" onclick="updateCurrentSessionTitle()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer">
+                עדכן שם אימון
+              </button>
+            </div>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <select id="muscleFilter" onchange="renderExerciseBank()" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold bg-white">
-              <option value="all">כל קבוצות השרירים</option>
-              <option value="חזה">חזה</option>
-              <option value="גב">גב</option>
-              <option value="רגליים">רגליים</option>
-              <option value="כתפיים">כתפיים</option>
-              <option value="ידיים">ידיים</option>
-              <option value="ליבה ובטן">ליבה ובטן</option>
-            </select>
-            <input id="exerciseSearchInput" type="text" oninput="renderExerciseBank()" placeholder="חיפוש תרגיל..." class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs" />
-          </div>
-        </div>
-
-        <div id="exerciseBankGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-      </div>
-    </section>
-
-    <!-- ADMIN TAB 2: CLIENT FOOD DIARY & PHOTOS & NUTRIENTS -->
-    <section id="admin-sec-meals" class="admin-section hidden space-y-6">
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div class="bg-white p-4 rounded-2xl border border-slate-200">
-          <p class="text-xs text-slate-500">קלוריות יומי</p>
-          <p id="adminSumCal" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200">
-          <p class="text-xs text-slate-500">חלבון (גרם)</p>
-          <p id="adminSumPro" class="text-2xl font-extrabold text-teal-700 mt-1">0</p>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200">
-          <p class="text-xs text-slate-500">פחמימות (גרם)</p>
-          <p id="adminSumCarb" class="text-2xl font-extrabold text-indigo-700 mt-1">0</p>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200">
-          <p class="text-xs text-slate-500">שומנים (גרם)</p>
-          <p id="adminSumFat" class="text-2xl font-extrabold text-amber-600 mt-1">0</p>
-        </div>
-      </div>
-
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-        <h3 class="text-lg font-extrabold text-slate-900">ארוחות שהלקוח תיעד וצילם</h3>
-        <div id="adminMealsList" class="space-y-3"></div>
-      </div>
-    </section>
-
-    <!-- ADMIN TAB 3: ADD NEW CLIENT -->
-    <section id="admin-sec-add-client" class="admin-section hidden space-y-6">
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-        <div>
-          <h3 class="text-lg font-extrabold text-slate-900">הוספת לקוח חדש</h3>
-          <p class="text-xs text-slate-500">צור כרטיס מתאמן חדש עם קוד ייחודי, פרטים אישיים ומסלול מנוי</p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">קוד מתאמן (אנגלית/מספרים) *</label>
-            <input id="newClientCode" type="text" placeholder="למשל: dana-02" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">שם מלא *</label>
-            <input id="newClientName" type="text" placeholder="למשל: דנה לוי" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">משקל (ק"ג)</label>
-            <input id="newClientWeight" type="number" step="0.1" value="65" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">גובה (ס"מ)</label>
-            <input id="newClientHeight" type="number" value="168" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">גיל</label>
-            <input id="newClientAge" type="number" value="27" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">מסלול מנוי</label>
-            <select id="newClientPlan" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white"></select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">סטטוס מנוי</label>
-            <select id="newClientActive" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white">
-              <option value="true">מנוי פעיל</option>
-              <option value="false">מנוי לא פעיל</option>
-            </select>
-          </div>
-        </div>
-
-        <button type="button" onclick="createNewClient()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-6 py-2.5 rounded-xl text-sm cursor-pointer">
-          + צור לקוח וטען פרופיל
-        </button>
-      </div>
-    </section>
-
-    <!-- ADMIN TAB 4: SUBSCRIPTION PRICING & PLANS -->
-    <section id="admin-sec-pricing" class="admin-section hidden space-y-6">
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h3 class="text-lg font-extrabold text-slate-900">מחירי מנויים ומסלולי ליווי</h3>
-            <p class="text-xs text-slate-500">הוסף או ערוך מסלולי מנוי, תקופה ומחיר ושייך אותם ללקוחות</p>
-          </div>
-          <span id="estimatedMonthlyRevenue" class="text-xs font-extrabold px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200">
-            סך מנויים פעילים: 0 ₪
+          <span id="sessionExerciseCountBadge" class="text-xs font-extrabold px-3 py-1.5 rounded-full bg-white border border-slate-200 text-slate-700">
+            0 תרגילים באימון זה
           </span>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">שם המסלול *</label>
-            <input id="planNameInput" type="text" placeholder="למשל: ליווי חודשי" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white" />
+        <!-- טופס הוספת תרגיל לאימון השבועי הנבחר -->
+        <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+          <h3 class="text-sm font-extrabold text-slate-900">+ הוסף תרגיל ל-<span id="addExSessionLabel" class="text-teal-700">אימון 1</span></h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">שם התרגיל *</label>
+              <input id="newExName" type="text" placeholder="למשל: סקוואט עם מוט" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">קבוצת שריר</label>
+              <select id="newExMuscle" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white">
+                <option value="חזה">חזה</option>
+                <option value="גב">גב</option>
+                <option value="רגליים">רגליים</option>
+                <option value="כתפיים">כתפיים</option>
+                <option value="יד קדמית">יד קדמית</option>
+                <option value="יד אחורית">יד אחורית</option>
+                <option value="בטן וליבה">בטן וליבה</option>
+                <option value="אירובי / כללי">אירובי / כללי</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">מספר סטים</label>
+              <input id="newExSets" type="number" value="3" min="1" max="12" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">טווח חזרות</label>
+              <input id="newExReps" type="text" value="10-12" placeholder="למשל: 8-10" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
+            </div>
           </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">משך / תקופה</label>
-            <input id="planDurationInput" type="text" placeholder="למשל: חודשי / 3 חודשים" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white" />
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">קישור לסרטון הדגמה (YouTube / Embed)</label>
+              <input id="newExVideo" type="text" placeholder="https://www.youtube.com/embed/..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">הערות טכניקה למתאמן</label>
+              <input id="newExNotes" type="text" placeholder="דגשים לביצוע נכון..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
+            </div>
           </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">מחיר (₪) *</label>
-            <input id="planPriceInput" type="number" step="1" placeholder="למשל: 450" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white font-bold" />
-          </div>
-          <div class="flex items-end">
-            <button type="button" onclick="addSubscriptionPlan()" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold py-2.5 px-4 rounded-xl text-sm cursor-pointer">
-              + הוסף מסלול מנוי
-            </button>
-          </div>
+
+          <button type="button" onclick="addExerciseToSelectedSession()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-5 py-2 rounded-xl text-xs sm:text-sm cursor-pointer">
+            + הוסף תרגיל לאימון זה
+          </button>
         </div>
 
-        <div id="subscriptionPlansGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+        <!-- רשימת תרגילים באימון הנבחר -->
+        <div id="adminSessionExercisesList" class="space-y-2.5"></div>
       </div>
     </section>
 
-    <!-- ADMIN TAB 5: SYSTEM & DEFAULT SETTINGS -->
-    <section id="admin-sec-settings" class="admin-section hidden space-y-6">
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-        <div>
-          <h3 class="text-lg font-extrabold text-slate-900">הגדרות מערכת ויעדי ברירת מחדל</h3>
-          <p class="text-xs text-slate-500">התאם את שם העסק, מטבע התמחור ויעדי ברירת מחדל ללקוחות חדשים</p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">שם העסק / הממשק</label>
-            <input id="settingBusinessName" type="text" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">סימן מטבע</label>
-            <input id="settingCurrency" type="text" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm w-28" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">יעד קלוריות ברירת מחדל (קק"ל)</label>
-            <input id="settingDefaultCal" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">יעד חלבון ברירת מחדל (גרם)</label>
-            <input id="settingDefaultPro" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">יעד פחמימה ברירת מחדל (גרם)</label>
-            <input id="settingDefaultCarb" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">יעד שומן ברירת מחדל (גרם)</label>
-            <input id="settingDefaultFat" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
-          </div>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-3 pt-2">
-          <button type="button" onclick="saveAdminSettings()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-6 py-2.5 rounded-xl text-sm cursor-pointer">
-            שמור הגדרות
-          </button>
-          <button type="button" onclick="resetAdminSettings()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl text-sm cursor-pointer">
-            אפס לברירת מחדל
-          </button>
-        </div>
-      </div>
-    </section>
   </main>
 
-  <!-- Video Demo Modal -->
-  <div id="adminVideoModal" class="hidden fixed inset-0 bg-slate-900/75 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-5 space-y-3 shadow-2xl">
-      <div class="flex items-center justify-between">
-        <h3 id="adminVideoTitle" class="font-extrabold text-slate-900">סרטון הדגמה</h3>
-        <button type="button" onclick="closeAdminVideo()" class="p-1.5 rounded-lg hover:bg-slate-100 font-bold cursor-pointer">✕</button>
-      </div>
-      <div id="adminVideoBody"></div>
-    </div>
-  </div>
-
   <script>
-    const CLIENTS_INDEX_KEY = 'BodyBalanceClientsRegistry_v1';
-    const SUBSCRIPTION_PLANS_KEY = 'BodyBalanceSubscriptionPlans_v1';
-    const ADMIN_SETTINGS_KEY = 'BodyBalanceAdminSettings_v1';
+    let currentClientId = 'yoav-01';
+    let selectedSessionIndex = 0;
 
-    const FULL_EXERCISE_BANK = [
-      { id: 'ex-bench', name: 'לחיצת חזה עם מוט (Bench Press)', muscle: 'חזה', defaultSets: 4, defaultReps: '8-10', videoUrl: 'https://www.youtube.com/embed/rT7DgCr-3pg', defaultNotes: 'שכמות מכווצות לאחור, כפות רגליים יציבות על הרצפה, הורדה מבוקרת לקו החזה.' },
-      { id: 'ex-incline-db', name: 'לחיצת חזה בשיפוע חיובי עם משקולות יד', muscle: 'חזה', defaultSets: 3, defaultReps: '10-12', videoUrl: 'https://www.youtube.com/embed/8iPEnn-ltC8', defaultNotes: 'שיפוע ספסל 30 מעלות, מרפקים בזווית 45 מעלות מהגוף.' },
-      { id: 'ex-cable-fly', name: 'פרפר בכבלים (Cable Crossover)', muscle: 'חזה', defaultSets: 3, defaultReps: '12-15', videoUrl: 'https://www.youtube.com/embed/taI4XduLpTk', defaultNotes: 'כיפוף קל וקבוע במרפקים, סחיטה של שרירי החזה במרכז.' },
-      { id: 'ex-lat-pulldown', name: 'פולי עליון אחיזה רחבה (Lat Pulldown)', muscle: 'גב', defaultSets: 4, defaultReps: '10-12', videoUrl: 'https://www.youtube.com/embed/CAwf7n6Luuc', defaultNotes: 'חזה פתוח, משיכה לכיוון עצם הבריח בלי להישען יותר מדי לאחור.' },
-      { id: 'ex-seated-row', name: 'חתירה בישיבה בפולי תחתון', muscle: 'גב', defaultSets: 3, defaultReps: '10-12', videoUrl: 'https://www.youtube.com/embed/GZbfZ033f74', defaultNotes: 'גב ישר, משיכת המרפקים לאחור וקירוב שכמות.' },
-      { id: 'ex-pullups', name: 'מתח (Pull-Ups)', muscle: 'גב', defaultSets: 3, defaultReps: '6-10', videoUrl: 'https://www.youtube.com/embed/eGo4IYlbE5g', defaultNotes: 'עלייה עד סנטר מעל המוט וירידה מלאה ומבוקרת.' },
-      { id: 'ex-squat', name: 'סקוואט חופשי עם מוט (Barbell Squat)', muscle: 'רגליים', defaultSets: 4, defaultReps: '8-10', videoUrl: 'https://www.youtube.com/embed/ultWZbUMPL8', defaultNotes: 'ליבה מוחזקת, ברכיים עוקבות אחרי כפות הרגליים, ירידה עד מקביל.' },
-      { id: 'ex-rdl', name: 'דדליפט רומני (Romanian Deadlift)', muscle: 'רגליים', defaultSets: 3, defaultReps: '10', videoUrl: 'https://www.youtube.com/embed/JCXUYuzwNrM', defaultNotes: 'ברכיים כפופות קלות, דחיפת אגן לאחור, מוט צמוד לרגליים.' },
-      { id: 'ex-leg-press', name: 'לחיצת רגליים במכונה (Leg Press)', muscle: 'רגליים', defaultSets: 3, defaultReps: '12', videoUrl: 'https://www.youtube.com/embed/IZxyjW7MPJQ', defaultNotes: 'לא לנעול ברכיים בסוף העלייה, גב תחתון צמוד למשענת.' },
-      { id: 'ex-ohp', name: 'לחיצת כתפיים בעמידה / ישיבה (Overhead Press)', muscle: 'כתפיים', defaultSets: 4, defaultReps: '8-10', videoUrl: 'https://www.youtube.com/embed/2yjwXTZQDDI', defaultNotes: 'בטן וישבן מכווצים, דחיפה אנכית מעל הראש ללא הקשתת יתר בגב.' },
-      { id: 'ex-lat-raise', name: 'הרחקת כתפיים לצדדים עם משקולות יד', muscle: 'כתפיים', defaultSets: 4, defaultReps: '12-15', videoUrl: 'https://www.youtube.com/embed/3VcKaXpzqRo', defaultNotes: 'הובלה עם המרפקים עד גובה הכתפיים ללא תנופה מהגוף.' },
-      { id: 'ex-bicep-curl', name: 'כפיפת מרפקים עם מוט / משקולות יד', muscle: 'ידיים', defaultSets: 3, defaultReps: '10-12', videoUrl: 'https://www.youtube.com/embed/ykJmrZ5v0Oo', defaultNotes: 'מרפקים צמודים לצדי הגוף, שליטה מלאה בירידה.' },
-      { id: 'ex-tricep-pushdown', name: 'פשיטת מרפקים בפולי עליון (Triceps Pushdown)', muscle: 'ידיים', defaultSets: 3, defaultReps: '12', videoUrl: 'https://www.youtube.com/embed/2-LAMcpzODU', defaultNotes: 'כתפיים מקובעות, יישור מלא של המרפקים בתחתית.' },
-      { id: 'ex-plank', name: 'פלאנק סטטי (Plank)', muscle: 'ליבה ובטן', defaultSets: 3, defaultReps: '45-60 שניות', videoUrl: 'https://www.youtube.com/embed/pSHjTRCQxIw', defaultNotes: 'אגן ניטרלי, כיווץ חזק של הבטן והישבן, נשימה סדירה.' }
-    ];
-
-    function getDefaultSettings() {
-      return {
-        businessName: 'BodyBalance',
-        currency: '₪',
-        defaultCalories: 2200,
-        defaultProtein: 160,
-        defaultCarbs: 220,
-        defaultFat: 70
-      };
+    function stateStorageKey(id = currentClientId) {
+      return `BodyBalanceUnifiedState_${id}`;
     }
 
-    function getDefaultPlans() {
-      return [
-        { id: 'plan-monthly', name: 'ליווי חודשי', duration: 'חודש', price: 450 },
-        { id: 'plan-quarterly', name: 'ליווי רבעוני', duration: '3 חודשים', price: 1200 },
-        { id: 'plan-vip', name: 'ליווי פרימיום אישי', duration: 'חודש', price: 750 }
-      ];
-    }
-
-    let adminSettings = loadSettings();
-    let subscriptionPlans = loadPlans();
-    let clientsRegistry = loadClientsRegistry();
-    let currentCode = localStorage.getItem('BodyBalanceClientId_v2') || clientsRegistry[0]?.code || 'yoav-01';
-    let clientState = null;
-
-    function loadSettings() {
-      try {
-        return { ...getDefaultSettings(), ...JSON.parse(localStorage.getItem(ADMIN_SETTINGS_KEY) || '{}') };
-      } catch (e) {
-        return getDefaultSettings();
+    function createDefaultSessions(count = 3) {
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+      const sessions = [];
+      for (let i = 0; i < count; i++) {
+        sessions.push({
+          id: `sess-${i + 1}`,
+          title: `אימון ${i + 1} (${letters[i] || i + 1})`,
+          exercises: i === 0 ? [
+            {
+              id: 'ex-bench',
+              name: 'לחיצת חזה עם מוט (Bench Press)',
+              muscle: 'חזה',
+              sets: 4,
+              reps: '8-10',
+              videoUrl: 'https://www.youtube.com/embed/rT7DgCr-3pg',
+              coachNotes: 'לשמור על שכמות צמודות לספסל, הורדה מבוקרת של 2 שניות.'
+            }
+          ] : []
+        });
       }
-    }
-
-    function saveSettingsToStorage() {
-      localStorage.setItem(ADMIN_SETTINGS_KEY, JSON.stringify(adminSettings));
-    }
-
-    function loadPlans() {
-      try {
-        const parsed = JSON.parse(localStorage.getItem(SUBSCRIPTION_PLANS_KEY) || 'null');
-        return Array.isArray(parsed) && parsed.length ? parsed : getDefaultPlans();
-      } catch (e) {
-        return getDefaultPlans();
-      }
-    }
-
-    function savePlansToStorage() {
-      localStorage.setItem(SUBSCRIPTION_PLANS_KEY, JSON.stringify(subscriptionPlans));
-    }
-
-    function loadClientsRegistry() {
-      try {
-        const parsed = JSON.parse(localStorage.getItem(CLIENTS_INDEX_KEY) || 'null');
-        if (Array.isArray(parsed) && parsed.length) return parsed;
-      } catch (e) {}
-      return [{ code: 'yoav-01', name: 'יואב כהן', planId: 'plan-monthly' }];
-    }
-
-    function saveClientsRegistry() {
-      localStorage.setItem(CLIENTS_INDEX_KEY, JSON.stringify(clientsRegistry));
-    }
-
-    function upsertClientInRegistry(code, name, planId) {
-      const idx = clientsRegistry.findIndex(c => c.code === code);
-      if (idx >= 0) {
-        clientsRegistry[idx] = { ...clientsRegistry[idx], name: name || clientsRegistry[idx].name, planId: planId || clientsRegistry[idx].planId };
-      } else {
-        clientsRegistry.push({ code, name: name || code, planId: planId || subscriptionPlans[0]?.id || '' });
-      }
-      saveClientsRegistry();
-    }
-
-    function stateStorageKey(code = currentCode) {
-      return `BodyBalanceUnifiedState_${code}`;
+      return sessions;
     }
 
     function getDefaultClientState() {
       return {
         subscriptionActive: true,
-        planId: subscriptionPlans[0]?.id || 'plan-monthly',
-        nutritionTargets: {
-          calories: adminSettings.defaultCalories,
-          protein: adminSettings.defaultProtein,
-          carbs: adminSettings.defaultCarbs,
-          fat: adminSettings.defaultFat
-        },
+        nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70 },
         profile: { name: 'יואב כהן', weight: 78, height: 178, age: 28 },
-        workoutPlan: [
-          {
-            id: 'ex-bench',
-            name: 'לחיצת חזה עם מוט (Bench Press)',
-            muscle: 'חזה',
-            sets: 4,
-            reps: '8-10',
-            videoUrl: 'https://www.youtube.com/embed/rT7DgCr-3pg',
-            coachNotes: 'לשמור על שכמות צמודות לספסל, הורדה מבוקרת של 2 שניות.'
-          }
-        ],
+        weeklyWorkoutsPerWeek: 3,
+        workoutSessions: createDefaultSessions(3),
         dayLogs: {}
       };
     }
 
-    window.loadClient = function(explicitCode = '') {
-      const val = (explicitCode || document.getElementById('clientCodeInput').value || '').trim();
-      if (val) currentCode = val;
-      document.getElementById('clientCodeInput').value = currentCode;
-      localStorage.setItem('BodyBalanceClientId_v2', currentCode);
+    let state = loadState();
 
+    function loadState() {
       try {
-        const raw = localStorage.getItem(stateStorageKey(currentCode));
+        const raw = localStorage.getItem(stateStorageKey(currentClientId));
         const parsed = raw ? JSON.parse(raw) : {};
         const def = getDefaultClientState();
-        clientState = {
+        const merged = {
           ...def,
           ...parsed,
           nutritionTargets: { ...def.nutritionTargets, ...(parsed.nutritionTargets || {}) },
           profile: { ...def.profile, ...(parsed.profile || {}) }
         };
-      } catch (e) {
-        clientState = getDefaultClientState();
-      }
 
-      upsertClientInRegistry(currentCode, clientState.profile?.name, clientState.planId);
+        if (!Array.isArray(merged.workoutSessions) || merged.workoutSessions.length === 0) {
+          const fallbackSessions = createDefaultSessions(merged.weeklyWorkoutsPerWeek || 3);
+          if (Array.isArray(parsed.workoutPlan) && parsed.workoutPlan.length > 0) {
+            fallbackSessions[0].exercises = parsed.workoutPlan;
+          }
+          merged.workoutSessions = fallbackSessions;
+        }
+        merged.weeklyWorkoutsPerWeek = merged.workoutSessions.length;
+        return merged;
+      } catch (e) {
+        return getDefaultClientState();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(stateStorageKey(currentClientId), JSON.stringify(state));
+    }
+
+    function normalizeYouTubeUrl(url) {
+      const clean = (url || '').trim();
+      if (!clean) return 'https://www.youtube.com/embed/rT7DgCr-3pg';
+      const watchMatch = clean.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{6,})/);
+      if (watchMatch) return `https://www.youtube.com/embed/${watchMatch[1]}`;
+      return clean;
+    }
+
+    window.switchAdminClient = function() {
+      const next = (document.getElementById('adminClientCode').value || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
+      if (!next) return alert('נא להזין קוד מתאמן תקין.');
+      currentClientId = next;
+      selectedSessionIndex = 0;
+      state = loadState();
       renderAdminAll();
     };
 
-    function saveClientState() {
-      localStorage.setItem(stateStorageKey(currentCode), JSON.stringify(clientState));
-      upsertClientInRegistry(currentCode, clientState.profile?.name, clientState.planId);
-      renderClientsBar();
-      renderPricingSection();
-    }
-
-    window.createNewClient = function() {
-      const rawCode = (document.getElementById('newClientCode').value || '').trim();
-      const cleanCode = rawCode.replace(/[^a-zA-Z0-9_-]/g, '');
-      const name = (document.getElementById('newClientName').value || '').trim();
-      if (!cleanCode || !name) return alert('נא להזין קוד מתאמן באנגלית/מספרים ושם מלא.');
-
-      const planId = document.getElementById('newClientPlan').value || subscriptionPlans[0]?.id || '';
-      const active = document.getElementById('newClientActive').value === 'true';
-
-      const newState = getDefaultClientState();
-      newState.subscriptionActive = active;
-      newState.planId = planId;
-      newState.profile = {
-        name,
-        weight: parseFloat(document.getElementById('newClientWeight').value) || 70,
-        height: parseInt(document.getElementById('newClientHeight').value, 10) || 170,
-        age: parseInt(document.getElementById('newClientAge').value, 10) || 28
+    window.saveClientTargets = function() {
+      state.subscriptionActive = document.getElementById('subActiveInput').checked;
+      state.profile.name = (document.getElementById('clientNameInput').value || '').trim() || 'מתאמן';
+      state.nutritionTargets = {
+        calories: parseInt(document.getElementById('targetCalInput').value, 10) || 2200,
+        protein: parseInt(document.getElementById('targetProInput').value, 10) || 160,
+        carbs: parseInt(document.getElementById('targetCarbInput').value, 10) || 220,
+        fat: parseInt(document.getElementById('targetFatInput').value, 10) || 70
       };
-
-      localStorage.setItem(stateStorageKey(cleanCode), JSON.stringify(newState));
-      upsertClientInRegistry(cleanCode, name, planId);
-
-      document.getElementById('newClientCode').value = '';
-      document.getElementById('newClientName').value = '';
-
-      switchAdminTab('workouts');
-      loadClient(cleanCode);
-      alert(`הלקוח ${name} (${cleanCode}) נוסף בהצלחה!`);
+      saveState();
+      alert('פרטי המתאמן ויעדי התזונה נשמרו בהצלחה!');
     };
 
-    window.assignPlanToCurrentClient = function(planId) {
-      clientState.planId = planId;
-      saveClientState();
-      renderClientBanner();
-    };
+    window.changeWorkoutsPerWeek = function(newCountStr) {
+      const count = Math.min(7, Math.max(1, parseInt(newCountStr, 10) || 3));
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+      const current = state.workoutSessions || [];
 
-    window.addSubscriptionPlan = function() {
-      const name = (document.getElementById('planNameInput').value || '').trim();
-      const duration = (document.getElementById('planDurationInput').value || '').trim() || 'חודשי';
-      const price = parseFloat(document.getElementById('planPriceInput').value);
-      if (!name || isNaN(price) || price < 0) return alert('נא להזין שם מסלול ומחיר תקין.');
-
-      subscriptionPlans.push({
-        id: `plan-${Date.now()}`,
-        name,
-        duration,
-        price
-      });
-      savePlansToStorage();
-
-      document.getElementById('planNameInput').value = '';
-      document.getElementById('planDurationInput').value = '';
-      document.getElementById('planPriceInput').value = '';
-
-      renderPlanSelects();
-      renderPricingSection();
-      renderClientBanner();
-    };
-
-    window.updatePlanPrice = function(planId, newPriceVal) {
-      const plan = subscriptionPlans.find(p => p.id === planId);
-      if (!plan) return;
-      const p = parseFloat(newPriceVal);
-      if (!isNaN(p) && p >= 0) {
-        plan.price = p;
-        savePlansToStorage();
-        renderPricingSection();
-        renderClientBanner();
+      if (count > current.length) {
+        for (let i = current.length; i < count; i++) {
+          current.push({
+            id: `sess-${i + 1}-${Date.now()}`,
+            title: `אימון ${i + 1} (${letters[i] || i + 1})`,
+            exercises: []
+          });
+        }
+      } else if (count < current.length) {
+        current.length = count;
       }
+
+      state.workoutSessions = current;
+      state.weeklyWorkoutsPerWeek = count;
+      if (selectedSessionIndex >= count) selectedSessionIndex = count - 1;
+      saveState();
+      renderWorkoutBuilder();
     };
 
-    window.removeSubscriptionPlan = function(planId) {
-      if (subscriptionPlans.length <= 1) return alert('חייב להישאר לפחות מסלול מנוי אחד.');
-      subscriptionPlans = subscriptionPlans.filter(p => p.id !== planId);
-      savePlansToStorage();
-      renderPlanSelects();
-      renderPricingSection();
-      renderClientBanner();
+    window.selectAdminSession = function(idx) {
+      selectedSessionIndex = idx;
+      renderWorkoutBuilder();
     };
 
-    window.saveAdminSettings = function() {
-      adminSettings = {
-        businessName: (document.getElementById('settingBusinessName').value || '').trim() || 'BodyBalance',
-        currency: (document.getElementById('settingCurrency').value || '').trim() || '₪',
-        defaultCalories: parseFloat(document.getElementById('settingDefaultCal').value) || 2200,
-        defaultProtein: parseFloat(document.getElementById('settingDefaultPro').value) || 160,
-        defaultCarbs: parseFloat(document.getElementById('settingDefaultCarb').value) || 220,
-        defaultFat: parseFloat(document.getElementById('settingDefaultFat').value) || 70
-      };
-      saveSettingsToStorage();
-      applyAdminSettingsUI();
-      renderPricingSection();
-      alert('ההגדרות נשמרו בהצלחה!');
+    window.updateCurrentSessionTitle = function() {
+      const session = state.workoutSessions[selectedSessionIndex];
+      if (!session) return;
+      const val = (document.getElementById('sessionTitleInput').value || '').trim();
+      if (!val) return alert('נא להזין שם לאימון.');
+      session.title = val;
+      saveState();
+      renderWorkoutBuilder();
     };
 
-    window.resetAdminSettings = function() {
-      adminSettings = getDefaultSettings();
-      saveSettingsToStorage();
-      applyAdminSettingsUI();
-      renderPricingSection();
-    };
+    window.addExerciseToSelectedSession = function() {
+      const session = state.workoutSessions[selectedSessionIndex];
+      if (!session) return;
 
-    function applyAdminSettingsUI() {
-      document.getElementById('adminHeaderTitle').textContent = `${adminSettings.businessName} · ממשק ניהול לקוחות`;
-      document.getElementById('settingBusinessName').value = adminSettings.businessName;
-      document.getElementById('settingCurrency').value = adminSettings.currency;
-      document.getElementById('settingDefaultCal').value = adminSettings.defaultCalories;
-      document.getElementById('settingDefaultPro').value = adminSettings.defaultProtein;
-      document.getElementById('settingDefaultCarb').value = adminSettings.defaultCarbs;
-      document.getElementById('settingDefaultFat').value = adminSettings.defaultFat;
-    }
+      const name = (document.getElementById('newExName').value || '').trim();
+      if (!name) return alert('נא להזין שם תרגיל.');
 
-    window.saveNutritionTargets = function() {
-      clientState.nutritionTargets = {
-        calories: parseFloat(document.getElementById('targetCalInput').value) || 0,
-        protein: parseFloat(document.getElementById('targetProInput').value) || 0,
-        carbs: parseFloat(document.getElementById('targetCarbInput').value) || 0,
-        fat: parseFloat(document.getElementById('targetFatInput').value) || 0
-      };
-      saveClientState();
-      alert('היעדים היומיים נשמרו עבור הלקוח!');
-    };
+      const muscle = document.getElementById('newExMuscle').value;
+      const sets = parseInt(document.getElementById('newExSets').value, 10) || 3;
+      const reps = (document.getElementById('newExReps').value || '').trim() || '10-12';
+      const videoUrl = normalizeYouTubeUrl(document.getElementById('newExVideo').value);
+      const coachNotes = (document.getElementById('newExNotes').value || '').trim();
 
-    window.toggleSubscription = function() {
-      clientState.subscriptionActive = !clientState.subscriptionActive;
-      saveClientState();
-      renderClientBanner();
-    };
-
-    window.switchAdminTab = function(tab) {
-      document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
-      document.getElementById(`admin-sec-${tab}`)?.classList.remove('hidden');
-      document.querySelectorAll('.admin-tab').forEach(b => b.classList.toggle('active', b.dataset.atab === tab));
-    };
-
-    window.addExerciseToClientPlan = function(bankId) {
-      const item = FULL_EXERCISE_BANK.find(e => e.id === bankId);
-      if (!item) return;
-      clientState.workoutPlan.push({
-        id: `${item.id}-${Date.now()}`,
-        name: item.name,
-        muscle: item.muscle,
-        sets: item.defaultSets,
-        reps: item.defaultReps,
-        videoUrl: item.videoUrl,
-        coachNotes: item.defaultNotes
+      session.exercises.push({
+        id: `ex-${Date.now()}`,
+        name,
+        muscle,
+        sets,
+        reps,
+        videoUrl,
+        coachNotes
       });
-      saveClientState();
-      renderAssignedPlan();
+
+      document.getElementById('newExName').value = '';
+      document.getElementById('newExNotes').value = '';
+      saveState();
+      renderWorkoutBuilder();
     };
 
-    window.updatePlanField = function(idx, field, val) {
-      if (!clientState.workoutPlan[idx]) return;
-      clientState.workoutPlan[idx][field] = val;
-      saveClientState();
+    window.removeExerciseFromSession = function(exIdx) {
+      const session = state.workoutSessions[selectedSessionIndex];
+      if (!session) return;
+      session.exercises.splice(exIdx, 1);
+      saveState();
+      renderWorkoutBuilder();
     };
 
-    window.removePlanExercise = function(idx) {
-      clientState.workoutPlan.splice(idx, 1);
-      saveClientState();
-      renderAssignedPlan();
-    };
+    function renderWorkoutBuilder() {
+      const sessions = state.workoutSessions || [];
+      document.getElementById('workoutsPerWeekSelect').value = String(sessions.length);
 
-    window.openAdminVideo = function(title, url) {
-      document.getElementById('adminVideoTitle').textContent = title;
-      document.getElementById('adminVideoBody').innerHTML = `
-        <div class="aspect-video w-full rounded-xl overflow-hidden bg-slate-900">
-          <iframe src="${url}" class="w-full h-full" allowfullscreen></iframe>
-        </div>
-      `;
-      document.getElementById('adminVideoModal').classList.remove('hidden');
-    };
-
-    window.closeAdminVideo = function() {
-      document.getElementById('adminVideoModal').classList.add('hidden');
-    };
-
-    function renderClientsBar() {
-      document.getElementById('clientsCountBadge').textContent = `${clientsRegistry.length} לקוחות`;
-      document.getElementById('savedClientsChips').innerHTML = clientsRegistry.map(c => {
-        const isCur = c.code === currentCode;
+      const tabsEl = document.getElementById('adminSessionTabs');
+      tabsEl.innerHTML = sessions.map((sess, idx) => {
+        const active = idx === selectedSessionIndex;
         return `
-          <button type="button" onclick="loadClient('${c.code}')" class="px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer ${isCur ? 'bg-teal-700 text-white border-teal-700' : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'}">
-            ${c.name || c.code} <span class="font-mono opacity-80">(${c.code})</span>
+          <button type="button" onclick="selectAdminSession(${idx})"
+            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold border transition cursor-pointer ${
+              active
+                ? 'bg-teal-700 text-white border-teal-700 shadow-xs'
+                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+            }">
+            ${sess.title} (${sess.exercises.length})
           </button>
         `;
       }).join('');
-    }
 
-    function renderPlanSelects() {
-      const optionsHtml = subscriptionPlans.map(p =>
-        `<option value="${p.id}">${p.name} — ${p.price} ${adminSettings.currency} (${p.duration})</option>`
-      ).join('');
+      const activeSess = sessions[selectedSessionIndex];
+      if (!activeSess) return;
 
-      const clientSelect = document.getElementById('clientPlanSelect');
-      if (clientSelect) {
-        clientSelect.innerHTML = optionsHtml;
-        if (clientState?.planId) clientSelect.value = clientState.planId;
-      }
+      document.getElementById('sessionTitleInput').value = activeSess.title;
+      document.getElementById('addExSessionLabel').textContent = activeSess.title;
+      document.getElementById('sessionExerciseCountBadge').textContent = `${activeSess.exercises.length} תרגילים באימון זה`;
 
-      const newClientSelect = document.getElementById('newClientPlan');
-      if (newClientSelect) {
-        newClientSelect.innerHTML = optionsHtml;
-      }
-    }
-
-    function renderPricingSection() {
-      const cur = adminSettings.currency || '₪';
-      let activeRevenue = 0;
-      clientsRegistry.forEach(reg => {
-        try {
-          const st = JSON.parse(localStorage.getItem(stateStorageKey(reg.code)) || '{}');
-          if (st.subscriptionActive !== false) {
-            const pl = subscriptionPlans.find(p => p.id === (st.planId || reg.planId)) || subscriptionPlans[0];
-            if (pl) activeRevenue += Number(pl.price) || 0;
-          }
-        } catch (e) {}
-      });
-
-      document.getElementById('estimatedMonthlyRevenue').textContent =
-        `סך מנויים פעילים: ${activeRevenue.toLocaleString()} ${cur}`;
-
-      document.getElementById('subscriptionPlansGrid').innerHTML = subscriptionPlans.map(pl => `
-        <div class="border border-slate-200 rounded-2xl p-4 bg-white space-y-3">
-          <div class="flex items-center justify-between gap-2">
-            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-800">${pl.duration}</span>
-            <button type="button" onclick="removeSubscriptionPlan('${pl.id}')" class="text-xs text-rose-600 font-bold cursor-pointer">מחק</button>
-          </div>
-          <h4 class="font-extrabold text-slate-900 text-base">${pl.name}</h4>
-          <div class="flex items-center gap-2">
-            <label class="text-xs font-bold text-slate-600">מחיר (${cur}):</label>
-            <input type="number" value="${pl.price}" onchange="updatePlanPrice('${pl.id}', this.value)" class="w-28 border border-slate-300 rounded-xl px-2.5 py-1 text-sm font-extrabold" />
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderClientBanner() {
-      const p = clientState.profile || {};
-      document.getElementById('adminClientTitle').textContent = `לקוח: ${p.name || currentCode} (${currentCode})`;
-      document.getElementById('adminClientMeta').textContent = `משקל: ${p.weight || '-'} ק"ג · גובה: ${p.height || '-'} ס"מ · גיל: ${p.age || '-'}`;
-
-      const plan = subscriptionPlans.find(pl => pl.id === clientState.planId) || subscriptionPlans[0];
-      const cur = adminSettings.currency || '₪';
-      document.getElementById('clientPlanBadge').textContent = plan
-        ? `מסלול: ${plan.name} (${plan.price} ${cur})`
-        : 'מסלול: -';
-
-      renderPlanSelects();
-
-      const t = clientState.nutritionTargets || {};
-      document.getElementById('targetCalInput').value = t.calories ?? adminSettings.defaultCalories;
-      document.getElementById('targetProInput').value = t.protein ?? adminSettings.defaultProtein;
-      document.getElementById('targetCarbInput').value = t.carbs ?? adminSettings.defaultCarbs;
-      document.getElementById('targetFatInput').value = t.fat ?? adminSettings.defaultFat;
-
-      const badge = document.getElementById('subStatusBadge');
-      const btn = document.getElementById('subToggleBtn');
-      const active = clientState.subscriptionActive !== false;
-
-      if (active) {
-        badge.textContent = 'מנוי פעיל';
-        badge.className = 'px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800';
-        btn.textContent = 'הפוך ללא פעיל';
-        btn.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold border bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200 cursor-pointer';
-      } else {
-        badge.textContent = 'מנוי לא פעיל';
-        badge.className = 'px-3 py-1 rounded-full text-xs font-extrabold bg-rose-100 text-rose-800';
-        btn.textContent = 'הפוך לפעיל';
-        btn.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold border bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200 cursor-pointer';
-      }
-    }
-
-    function renderAssignedPlan() {
-      const dateStr = document.getElementById('adminDatePicker').value;
-      const dayLog = clientState.dayLogs?.[dateStr] || { completedExercises: {}, clientExerciseVideos: {} };
-      const plan = clientState.workoutPlan || [];
-      const doneCount = plan.filter(ex => dayLog.completedExercises?.[ex.id]).length;
-
-      document.getElementById('adminWorkoutCompletion').textContent = `${doneCount}/${plan.length} בוצעו בתאריך ${dateStr}`;
-
-      const listEl = document.getElementById('adminAssignedPlanList');
-      listEl.innerHTML = plan.length === 0
-        ? '<p class="text-xs text-slate-400">אין תרגילים בתוכנית של הלקוח. הוסף תרגילים ממאגר התרגילים למטה.</p>'
-        : plan.map((ex, idx) => {
-            const isDone = !!dayLog.completedExercises?.[ex.id];
-            const vidFile = dayLog.clientExerciseVideos?.[ex.id] || '';
-            return `
-              <div class="border border-slate-200 rounded-2xl p-4 space-y-3 bg-slate-50/40">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-200/70 text-slate-700">${ex.muscle}</span>
-                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full mr-1 ${isDone ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
-                      ${isDone ? '✓ בוצע על ידי הלקוח' : 'ממתין לביצוע'}
-                    </span>
-                    <h4 class="font-extrabold text-slate-900 text-sm sm:text-base mt-1">${ex.name}</h4>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <button type="button" onclick="openAdminVideo('${ex.name.replace(/'/g, '')}', '${ex.videoUrl}')" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-800 font-bold px-3 py-1.5 rounded-lg cursor-pointer">▶️ סרטון</button>
-                    <button type="button" onclick="removePlanExercise(${idx})" class="text-xs text-rose-600 hover:bg-rose-50 px-2.5 py-1.5 rounded-lg font-bold cursor-pointer">הסר</button>
-                  </div>
+      const listEl = document.getElementById('adminSessionExercisesList');
+      listEl.innerHTML = activeSess.exercises.length === 0
+        ? '<p class="text-xs text-slate-400 bg-white border border-dashed border-slate-300 rounded-xl p-4">טרם נוספו תרגילים לאימון זה. הוסף תרגילים בטופס למעלה.</p>'
+        : activeSess.exercises.map((ex, idx) => `
+            <div class="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-800">${ex.muscle}</span>
+                  <h4 class="font-extrabold text-slate-900 text-sm">${ex.name}</h4>
                 </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div>
-                    <label class="block text-[11px] font-bold text-slate-600 mb-1">סטים</label>
-                    <input type="number" value="${ex.sets}" oninput="updatePlanField(${idx}, 'sets', this.value)" class="w-full border border-slate-300 rounded-xl px-3 py-1.5 text-xs bg-white" />
-                  </div>
-                  <div>
-                    <label class="block text-[11px] font-bold text-slate-600 mb-1">חזרות</label>
-                    <input type="text" value="${ex.reps}" oninput="updatePlanField(${idx}, 'reps', this.value)" class="w-full border border-slate-300 rounded-xl px-3 py-1.5 text-xs bg-white" />
-                  </div>
-                  <div class="sm:col-span-3">
-                    <label class="block text-[11px] font-bold text-slate-700 mb-1">תיבת הערות לטכניקת התרגיל (מוצג ללקוח):</label>
-                    <textarea rows="2" oninput="updatePlanField(${idx}, 'coachNotes', this.value)" placeholder="הזן דגשים לטכניקה, קצב ביצוע, מנוחה..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs bg-white">${ex.coachNotes || ''}</textarea>
-                  </div>
-                </div>
-
-                ${vidFile ? `<p class="text-xs text-emerald-700 font-bold">🎥 הלקוח צירף סרטון ביצוע: ${vidFile}</p>` : ''}
+                <p class="text-xs text-slate-600 mt-1">
+                  <strong>${ex.sets} סטים</strong> × <strong>${ex.reps} חזרות</strong>
+                  ${ex.coachNotes ? ` · <span class="text-amber-800">${ex.coachNotes}</span>` : ''}
+                </p>
               </div>
-            `;
-          }).join('');
-    }
-
-    window.renderExerciseBank = function() {
-      const muscle = document.getElementById('muscleFilter').value;
-      const query = (document.getElementById('exerciseSearchInput').value || '').trim().toLowerCase();
-
-      const filtered = FULL_EXERCISE_BANK.filter(ex => {
-        const matchMuscle = muscle === 'all' || ex.muscle === muscle;
-        const matchText = !query || ex.name.toLowerCase().includes(query) || ex.muscle.includes(query);
-        return matchMuscle && matchText;
-      });
-
-      document.getElementById('exerciseBankGrid').innerHTML = filtered.map(ex => `
-        <div class="border border-slate-200 rounded-2xl p-4 flex flex-col justify-between gap-3 bg-white">
-          <div>
-            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-800">${ex.muscle}</span>
-            <h4 class="font-bold text-slate-900 text-sm mt-1.5">${ex.name}</h4>
-            <p class="text-xs text-slate-500 mt-1">${ex.defaultNotes}</p>
-          </div>
-          <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
-            <button type="button" onclick="openAdminVideo('${ex.name.replace(/'/g, '')}', '${ex.videoUrl}')" class="flex-1 text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2 rounded-xl cursor-pointer">
-              ▶️ צפה בסרטון
-            </button>
-            <button type="button" onclick="addExerciseToClientPlan('${ex.id}')" class="flex-1 text-xs bg-teal-700 hover:bg-teal-800 text-white font-bold py-2 rounded-xl cursor-pointer">
-              + הוסף ללקוח
-            </button>
-          </div>
-        </div>
-      `).join('');
-    };
-
-    function renderAdminMeals() {
-      const dateStr = document.getElementById('adminDatePicker').value;
-      const meals = clientState.dayLogs?.[dateStr]?.meals || [];
-      const totals = meals.reduce((acc, m) => ({
-        cal: acc.cal + (m.calories || 0),
-        pro: acc.pro + (m.protein || 0),
-        carb: acc.carb + (m.carbs || 0),
-        fat: acc.fat + (m.fat || 0)
-      }), { cal: 0, pro: 0, carb: 0, fat: 0 });
-
-      document.getElementById('adminSumCal').textContent = Math.round(totals.cal);
-      document.getElementById('adminSumPro').textContent = totals.pro.toFixed(1);
-      document.getElementById('adminSumCarb').textContent = totals.carb.toFixed(1);
-      document.getElementById('adminSumFat').textContent = totals.fat.toFixed(1);
-
-      const box = document.getElementById('adminMealsList');
-      box.innerHTML = meals.length === 0
-        ? '<p class="text-xs text-slate-400">הלקוח לא רשם ארוחות לתאריך זה.</p>'
-        : meals.map(m => {
-            const itemsList = Array.isArray(m.items) && m.items.length
-              ? `<ul class="mt-1 space-y-0.5 text-xs text-slate-600 list-disc list-inside">${m.items.map(it => `<li><strong>${it.foodName}</strong> (${it.amountLabel}) — ${Math.round(it.calories)} קק"ל · חלבון ${it.protein}g · פחמימה ${it.carbs}g · שומן ${it.fat}g</li>`).join('')}</ul>`
-              : `<p class="text-xs text-slate-600">${m.foodName || ''} ${m.amountLabel ? `(${m.amountLabel})` : ''}</p>`;
-
-            return `
-              <div class="border border-slate-200 rounded-2xl p-4 flex flex-wrap items-start gap-4 bg-slate-50/50">
-                ${m.photoDataUrl ? `<img src="${m.photoDataUrl}" alt="${m.category}" class="w-20 h-20 rounded-xl object-cover border border-slate-300 shrink-0" />` : ''}
-                <div class="space-y-1">
-                  <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-800">${m.category} · ${m.time || ''}</span>
-                  <h4 class="font-extrabold text-slate-900 text-sm">
-                    סה"כ ארוחה: ${Math.round(m.calories)} קק"ל · חלבון: ${m.protein}g · פחמימה: ${m.carbs}g · שומן: ${m.fat}g
-                  </h4>
-                  ${itemsList}
-                </div>
-              </div>
-            `;
-          }).join('');
+              <button type="button" onclick="removeExerciseFromSession(${idx})" class="text-xs text-rose-600 hover:bg-rose-50 font-bold px-3 py-1.5 rounded-lg cursor-pointer">
+                הסר תרגיל
+              </button>
+            </div>
+          `).join('');
     }
 
     function renderAdminAll() {
-      applyAdminSettingsUI();
-      renderClientsBar();
-      renderClientBanner();
-      renderPricingSection();
-      renderAssignedPlan();
-      renderExerciseBank();
-      renderAdminMeals();
+      document.getElementById('activeCodeBadge').textContent = currentClientId;
+      document.getElementById('subActiveInput').checked = state.subscriptionActive !== false;
+      document.getElementById('clientNameInput').value = state.profile.name || '';
+      document.getElementById('targetCalInput').value = state.nutritionTargets.calories || 2200;
+      document.getElementById('targetProInput').value = state.nutritionTargets.protein || 160;
+      document.getElementById('targetCarbInput').value = state.nutritionTargets.carbs || 220;
+      document.getElementById('targetFatInput').value = state.nutritionTargets.fat || 70;
+      renderWorkoutBuilder();
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('adminDatePicker').value = new Date().toISOString().slice(0, 10);
-      loadClient();
-    });
+    window.addEventListener('DOMContentLoaded', renderAdminAll);
   </script>
 </body>
 </html>
