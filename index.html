@@ -8,7 +8,6 @@
   <link rel="apple-touch-icon" href="./logo.png" />
   <title>BodyBalance — ממשק מתאמן</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Heebo', sans-serif; background-color: #f8fafc; padding-bottom: env(safe-area-inset-bottom); }
@@ -49,23 +48,33 @@
   </header>
 
   <main class="max-w-7xl mx-auto px-4 py-6 pb-24 md:pb-10 space-y-6">
+    <!-- כרטיס פרופיל מהיר של המתאמן -->
     <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
-      <div class="text-xs sm:text-sm">
-        <span class="text-slate-500">מתאמן:</span>
-        <strong id="bannerName" class="text-slate-900 mx-1">טרם הוזן שם</strong>
-        <span class="text-xs text-slate-400 font-mono">(#<span id="bannerCode">-</span>)</span>
-        <span id="bannerPhoneBadge" class="text-xs text-teal-800 font-semibold mr-2"></span>
+      <div class="flex items-center gap-3 text-xs sm:text-sm">
+        <div onclick="switchTab('profile')" title="לחץ לעדכון תמונת פרופיל" class="w-11 h-11 rounded-full bg-teal-50 border border-teal-200 overflow-hidden flex items-center justify-center shrink-0 cursor-pointer">
+          <img id="bannerAvatarImg" src="" alt="תמונת פרופיל" class="hidden w-full h-full object-cover" />
+          <span id="bannerAvatarFallback" class="text-teal-700 font-extrabold text-base">👤</span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-1.5">
+            <span class="text-slate-500">מתאמן:</span>
+            <strong id="bannerName" class="text-slate-900">טרם הוזן שם</strong>
+            <span class="text-xs text-slate-400 font-mono">(#<span id="bannerCode">-</span>)</span>
+          </div>
+          <div id="bannerPhoneBadge" class="text-xs text-teal-800 font-semibold mt-0.5"></div>
+        </div>
       </div>
+
       <div class="flex flex-wrap items-center gap-2">
         <button type="button" onclick="switchTab('forms')" id="bannerFormsAlertBtn" class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-3 py-1.5 rounded-xl cursor-pointer">
           📋 הצהרת בריאות ותקנון
         </button>
-        <button type="button" onclick="switchTab('profile')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3 py-1.5 rounded-xl cursor-pointer">✏️ פרטים וטלפון</button>
+        <button type="button" onclick="switchTab('profile')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3 py-1.5 rounded-xl cursor-pointer">✏️ פרטים ותמונה</button>
         <button type="button" onclick="shareWhatsAppSummary()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl cursor-pointer">💬 סיכום וואטסאפ</button>
       </div>
     </div>
 
-    <!-- לשונית 1: יומן ארוחות וסריקת ברקוד -->
+    <!-- לשונית 1: יומן ארוחות וסריקת ברקוד (ללא צילום תמונה בארוחות) -->
     <section id="tab-meals" class="tab-section space-y-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-2">
@@ -136,26 +145,20 @@
           </button>
         </div>
 
-        <!-- אזור סריקת ברקוד -->
+        <!-- אזור סריקת ברקוד (סורק חי + הקלדת מספר ברקוד בלבד) -->
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
               <h3 class="text-sm font-extrabold text-slate-900">🔍 זיהוי מוצר לפי ברקוד והוספה לארוחה הנבחרת</h3>
-              <p id="barcodeStatusText" class="text-xs text-slate-500">סרוק ברקוד במצלמה, צלם תמונת ברקוד או הקלד ברקוד לבדיקה</p>
+              <p id="barcodeStatusText" class="text-xs text-slate-500">סרוק ברקוד של אריזה במצלמה או הקלד את מספר הברקוד</p>
             </div>
-            <div class="flex flex-wrap items-center gap-2">
-              <button type="button" onclick="openLiveBarcodeScanner()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-3.5 py-2 rounded-xl text-xs cursor-pointer">
-                📷 סרוק ברקוד במצלמה
-              </button>
-              <label class="bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 font-bold px-3.5 py-2 rounded-xl text-xs cursor-pointer">
-                🖼️ העלה תמונת ברקוד
-                <input id="barcodePhotoInput" type="file" accept="image/*" capture="environment" onchange="handleBarcodeImageUpload(event)" class="hidden" />
-              </label>
-            </div>
+            <button type="button" onclick="openLiveBarcodeScanner()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-4 py-2 rounded-xl text-xs cursor-pointer">
+              📷 סרוק ברקוד במצלמה
+            </button>
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
-            <input id="manualBarcodeInput" type="text" placeholder="הקלד ברקוד (למשל 7290000000010 או 7290000000027)" class="flex-1 min-w-[200px] border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-mono bg-white" />
+            <input id="manualBarcodeInput" type="text" placeholder="הקלד מספר ברקוד (למשל 7290000000010 או 7290000000027)" class="flex-1 min-w-[200px] border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-mono bg-white" />
             <button type="button" onclick="lookupBarcodeProduct(document.getElementById('manualBarcodeInput').value)" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs cursor-pointer">
               זהה ברקוד
             </button>
@@ -428,12 +431,33 @@
       </div>
     </section>
 
-    <!-- לשונית 5: הפרטים האישיים שלי (כולל מספר טלפון נייד) -->
+    <!-- לשונית 5: הפרטים האישיים שלי (כולל תמונת פרופיל ומספר טלפון) -->
     <section id="tab-profile" class="tab-section hidden space-y-6">
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5">
         <div>
           <h2 class="text-xl font-extrabold text-slate-900">הפרטים האישיים שלי</h2>
-          <p class="text-xs text-slate-500">עדכן את שמך, קוד המתאמן ומספר הטלפון הנייד לצורך זיהוי ושליחת הודעות וואטסאפ</p>
+          <p class="text-xs text-slate-500">הוסף תמונת פרופיל אישית ועדכן את שמך, קוד המתאמן ומספר הטלפון הנייד</p>
+        </div>
+
+        <!-- אזור תמונת פרופיל של המתאמן -->
+        <div class="flex flex-wrap items-center gap-4 bg-slate-50 border border-slate-200 rounded-2xl p-4">
+          <div class="w-20 h-20 rounded-full bg-teal-100 border-2 border-teal-600 overflow-hidden flex items-center justify-center shrink-0 shadow-xs">
+            <img id="profilePageAvatarImg" src="" alt="תמונת פרופיל" class="hidden w-full h-full object-cover" />
+            <span id="profilePageAvatarFallback" class="text-teal-800 font-extrabold text-2xl">👤</span>
+          </div>
+          <div class="space-y-2">
+            <h3 class="text-sm font-extrabold text-slate-900">תמונת פרופיל אישית</h3>
+            <p class="text-xs text-slate-500">בחר תמונה מהגלריה או צלם תמונת פרופיל לכרטיס המתאמן שלך</p>
+            <div class="flex flex-wrap items-center gap-2">
+              <label class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-3.5 py-2 rounded-xl text-xs cursor-pointer">
+                📷 בחר / צלם תמונת פרופיל
+                <input id="profileAvatarInput" type="file" accept="image/*" onchange="handleProfileAvatarUpload(event)" class="hidden" />
+              </label>
+              <button type="button" id="removeAvatarBtn" onclick="removeProfileAvatar()" class="hidden text-xs text-rose-600 hover:bg-rose-50 font-bold px-3 py-2 rounded-xl border border-rose-200 cursor-pointer">
+                הסר תמונה
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -468,7 +492,7 @@
         </div>
 
         <button type="button" onclick="saveProfile()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-6 py-2.5 rounded-xl text-sm cursor-pointer">
-          שמור פרטים
+          שמור פרטים ותמונה
         </button>
       </div>
     </section>
@@ -540,7 +564,6 @@
     let activeScannedProduct = null;
     let liveScanStream = null;
     let liveScanAnimId = null;
-    let zxingReader = null;
 
     const SPOON_GRAMS = 15;
     const CUP_GRAMS = 200;
@@ -619,7 +642,7 @@
         subscriptionActive: true,
         subscriptionTierName: 'מסלול ליווי מלא (אימונים + תזונה)',
         nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70 },
-        profile: { name: 'יואב כהן', phone: '', weight: 78, height: 178, age: 28 },
+        profile: { name: 'יואב כהן', phone: '', avatarDataUrl: '', weight: 78, height: 178, age: 28 },
         weeklyWorkoutsPerWeek: 3,
         workoutSessions: createDefaultSessions(3),
         healthDeclaration: { signed: false, idNumber: '', answers: {}, signatureDataUrl: '', signedAt: '' },
@@ -688,6 +711,44 @@
         }
       } catch (e) {}
     }
+
+    // --- העלאת תמונת פרופיל אישית ---
+    window.handleProfileAvatarUpload = function(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function() {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxSize = 240;
+          let w = img.width;
+          let h = img.height;
+          if (w > h) {
+            if (w > maxSize) { h = Math.round(h * (maxSize / w)); w = maxSize; }
+          } else {
+            if (h > maxSize) { w = Math.round(w * (maxSize / h)); h = maxSize; }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+          state.profile.avatarDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          saveState();
+          renderProfile();
+          event.target.value = '';
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.removeProfileAvatar = function() {
+      state.profile.avatarDataUrl = '';
+      saveState();
+      renderProfile();
+    };
 
     // --- חתימה דיגיטלית ב-Canvas ---
     let isDrawingSig = false;
@@ -935,44 +996,6 @@
       setBarcodeStatus(`ברקוד ${code} נטען למחשבון המידות.`, true);
     };
 
-    async function decodeBarcodeFromSource(source) {
-      if ('BarcodeDetector' in window) {
-        try {
-          const detector = new BarcodeDetector({ formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39', 'qr_code'] });
-          const barcodes = await detector.detect(source);
-          if (barcodes && barcodes.length > 0 && barcodes[0].rawValue) return barcodes[0].rawValue;
-        } catch (e) {}
-      }
-      if (window.ZXing && window.ZXing.BrowserMultiFormatReader) {
-        try {
-          if (!zxingReader) zxingReader = new window.ZXing.BrowserMultiFormatReader();
-          if (source instanceof HTMLImageElement) {
-            const result = await zxingReader.decodeFromImageElement(source);
-            return result?.getText() || '';
-          }
-        } catch (e) { return ''; }
-      }
-      return '';
-    }
-
-    window.handleBarcodeImageUpload = function(event) {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      setBarcodeStatus('מנתח את תמונת הברקוד...');
-      const reader = new FileReader();
-      reader.onload = function() {
-        const img = new Image();
-        img.onload = async function() {
-          const code = await decodeBarcodeFromSource(img);
-          event.target.value = '';
-          if (code) await lookupBarcodeProduct(code);
-          else setBarcodeStatus('לא זוהה ברקוד בתמונה. נסה לצלם קרוב יותר או להקליד ידנית.', true);
-        };
-        img.src = reader.result;
-      };
-      reader.readAsDataURL(file);
-    };
-
     window.openLiveBarcodeScanner = async function() {
       const modal = document.getElementById('barcodeScannerModal');
       const video = document.getElementById('barcodeVideoPreview');
@@ -1208,6 +1231,7 @@
 
     window.saveProfile = function() {
       const nextCode = (document.getElementById('profCode').value || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
+      const existingAvatar = state.profile.avatarDataUrl || '';
       if (nextCode && nextCode !== clientId) {
         clientId = nextCode;
         localStorage.setItem(CLIENT_ID_KEY, clientId);
@@ -1217,13 +1241,14 @@
       state.profile = {
         name: (document.getElementById('profName').value || '').trim() || 'מתאמן',
         phone: (document.getElementById('profPhone').value || '').trim(),
+        avatarDataUrl: existingAvatar,
         weight: parseFloat(document.getElementById('profWeight').value) || 75,
         height: parseInt(document.getElementById('profHeight').value, 10) || 175,
         age: parseInt(document.getElementById('profAge').value, 10) || 28
       };
       saveState();
       renderAll();
-      alert('הפרטים ומספר הטלפון נשמרו בהצלחה!');
+      alert('הפרטים האישיים נשמרו בהצלחה!');
     };
 
     window.shareWhatsAppSummary = function() {
@@ -1497,9 +1522,33 @@
     }
 
     function renderProfile() {
+      const avatarUrl = state.profile.avatarDataUrl || '';
+
+      const bannerImg = document.getElementById('bannerAvatarImg');
+      const bannerFb = document.getElementById('bannerAvatarFallback');
+      const pageImg = document.getElementById('profilePageAvatarImg');
+      const pageFb = document.getElementById('profilePageAvatarFallback');
+      const removeBtn = document.getElementById('removeAvatarBtn');
+
+      if (avatarUrl) {
+        bannerImg.src = avatarUrl;
+        bannerImg.classList.remove('hidden');
+        bannerFb.classList.add('hidden');
+        pageImg.src = avatarUrl;
+        pageImg.classList.remove('hidden');
+        pageFb.classList.add('hidden');
+        removeBtn.classList.remove('hidden');
+      } else {
+        bannerImg.classList.add('hidden');
+        bannerFb.classList.remove('hidden');
+        pageImg.classList.add('hidden');
+        pageFb.classList.remove('hidden');
+        removeBtn.classList.add('hidden');
+      }
+
       document.getElementById('bannerName').textContent = state.profile.name || 'מתאמן';
       document.getElementById('bannerCode').textContent = clientId;
-      document.getElementById('bannerPhoneBadge').textContent = state.profile.phone ? `· 📱 ${state.profile.phone}` : '';
+      document.getElementById('bannerPhoneBadge').textContent = state.profile.phone ? `📱 ${state.profile.phone}` : 'לא הוזן טלפון נייד';
       document.getElementById('headerSub').textContent = `${state.profile.name} · ${state.profile.weight} ק"ג`;
 
       document.getElementById('profName').value = state.profile.name || '';
