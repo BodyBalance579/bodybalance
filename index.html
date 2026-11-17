@@ -61,7 +61,10 @@
             <strong id="bannerName" class="text-slate-900">טרם הוזן שם</strong>
             <span class="text-xs text-slate-400 font-mono">(#<span id="bannerCode">-</span>)</span>
           </div>
-          <div id="bannerPhoneBadge" class="text-xs text-teal-800 font-semibold mt-0.5"></div>
+          <div class="flex flex-wrap items-center gap-2 mt-0.5">
+            <span id="bannerPhoneBadge" class="text-xs text-teal-800 font-semibold"></span>
+            <span id="bannerBirthdayBadge" class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-pink-50 text-pink-800 border border-pink-200"></span>
+          </div>
         </div>
       </div>
 
@@ -145,7 +148,7 @@
           </button>
         </div>
 
-        <!-- אזור סריקת ברקוד — מציג כברירת מחדל יחידה שלמה של המוצר (לפי משקל האריזה בגרמים) -->
+        <!-- אזור סריקת ברקוד — ערכים ליחידה שלמה של המוצר -->
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
@@ -281,7 +284,7 @@
       </div>
     </section>
 
-    <!-- לשונית 2: מאגר מזונות מלא (כל המזונות המבושלים מחושבים לאחר בישול / אפייה) -->
+    <!-- לשונית 2: מאגר מזונות מלא (לאחר בישול / אפייה) -->
     <section id="tab-foods" class="tab-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -435,12 +438,12 @@
       </div>
     </section>
 
-    <!-- לשונית 5: הפרטים האישיים שלי (כולל תמונת פרופיל ומספר טלפון) -->
+    <!-- לשונית 5: הפרטים האישיים שלי (כולל תמונת פרופיל, טלפון, תאריך לידה ומועד יום הולדת) -->
     <section id="tab-profile" class="tab-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5">
         <div>
           <h2 class="text-xl font-extrabold text-slate-900">הפרטים האישיים שלי</h2>
-          <p class="text-xs text-slate-500">הוסף תמונת פרופיל אישית ועדכן את שמך, קוד המתאמן ומספר הטלפון הנייד</p>
+          <p class="text-xs text-slate-500">עדכן תמונת פרופיל אישית, מספר טלפון ותאריך לידה למעקב יום הולדת</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-4 bg-slate-50 border border-slate-200 rounded-2xl p-4">
@@ -463,6 +466,17 @@
           </div>
         </div>
 
+        <!-- כרטיס חיווי יום הולדת אוטומטי -->
+        <div id="birthdayInfoCard" class="hidden bg-pink-50/70 border border-pink-200 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5 text-xs sm:text-sm text-pink-950">
+            <span class="text-xl">🎂</span>
+            <div>
+              <strong id="birthdayStatusTitle" class="block font-extrabold">תאריך יום הולדת: -</strong>
+              <span id="birthdayStatusSub" class="text-xs text-pink-800">-</span>
+            </div>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">שם מלא *</label>
@@ -477,16 +491,20 @@
             <input id="profPhone" type="tel" placeholder="050-0000000" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
           </div>
           <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">תאריך לידה 🎂</label>
+            <input id="profBirthDate" type="date" onchange="onBirthDateInputChange()" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">גיל (מחושב אוטומטית מתאריך לידה)</label>
+            <input id="profAge" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-slate-50" />
+          </div>
+          <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">משקל (ק"ג)</label>
             <input id="profWeight" type="number" step="0.1" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">גובה (ס"מ)</label>
             <input id="profHeight" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">גיל</label>
-            <input id="profAge" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
           </div>
         </div>
 
@@ -571,7 +589,6 @@
     const SPOON_GRAMS = 15;
     const CUP_GRAMS = 200;
 
-    // מאגר ברקודים מקומי — כולל משקל יחידה שלמה של המוצר (למשל קופסת חומוס שלמה 250g, מעדן חלבון 200g)
     const LOCAL_BARCODE_DB = {
       '7290000000010': { name: 'קורנפלקס רגיל (מנה ארוזה)', unitGrams: 35, unitLabel: 'יחידה שלמה (35g)', cal100: 378, pro100: 7.5, carb100: 84, fat100: 0.9 },
       '7290000000027': { name: 'מעדן / יוגורט חלבון מולר PRO (200g)', unitGrams: 200, unitLabel: 'גביע שלם (200g)', cal100: 72, pro100: 10, carb100: 4.5, fat100: 1.2 },
@@ -581,7 +598,6 @@
       '7290000000065': { name: 'קופסת חומוס (250g)', unitGrams: 250, unitLabel: 'קופסה שלמה (250g)', cal100: 250, pro100: 7.5, carb100: 14, fat100: 18 }
     };
 
-    // כל המזונות שדורשים בישול/אפייה מחושבים לאחר בישול / צלייה / אפייה (ערכי בסיס ל-100g מוכן לאכילה)
     const FOOD_DB_100G = [
       { name: 'קורנפלקס רגיל', category: 'דגני בוקר', unitGrams: 35, unitLabel: 'קערה / מנה (35g)', cal: 378, pro: 7.5, carb: 84, fat: 0.9 },
       { name: 'כריות (נוגט / וניל / שוקולד)', category: 'דגני בוקר', unitGrams: 40, unitLabel: 'מנה (40g)', cal: 465, pro: 7.2, carb: 64, fat: 19.5 },
@@ -656,7 +672,7 @@
         subscriptionActive: true,
         subscriptionTierName: 'מסלול ליווי מלא (אימונים + תזונה)',
         nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70 },
-        profile: { name: 'יואב כהן', phone: '', avatarDataUrl: '', weight: 78, height: 178, age: 28 },
+        profile: { name: 'יואב כהן', phone: '', birthDate: '', avatarDataUrl: '', weight: 78, height: 178, age: 28 },
         weeklyWorkoutsPerWeek: 3,
         workoutSessions: createDefaultSessions(3),
         healthDeclaration: { signed: false, idNumber: '', answers: {}, signatureDataUrl: '', signedAt: '' },
@@ -714,6 +730,7 @@
           if (decoded && typeof decoded === 'object') {
             if (decoded.name) state.profile.name = decoded.name;
             if (decoded.phone) state.profile.phone = decoded.phone;
+            if (decoded.birthDate) state.profile.birthDate = decoded.birthDate;
             if (decoded.tier) state.subscriptionTierName = decoded.tier;
             if (decoded.targets) state.nutritionTargets = { ...state.nutritionTargets, ...decoded.targets };
             if (Array.isArray(decoded.sessions) && decoded.sessions.length > 0) {
@@ -725,6 +742,67 @@
         }
       } catch (e) {}
     }
+
+    // --- חישוב גיל ומועד יום הולדת מתאריך לידה ---
+    function getBirthdayDetails(birthDateStr) {
+      if (!birthDateStr) return null;
+      const parts = birthDateStr.split('-').map(Number);
+      if (parts.length !== 3 || !parts[0] || !parts[1] || !parts[2]) return null;
+      const [bYear, bMonth, bDay] = parts;
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let age = today.getFullYear() - bYear;
+      const hadBirthdayThisYear =
+        today.getMonth() + 1 > bMonth ||
+        (today.getMonth() + 1 === bMonth && today.getDate() >= bDay);
+      if (!hadBirthdayThisYear) age -= 1;
+
+      let nextBday = new Date(today.getFullYear(), bMonth - 1, bDay);
+      nextBday.setHours(0, 0, 0, 0);
+      if (nextBday < today) {
+        nextBday = new Date(today.getFullYear() + 1, bMonth - 1, bDay);
+        nextBday.setHours(0, 0, 0, 0);
+      }
+
+      const diffDays = Math.round((nextBday - today) / (1000 * 60 * 60 * 24));
+      const dd = String(bDay).padStart(2, '0');
+      const mm = String(bMonth).padStart(2, '0');
+      const formattedShort = `${dd}/${mm}`;
+      const formattedFull = `${dd}/${mm}/${bYear}`;
+
+      let statusText = '';
+      if (diffDays === 0) {
+        statusText = `🎉 היום יום הולדת! (${formattedShort})`;
+      } else if (diffDays === 1) {
+        statusText = `🎂 יום הולדת מחר! (${formattedShort})`;
+      } else {
+        statusText = `🎂 יום הולדת ב-${formattedShort} (בעוד ${diffDays} ימים)`;
+      }
+
+      return {
+        age: Math.max(0, age),
+        diffDays,
+        formattedShort,
+        formattedFull,
+        statusText
+      };
+    }
+
+    window.onBirthDateInputChange = function() {
+      const val = document.getElementById('profBirthDate').value;
+      const info = getBirthdayDetails(val);
+      const card = document.getElementById('birthdayInfoCard');
+      if (info) {
+        document.getElementById('profAge').value = info.age;
+        card.classList.remove('hidden');
+        document.getElementById('birthdayStatusTitle').textContent = info.statusText;
+        document.getElementById('birthdayStatusSub').textContent = `תאריך לידה: ${info.formattedFull} · גיל נוכחי: ${info.age}`;
+      } else {
+        card.classList.add('hidden');
+      }
+    };
 
     window.handleProfileAvatarUpload = function(event) {
       const file = event.target.files?.[0];
@@ -862,7 +940,7 @@
       alert('התקנון ומדיניות השירות אושרו בהצלחה!');
     };
 
-    // --- חישובי מידות וברקוד (ערכים מחושבים ישירות ליחידה שלמה של המוצר) ---
+    // --- חישובי מידות וברקוד ---
     function getGramsForMeasure(food, qty, unitKey) {
       const q = Math.max(0, parseFloat(qty) || 0);
       const fullG = food?.unitGrams || 100;
@@ -1276,13 +1354,18 @@
         selectedWorkoutSessionIndex = 0;
         state = loadState();
       }
+      const birthDateVal = (document.getElementById('profBirthDate').value || '').trim();
+      const bInfo = getBirthdayDetails(birthDateVal);
+      const calculatedAge = bInfo ? bInfo.age : (parseInt(document.getElementById('profAge').value, 10) || 28);
+
       state.profile = {
         name: (document.getElementById('profName').value || '').trim() || 'מתאמן',
         phone: (document.getElementById('profPhone').value || '').trim(),
+        birthDate: birthDateVal,
         avatarDataUrl: existingAvatar,
         weight: parseFloat(document.getElementById('profWeight').value) || 75,
         height: parseInt(document.getElementById('profHeight').value, 10) || 175,
-        age: parseInt(document.getElementById('profAge').value, 10) || 28
+        age: calculatedAge
       };
       saveState();
       renderAll();
@@ -1299,10 +1382,12 @@
         fat: acc.fat + (m.fat || 0)
       }), { cal: 0, pro: 0, carb: 0, fat: 0 });
 
+      const bInfo = getBirthdayDetails(state.profile.birthDate);
       const text = [
         `📊 *סיכום יומי — BodyBalance*`,
         `👤 *מתאמן:* ${state.profile.name} (${clientId})`,
         state.profile.phone ? `📱 *טלפון:* ${state.profile.phone}` : '',
+        bInfo ? `${bInfo.statusText}` : '',
         `📅 *תאריך:* ${selectedDate}`,
         `🔥 *קלוריות:* ${Math.round(totals.cal)} / ${targets.calories} קק"ל`,
         `🥩 *חלבון:* ${totals.pro.toFixed(1)} / ${targets.protein}g`,
@@ -1584,17 +1669,34 @@
         removeBtn.classList.add('hidden');
       }
 
+      const bInfo = getBirthdayDetails(state.profile.birthDate);
+      const displayAge = bInfo ? bInfo.age : (state.profile.age || '');
+
       document.getElementById('bannerName').textContent = state.profile.name || 'מתאמן';
       document.getElementById('bannerCode').textContent = clientId;
       document.getElementById('bannerPhoneBadge').textContent = state.profile.phone ? `📱 ${state.profile.phone}` : 'לא הוזן טלפון נייד';
       document.getElementById('headerSub').textContent = `${state.profile.name} · ${state.profile.weight} ק"ג`;
 
+      const bBadge = document.getElementById('bannerBirthdayBadge');
+      const bCard = document.getElementById('birthdayInfoCard');
+      if (bInfo) {
+        bBadge.textContent = bInfo.statusText;
+        bBadge.classList.remove('hidden');
+        bCard.classList.remove('hidden');
+        document.getElementById('birthdayStatusTitle').textContent = bInfo.statusText;
+        document.getElementById('birthdayStatusSub').textContent = `תאריך לידה: ${bInfo.formattedFull} · גיל נוכחי: ${bInfo.age}`;
+      } else {
+        bBadge.classList.add('hidden');
+        bCard.classList.add('hidden');
+      }
+
       document.getElementById('profName').value = state.profile.name || '';
       document.getElementById('profCode').value = clientId;
       document.getElementById('profPhone').value = state.profile.phone || '';
+      document.getElementById('profBirthDate').value = state.profile.birthDate || '';
       document.getElementById('profWeight').value = state.profile.weight || '';
       document.getElementById('profHeight').value = state.profile.height || '';
-      document.getElementById('profAge').value = state.profile.age || '';
+      document.getElementById('profAge').value = displayAge;
       document.getElementById('profTierLabel').textContent = state.subscriptionTierName || 'מסלול ליווי אישי';
     }
 
