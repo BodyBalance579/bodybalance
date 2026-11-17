@@ -31,12 +31,13 @@
         </div>
       </div>
 
-      <nav class="hidden md:flex items-center gap-1.5">
-        <button type="button" data-tab="meals" onclick="switchTab('meals')" class="tab-btn active px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">יומן ארוחות</button>
-        <button type="button" data-tab="foods" onclick="switchTab('foods')" class="tab-btn px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">מאגר מזונות</button>
-        <button type="button" data-tab="workouts" onclick="switchTab('workouts')" class="tab-btn px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">תוכנית אימונים</button>
-        <button type="button" data-tab="forms" onclick="switchTab('forms')" class="tab-btn px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">הצהרת בריאות ותקנון</button>
-        <button type="button" data-tab="profile" onclick="switchTab('profile')" class="tab-btn px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">הפרטים שלי</button>
+      <nav class="hidden md:flex items-center gap-1">
+        <button type="button" data-tab="meals" onclick="switchTab('meals')" class="tab-btn active px-2.5 py-2 rounded-lg text-xs lg:text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">יומן ארוחות</button>
+        <button type="button" data-tab="foods" onclick="switchTab('foods')" class="tab-btn px-2.5 py-2 rounded-lg text-xs lg:text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">מאגר מזונות</button>
+        <button type="button" data-tab="workouts" onclick="switchTab('workouts')" class="tab-btn px-2.5 py-2 rounded-lg text-xs lg:text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">תוכנית אימונים</button>
+        <button type="button" data-tab="progress" onclick="switchTab('progress')" class="tab-btn px-2.5 py-2 rounded-lg text-xs lg:text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">התקדמות וגרפים</button>
+        <button type="button" data-tab="forms" onclick="switchTab('forms')" class="tab-btn px-2.5 py-2 rounded-lg text-xs lg:text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">הצהרת בריאות ותקנון</button>
+        <button type="button" data-tab="profile" onclick="switchTab('profile')" class="tab-btn px-2.5 py-2 rounded-lg text-xs lg:text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">הפרטים שלי</button>
       </nav>
 
       <div class="flex items-center gap-1 bg-slate-100 rounded-xl p-1 text-xs">
@@ -69,6 +70,9 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
+        <button type="button" onclick="switchTab('progress')" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-900 font-bold px-3 py-1.5 rounded-xl cursor-pointer">
+          📈 גרף התקדמות
+        </button>
         <button type="button" onclick="switchTab('forms')" id="bannerFormsAlertBtn" class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-3 py-1.5 rounded-xl cursor-pointer">
           📋 הצהרת בריאות ותקנון
         </button>
@@ -148,7 +152,6 @@
           </button>
         </div>
 
-        <!-- אזור סריקת ברקוד — ערכים ליחידה שלמה של המוצר -->
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
@@ -206,7 +209,6 @@
           </div>
         </div>
 
-        <!-- הוספה ממאגר המזונות -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">ארוחה (יעד לברקוד ולמאכלים)</label>
@@ -284,7 +286,7 @@
       </div>
     </section>
 
-    <!-- לשונית 2: מאגר מזונות מלא (לאחר בישול / אפייה) -->
+    <!-- לשונית 2: מאגר מזונות מלא -->
     <section id="tab-foods" class="tab-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -317,13 +319,13 @@
       </div>
     </section>
 
-    <!-- לשונית 3: תוכנית אימונים שבועית -->
+    <!-- לשונית 3: תוכנית אימונים שבועית כולל משקלי עבודה לכל סט -->
     <section id="tab-workouts" class="tab-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
           <div>
-            <h2 class="text-xl font-extrabold text-slate-900">תוכנית האימונים השבועית שלי</h2>
-            <p class="text-xs text-slate-500">בחר איזה אימון מתוך השבוע אתה מבצע היום, צפה בסרטון ההדגמה וסמן ביצוע</p>
+            <h2 class="text-xl font-extrabold text-slate-900">תוכנית האימונים השבועית שלי ומשקלי עבודה</h2>
+            <p class="text-xs text-slate-500">בחר את האימון היומי, הזן את משקל העבודה (בק"ג) שהרמת בכל סט, צפה בהדגמה וסמן ביצוע</p>
           </div>
           <div class="flex items-center gap-2">
             <span id="weeklyFrequencyBadge" class="text-xs font-extrabold px-3 py-1 rounded-full bg-indigo-50 text-indigo-800">3 אימונים בשבוע</span>
@@ -336,7 +338,97 @@
       </div>
     </section>
 
-    <!-- לשונית 4: 2 טפסים דיגיטליים — הצהרת בריאות + תקנון ומדיניות השירות -->
+    <!-- לשונית 4: התקדמות וגרפים — משקל גוף ומשקלי עבודה לאורך זמן -->
+    <section id="tab-progress" class="tab-section hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- כרטיס 1: גרף והיסטוריית משקל גוף לאורך זמן -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h2 class="text-lg font-extrabold text-slate-900">⚖️ גרף התקדמות משקל גוף</h2>
+              <p class="text-xs text-slate-500">תעד שקילה חדשה ועקוב אחר השינוי במשקל הגוף לאורך זמן</p>
+            </div>
+            <span id="bodyWeightDeltaBadge" class="text-xs font-extrabold px-3 py-1 rounded-full bg-teal-50 text-teal-800">-</span>
+          </div>
+
+          <div class="flex flex-wrap items-end gap-2 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">תאריך שקילה</label>
+              <input id="newBodyWeightDate" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-white" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">משקל גוף (ק"ג)</label>
+              <input id="newBodyWeightVal" type="number" step="0.1" min="20" max="300" placeholder="78.0" class="w-28 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-extrabold bg-white" />
+            </div>
+            <button type="button" onclick="logBodyWeightEntry()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-4 py-1.5 rounded-lg text-xs cursor-pointer">
+              + שמור שקילה
+            </button>
+          </div>
+
+          <div id="bodyWeightChartContainer" class="bg-slate-50/70 border border-slate-200 rounded-2xl p-3"></div>
+
+          <div class="overflow-x-auto border border-slate-100 rounded-xl max-h-56 overflow-y-auto">
+            <table class="w-full text-right text-xs">
+              <thead class="bg-slate-50 text-slate-600 sticky top-0">
+                <tr>
+                  <th class="py-2 px-3 font-bold">תאריך</th>
+                  <th class="py-2 px-3 font-bold">משקל (ק"ג)</th>
+                  <th class="py-2 px-3 font-bold">שינוי מהמדידה הקודמת</th>
+                  <th class="py-2 px-3 font-bold text-center">פעולה</th>
+                </tr>
+              </thead>
+              <tbody id="bodyWeightHistoryTbody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- כרטיס 2: גרף והיסטוריית משקלי עבודה בתרגילים לאורך זמן -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h2 class="text-lg font-extrabold text-slate-900">🏋️ התקדמות במשקלי עבודה לתרגיל</h2>
+              <p class="text-xs text-slate-500">בחר תרגיל לצפייה בגרף ההתקדמות ובשיאי ההרמה לאורך האימונים</p>
+            </div>
+            <select id="progressExerciseSelect" onchange="renderExerciseProgressView()" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-extrabold bg-white max-w-[230px]">
+            </select>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2.5 text-center">
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5">
+              <span class="block text-[11px] font-bold text-slate-500">משקל התחלתי</span>
+              <strong id="exStartWeightStat" class="text-sm sm:text-base font-extrabold text-slate-900">-</strong>
+            </div>
+            <div class="bg-teal-50/70 border border-teal-200 rounded-xl p-2.5">
+              <span class="block text-[11px] font-bold text-teal-700">שיא אישי (PR)</span>
+              <strong id="exMaxWeightStat" class="text-sm sm:text-base font-extrabold text-teal-900">-</strong>
+            </div>
+            <div class="bg-indigo-50/70 border border-indigo-200 rounded-xl p-2.5">
+              <span class="block text-[11px] font-bold text-indigo-700">שיפור מצטבר</span>
+              <strong id="exDeltaWeightStat" class="text-sm sm:text-base font-extrabold text-indigo-900">-</strong>
+            </div>
+          </div>
+
+          <div id="exerciseWeightChartContainer" class="bg-slate-50/70 border border-slate-200 rounded-2xl p-3"></div>
+
+          <div class="overflow-x-auto border border-slate-100 rounded-xl max-h-56 overflow-y-auto">
+            <table class="w-full text-right text-xs">
+              <thead class="bg-slate-50 text-slate-600 sticky top-0">
+                <tr>
+                  <th class="py-2 px-3 font-bold">תאריך אימון</th>
+                  <th class="py-2 px-3 font-bold">משקל שיא (ק"ג)</th>
+                  <th class="py-2 px-3 font-bold">פירוט משקלים לכל סט</th>
+                </tr>
+              </thead>
+              <tbody id="exerciseHistoryTbody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- לשונית 5: 2 טפסים דיגיטליים -->
     <section id="tab-forms" class="tab-section hidden space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
@@ -438,7 +530,7 @@
       </div>
     </section>
 
-    <!-- לשונית 5: הפרטים האישיים שלי (כולל תמונת פרופיל, טלפון, תאריך לידה ומועד יום הולדת) -->
+    <!-- לשונית 6: הפרטים האישיים שלי -->
     <section id="tab-profile" class="tab-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5">
         <div>
@@ -466,7 +558,6 @@
           </div>
         </div>
 
-        <!-- כרטיס חיווי יום הולדת אוטומטי -->
         <div id="birthdayInfoCard" class="hidden bg-pink-50/70 border border-pink-200 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center gap-2.5 text-xs sm:text-sm text-pink-950">
             <span class="text-xl">🎂</span>
@@ -499,7 +590,7 @@
             <input id="profAge" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-slate-50" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">משקל (ק"ג)</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1">משקל נוכחי (ק"ג) — מתעדכן אוטומטית בגרף</label>
             <input id="profWeight" type="number" step="0.1" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
           </div>
           <div>
@@ -552,20 +643,23 @@
   </div>
 
   <!-- תפריט תחתון למובייל -->
-  <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 z-30 flex justify-around py-1.5 text-[11px]">
-    <button type="button" data-tab="meals" onclick="switchTab('meals')" class="bottom-nav-btn active flex flex-col items-center gap-0.5 py-1 px-1.5 cursor-pointer">
+  <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 z-30 flex justify-around py-1.5 text-[10px]">
+    <button type="button" data-tab="meals" onclick="switchTab('meals')" class="bottom-nav-btn active flex flex-col items-center gap-0.5 py-1 px-1 cursor-pointer">
       <span>🍽️</span><span>ארוחות</span>
     </button>
-    <button type="button" data-tab="foods" onclick="switchTab('foods')" class="bottom-nav-btn flex flex-col items-center gap-0.5 py-1 px-1.5 text-slate-500 cursor-pointer">
+    <button type="button" data-tab="foods" onclick="switchTab('foods')" class="bottom-nav-btn flex flex-col items-center gap-0.5 py-1 px-1 text-slate-500 cursor-pointer">
       <span>🥗</span><span>מזונות</span>
     </button>
-    <button type="button" data-tab="workouts" onclick="switchTab('workouts')" class="bottom-nav-btn flex flex-col items-center gap-0.5 py-1 px-1.5 text-slate-500 cursor-pointer">
+    <button type="button" data-tab="workouts" onclick="switchTab('workouts')" class="bottom-nav-btn flex flex-col items-center gap-0.5 py-1 px-1 text-slate-500 cursor-pointer">
       <span>💪</span><span>אימונים</span>
     </button>
-    <button type="button" data-tab="forms" onclick="switchTab('forms')" class="bottom-nav-btn flex flex-col items-center gap-0.5 py-1 px-1.5 text-slate-500 cursor-pointer">
+    <button type="button" data-tab="progress" onclick="switchTab('progress')" class="bottom-nav-btn flex flex-col items-center gap-0.5 py-1 px-1 text-slate-500 cursor-pointer">
+      <span>📈</span><span>גרפים</span>
+    </button>
+    <button type="button" data-tab="forms" onclick="switchTab('forms')" class="bottom-nav-btn flex flex-col items-center gap-0.5 py-1 px-1 text-slate-500 cursor-pointer">
       <span>📋</span><span>טפסים</span>
     </button>
-    <button type="button" data-tab="profile" onclick="switchTab('profile')" class="bottom-nav-btn flex flex-col items-center gap-0.5 py-1 px-1.5 text-slate-500 cursor-pointer">
+    <button type="button" data-tab="profile" onclick="switchTab('profile')" class="bottom-nav-btn flex flex-col items-center gap-0.5 py-1 px-1 text-slate-500 cursor-pointer">
       <span>👤</span><span>פרטים</span>
     </button>
   </nav>
@@ -658,6 +752,7 @@
               muscle: 'חזה',
               sets: 4,
               reps: '8-10',
+              setWeights: ['60', '65', '70', '70'],
               videoUrl: 'https://www.youtube.com/embed/rT7DgCr-3pg',
               coachNotes: 'לשמור על שכמות צמודות לספסל, הורדה מבוקרת של 2 שניות.'
             }
@@ -668,11 +763,13 @@
     }
 
     function getDefaultClientState() {
+      const todayStr = new Date().toISOString().slice(0, 10);
       return {
         subscriptionActive: true,
         subscriptionTierName: 'מסלול ליווי מלא (אימונים + תזונה)',
         nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70 },
         profile: { name: 'יואב כהן', phone: '', birthDate: '', avatarDataUrl: '', weight: 78, height: 178, age: 28 },
+        bodyWeightHistory: [{ date: todayStr, weight: 78 }],
         weeklyWorkoutsPerWeek: 3,
         workoutSessions: createDefaultSessions(3),
         healthDeclaration: { signed: false, idNumber: '', answers: {}, signatureDataUrl: '', signedAt: '' },
@@ -696,6 +793,12 @@
           healthDeclaration: { ...def.healthDeclaration, ...(parsed.healthDeclaration || {}) },
           termsAcceptance: { ...def.termsAcceptance, ...(parsed.termsAcceptance || {}) }
         };
+
+        if (!Array.isArray(merged.bodyWeightHistory)) {
+          merged.bodyWeightHistory = merged.profile.weight
+            ? [{ date: selectedDate, weight: Number(merged.profile.weight) }]
+            : [];
+        }
 
         if (!Array.isArray(merged.workoutSessions) || merged.workoutSessions.length === 0) {
           const fallbackSessions = createDefaultSessions(merged.weeklyWorkoutsPerWeek || 3);
@@ -743,7 +846,272 @@
       } catch (e) {}
     }
 
-    // --- חישוב גיל ומועד יום הולדת מתאריך לידה ---
+    // --- בניית גרף SVG רספונסיבי ---
+    function buildSvgLineChart(points, unitSuffix = 'ק"ג', strokeColor = '#0f766e', fillColor = 'rgba(15, 118, 110, 0.12)') {
+      if (!points || points.length === 0) {
+        return '<div class="py-10 text-center text-xs text-slate-400">אין עדיין מספיק נתונים להצגת גרף. הזן מדידה ראשונה למעלה!</div>';
+      }
+
+      const w = 520;
+      const h = 190;
+      const padLeft = 44;
+      const padRight = 22;
+      const padTop = 22;
+      const padBottom = 32;
+      const plotW = w - padLeft - padRight;
+      const plotH = h - padTop - padBottom;
+
+      const vals = points.map(p => Number(p.value) || 0);
+      let minVal = Math.min(...vals);
+      let maxVal = Math.max(...vals);
+      if (minVal === maxVal) {
+        minVal = Math.max(0, minVal - 2);
+        maxVal = maxVal + 2;
+      } else {
+        const margin = (maxVal - minVal) * 0.15;
+        minVal = Math.max(0, minVal - margin);
+        maxVal = maxVal + margin;
+      }
+
+      const coords = points.map((p, idx) => {
+        const x = points.length === 1
+          ? padLeft + plotW / 2
+          : padLeft + (idx / (points.length - 1)) * plotW;
+        const y = padTop + plotH - ((p.value - minVal) / (maxVal - minVal)) * plotH;
+        return { x: Number(x.toFixed(1)), y: Number(y.toFixed(1)), label: p.label, value: p.value };
+      });
+
+      const linePath = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x} ${c.y}`).join(' ');
+      const areaPath = coords.length > 1
+        ? `${linePath} L ${coords[coords.length - 1].x} ${padTop + plotH} L ${coords[0].x} ${padTop + plotH} Z`
+        : '';
+
+      const midVal = ((minVal + maxVal) / 2).toFixed(1);
+      const gridLines = [
+        { y: padTop, text: maxVal.toFixed(1) },
+        { y: padTop + plotH / 2, text: midVal },
+        { y: padTop + plotH, text: minVal.toFixed(1) }
+      ].map(g => `
+        <line x1="${padLeft}" y1="${g.y}" x2="${w - padRight}" y2="${g.y}" stroke="#e2e8f0" stroke-dasharray="3 3" />
+        <text x="${padLeft - 6}" y="${g.y + 3}" text-anchor="end" fill="#64748b" font-size="10" font-weight="600">${g.text}</text>
+      `).join('');
+
+      const dotsAndLabels = coords.map((c, idx) => {
+        const showXLabel = coords.length <= 7 || idx === 0 || idx === coords.length - 1 || idx % Math.ceil(coords.length / 5) === 0;
+        return `
+          <circle cx="${c.x}" cy="${c.y}" r="4.5" fill="#ffffff" stroke="${strokeColor}" stroke-width="2.5" />
+          <text x="${c.x}" y="${c.y - 9}" text-anchor="middle" fill="#0f172a" font-size="10" font-weight="800">${c.value}</text>
+          ${showXLabel ? `<text x="${c.x}" y="${h - 10}" text-anchor="middle" fill="#64748b" font-size="9.5" font-weight="600">${c.label}</text>` : ''}
+        `;
+      }).join('');
+
+      return `
+        <svg viewBox="0 0 ${w} ${h}" class="w-full h-44 sm:h-48 overflow-visible" dir="ltr">
+          ${gridLines}
+          ${areaPath ? `<path d="${areaPath}" fill="${fillColor}" />` : ''}
+          ${coords.length > 1 ? `<path d="${linePath}" fill="none" stroke="${strokeColor}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />` : ''}
+          ${dotsAndLabels}
+        </svg>
+      `;
+    }
+
+    function upsertBodyWeightRecord(dateStr, weightVal) {
+      const w = Number(weightVal);
+      if (!dateStr || isNaN(w) || w <= 0) return;
+      if (!Array.isArray(state.bodyWeightHistory)) state.bodyWeightHistory = [];
+      const existingIdx = state.bodyWeightHistory.findIndex(item => item.date === dateStr);
+      if (existingIdx >= 0) {
+        state.bodyWeightHistory[existingIdx].weight = w;
+      } else {
+        state.bodyWeightHistory.push({ date: dateStr, weight: w });
+      }
+      state.bodyWeightHistory.sort((a, b) => a.date.localeCompare(b.date));
+      const latest = state.bodyWeightHistory[state.bodyWeightHistory.length - 1];
+      if (latest) state.profile.weight = latest.weight;
+    }
+
+    window.logBodyWeightEntry = function() {
+      const dateVal = document.getElementById('newBodyWeightDate').value || selectedDate;
+      const weightVal = parseFloat(document.getElementById('newBodyWeightVal').value);
+      if (isNaN(weightVal) || weightVal <= 0) return alert('נא להזין משקל גוף תקין בק"ג.');
+      upsertBodyWeightRecord(dateVal, weightVal);
+      saveState();
+      document.getElementById('newBodyWeightVal').value = '';
+      renderAll();
+    };
+
+    window.deleteBodyWeightEntry = function(dateStr) {
+      state.bodyWeightHistory = (state.bodyWeightHistory || []).filter(item => item.date !== dateStr);
+      saveState();
+      renderAll();
+    };
+
+    function formatShortDateHeb(isoDate) {
+      if (!isoDate || !isoDate.includes('-')) return isoDate || '';
+      const [, m, d] = isoDate.split('-');
+      return `${d}/${m}`;
+    }
+
+    function renderBodyWeightProgress() {
+      const dateInput = document.getElementById('newBodyWeightDate');
+      if (dateInput && !dateInput.value) dateInput.value = selectedDate;
+
+      const history = [...(state.bodyWeightHistory || [])].sort((a, b) => a.date.localeCompare(b.date));
+      const badgeEl = document.getElementById('bodyWeightDeltaBadge');
+
+      if (history.length >= 2) {
+        const first = history[0].weight;
+        const last = history[history.length - 1].weight;
+        const diff = Number((last - first).toFixed(1));
+        const sign = diff > 0 ? '+' : '';
+        badgeEl.textContent = `שינוי כולל: ${sign}${diff} ק"ג (${first} ← ${last})`;
+      } else if (history.length === 1) {
+        badgeEl.textContent = `משקל נוכחי: ${history[0].weight} ק"ג`;
+      } else {
+        badgeEl.textContent = 'טרם תועדו שקילות';
+      }
+
+      const chartPoints = history.map(h => ({ label: formatShortDateHeb(h.date), value: h.weight }));
+      document.getElementById('bodyWeightChartContainer').innerHTML =
+        buildSvgLineChart(chartPoints, 'ק"ג', '#0f766e', 'rgba(15, 118, 110, 0.12)');
+
+      const tbody = document.getElementById('bodyWeightHistoryTbody');
+      if (history.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="py-3 text-center text-slate-400">אין שקילות מתועדות עדיין.</td></tr>';
+        return;
+      }
+
+      const reversed = [...history].reverse();
+      tbody.innerHTML = reversed.map((entry, idx) => {
+        const prevEntry = reversed[idx + 1];
+        let diffHtml = '<span class="text-slate-400">מדידה ראשונה</span>';
+        if (prevEntry) {
+          const d = Number((entry.weight - prevEntry.weight).toFixed(1));
+          const sign = d > 0 ? '+' : '';
+          const color = d < 0 ? 'text-emerald-700' : d > 0 ? 'text-amber-700' : 'text-slate-500';
+          diffHtml = `<span class="font-bold ${color}">${sign}${d} ק"ג</span>`;
+        }
+        return `
+          <tr>
+            <td class="py-2 px-3 font-semibold text-slate-700">${entry.date}</td>
+            <td class="py-2 px-3 font-extrabold text-slate-900">${entry.weight} ק"ג</td>
+            <td class="py-2 px-3">${diffHtml}</td>
+            <td class="py-2 px-3 text-center">
+              <button type="button" onclick="deleteBodyWeightEntry('${entry.date}')" class="text-rose-600 font-bold cursor-pointer">✕</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function getAllConfiguredExercises() {
+      const map = new Map();
+      (state.workoutSessions || []).forEach(sess => {
+        (sess.exercises || []).forEach(ex => {
+          const key = `${sess.id}_${ex.id}`;
+          map.set(key, {
+            exKey: key,
+            name: ex.name,
+            sessionTitle: sess.title,
+            sets: Math.max(1, parseInt(ex.sets, 10) || 1),
+            targetWeights: Array.isArray(ex.setWeights) ? ex.setWeights : []
+          });
+        });
+      });
+      return Array.from(map.values());
+    }
+
+    window.renderExerciseProgressView = function() {
+      const selectEl = document.getElementById('progressExerciseSelect');
+      const exercises = getAllConfiguredExercises();
+
+      if (exercises.length === 0) {
+        selectEl.innerHTML = '<option value="">אין תרגילים בתוכנית</option>';
+        document.getElementById('exerciseWeightChartContainer').innerHTML =
+          '<div class="py-10 text-center text-xs text-slate-400">טרם הוגדרו תרגילים בתוכנית האימונים.</div>';
+        document.getElementById('exerciseHistoryTbody').innerHTML = '';
+        return;
+      }
+
+      const prevSelected = selectEl.value;
+      selectEl.innerHTML = exercises.map(e =>
+        `<option value="${e.exKey}">${e.name} (${e.sessionTitle})</option>`
+      ).join('');
+      if (prevSelected && exercises.some(e => e.exKey === prevSelected)) {
+        selectEl.value = prevSelected;
+      }
+
+      const chosenKey = selectEl.value;
+      const chosenEx = exercises.find(e => e.exKey === chosenKey) || exercises[0];
+      const records = [];
+
+      const sortedDates = Object.keys(state.dayLogs || {}).sort();
+      sortedDates.forEach(dateStr => {
+        const dayObj = state.dayLogs[dateStr];
+        const setLogs = dayObj?.exerciseSetLogs?.[chosenEx.exKey];
+        const isCompleted = !!dayObj?.completedExercises?.[chosenEx.exKey];
+        if (!setLogs && !isCompleted) return;
+
+        const setDetails = [];
+        const numericWeights = [];
+        for (let i = 0; i < chosenEx.sets; i++) {
+          const rawW = setLogs && setLogs[`w_${i}`] !== undefined
+            ? setLogs[`w_${i}`]
+            : (isCompleted && chosenEx.targetWeights[i] ? chosenEx.targetWeights[i] : '');
+          const numW = parseFloat(rawW);
+          if (!isNaN(numW) && numW > 0) {
+            numericWeights.push(numW);
+            setDetails.push(`סט ${i + 1}: ${numW} ק"ג`);
+          }
+        }
+
+        if (numericWeights.length > 0) {
+          records.push({
+            date: dateStr,
+            maxWeight: Math.max(...numericWeights),
+            setsSummary: setDetails.join(' · ')
+          });
+        }
+      });
+
+      const startStatEl = document.getElementById('exStartWeightStat');
+      const maxStatEl = document.getElementById('exMaxWeightStat');
+      const deltaStatEl = document.getElementById('exDeltaWeightStat');
+
+      if (records.length > 0) {
+        const firstW = records[0].maxWeight;
+        const bestW = Math.max(...records.map(r => r.maxWeight));
+        const latestW = records[records.length - 1].maxWeight;
+        const delta = Number((latestW - firstW).toFixed(1));
+        const sign = delta > 0 ? '+' : '';
+        startStatEl.textContent = `${firstW} ק"ג`;
+        maxStatEl.textContent = `${bestW} ק"ג`;
+        deltaStatEl.textContent = `${sign}${delta} ק"ג`;
+      } else {
+        startStatEl.textContent = '-';
+        maxStatEl.textContent = '-';
+        deltaStatEl.textContent = '-';
+      }
+
+      const chartPoints = records.map(r => ({ label: formatShortDateHeb(r.date), value: r.maxWeight }));
+      document.getElementById('exerciseWeightChartContainer').innerHTML =
+        buildSvgLineChart(chartPoints, 'ק"ג', '#4f46e5', 'rgba(79, 70, 229, 0.12)');
+
+      const tbody = document.getElementById('exerciseHistoryTbody');
+      if (records.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="py-3 text-center text-slate-400">הזן משקלי עבודה בלשונית "תוכנית אימונים" כדי לראות כאן את היסטוריית ההתקדמות.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = [...records].reverse().map(r => `
+        <tr>
+          <td class="py-2 px-3 font-semibold text-slate-700">${r.date}</td>
+          <td class="py-2 px-3 font-extrabold text-indigo-800">${r.maxWeight} ק"ג</td>
+          <td class="py-2 px-3 text-slate-600">${r.setsSummary}</td>
+        </tr>
+      `).join('');
+    };
+
     function getBirthdayDetails(birthDateStr) {
       if (!birthDateStr) return null;
       const parts = birthDateStr.split('-').map(Number);
@@ -781,13 +1149,7 @@
         statusText = `🎂 יום הולדת ב-${formattedShort} (בעוד ${diffDays} ימים)`;
       }
 
-      return {
-        age: Math.max(0, age),
-        diffDays,
-        formattedShort,
-        formattedFull,
-        statusText
-      };
+      return { age: Math.max(0, age), diffDays, formattedShort, formattedFull, statusText };
     }
 
     window.onBirthDateInputChange = function() {
@@ -940,7 +1302,6 @@
       alert('התקנון ומדיניות השירות אושרו בהצלחה!');
     };
 
-    // --- חישובי מידות וברקוד ---
     function getGramsForMeasure(food, qty, unitKey) {
       const q = Math.max(0, parseFloat(qty) || 0);
       const fullG = food?.unitGrams || 100;
@@ -1165,7 +1526,15 @@
 
     function getDayLog(dateStr = selectedDate) {
       if (!state.dayLogs[dateStr]) {
-        state.dayLogs[dateStr] = { completedExercises: {}, clientExerciseVideos: {}, meals: [] };
+        state.dayLogs[dateStr] = {
+          completedExercises: {},
+          exerciseSetLogs: {},
+          clientExerciseVideos: {},
+          meals: []
+        };
+      }
+      if (!state.dayLogs[dateStr].exerciseSetLogs) {
+        state.dayLogs[dateStr].exerciseSetLogs = {};
       }
       return state.dayLogs[dateStr];
     }
@@ -1187,12 +1556,14 @@
       d.setDate(d.getDate() + delta);
       selectedDate = d.toISOString().slice(0, 10);
       document.getElementById('datePicker').value = selectedDate;
+      document.getElementById('newBodyWeightDate').value = selectedDate;
       renderAll();
     };
 
     window.onDateChange = function(val) {
       if (!val) return;
       selectedDate = val;
+      document.getElementById('newBodyWeightDate').value = selectedDate;
       renderAll();
     };
 
@@ -1317,9 +1688,40 @@
       renderWorkouts();
     };
 
-    window.toggleExerciseDone = function(exKey) {
+    window.updateClientSetWeight = function(exKey, setIdx, val) {
       const log = getDayLog();
-      log.completedExercises[exKey] = !log.completedExercises[exKey];
+      if (!log.exerciseSetLogs[exKey]) log.exerciseSetLogs[exKey] = {};
+      log.exerciseSetLogs[exKey][`w_${setIdx}`] = val;
+      saveState();
+    };
+
+    window.toggleClientSetDone = function(exKey, setIdx, totalSets) {
+      const log = getDayLog();
+      if (!log.exerciseSetLogs[exKey]) log.exerciseSetLogs[exKey] = {};
+      log.exerciseSetLogs[exKey][`d_${setIdx}`] = !log.exerciseSetLogs[exKey][`d_${setIdx}`];
+
+      let allDone = true;
+      for (let i = 0; i < totalSets; i++) {
+        if (!log.exerciseSetLogs[exKey][`d_${i}`]) {
+          allDone = false;
+          break;
+        }
+      }
+      log.completedExercises[exKey] = allDone;
+      saveState();
+      renderWorkouts();
+    };
+
+    window.toggleExerciseDone = function(exKey, totalSets = 0) {
+      const log = getDayLog();
+      const nextState = !log.completedExercises[exKey];
+      log.completedExercises[exKey] = nextState;
+      if (totalSets > 0) {
+        if (!log.exerciseSetLogs[exKey]) log.exerciseSetLogs[exKey] = {};
+        for (let i = 0; i < totalSets; i++) {
+          log.exerciseSetLogs[exKey][`d_${i}`] = nextState;
+        }
+      }
       saveState();
       renderWorkouts();
     };
@@ -1357,19 +1759,21 @@
       const birthDateVal = (document.getElementById('profBirthDate').value || '').trim();
       const bInfo = getBirthdayDetails(birthDateVal);
       const calculatedAge = bInfo ? bInfo.age : (parseInt(document.getElementById('profAge').value, 10) || 28);
+      const newWeight = parseFloat(document.getElementById('profWeight').value) || 75;
 
       state.profile = {
         name: (document.getElementById('profName').value || '').trim() || 'מתאמן',
         phone: (document.getElementById('profPhone').value || '').trim(),
         birthDate: birthDateVal,
         avatarDataUrl: existingAvatar,
-        weight: parseFloat(document.getElementById('profWeight').value) || 75,
+        weight: newWeight,
         height: parseInt(document.getElementById('profHeight').value, 10) || 175,
         age: calculatedAge
       };
+      upsertBodyWeightRecord(selectedDate, newWeight);
       saveState();
       renderAll();
-      alert('הפרטים האישיים נשמרו בהצלחה!');
+      alert('הפרטים האישיים ומשקל הגוף נשמרו ועודכנו בגרף!');
     };
 
     window.shareWhatsAppSummary = function() {
@@ -1382,6 +1786,24 @@
         fat: acc.fat + (m.fat || 0)
       }), { cal: 0, pro: 0, carb: 0, fat: 0 });
 
+      const activeSess = (state.workoutSessions || [])[selectedWorkoutSessionIndex];
+      const workoutSummaryLines = [];
+      if (activeSess && Array.isArray(activeSess.exercises)) {
+        activeSess.exercises.forEach(ex => {
+          const exKey = `${activeSess.id}_${ex.id}`;
+          const setLogs = log.exerciseSetLogs?.[exKey] || {};
+          const numSets = Math.max(1, parseInt(ex.sets, 10) || 1);
+          const weightsArr = [];
+          for (let i = 0; i < numSets; i++) {
+            const actualW = setLogs[`w_${i}`] || (ex.setWeights && ex.setWeights[i]) || '';
+            if (actualW) weightsArr.push(`סט ${i + 1}: ${actualW} ק"ג`);
+          }
+          if (log.completedExercises?.[exKey] || weightsArr.length > 0) {
+            workoutSummaryLines.push(`• ${ex.name}${weightsArr.length ? ` (${weightsArr.join(', ')})` : ''}`);
+          }
+        });
+      }
+
       const bInfo = getBirthdayDetails(state.profile.birthDate);
       const text = [
         `📊 *סיכום יומי — BodyBalance*`,
@@ -1389,10 +1811,12 @@
         state.profile.phone ? `📱 *טלפון:* ${state.profile.phone}` : '',
         bInfo ? `${bInfo.statusText}` : '',
         `📅 *תאריך:* ${selectedDate}`,
+        `⚖️ *משקל גוף:* ${state.profile.weight} ק"ג`,
         `🔥 *קלוריות:* ${Math.round(totals.cal)} / ${targets.calories} קק"ל`,
         `🥩 *חלבון:* ${totals.pro.toFixed(1)} / ${targets.protein}g`,
         `🌾 *פחמימה:* ${totals.carb.toFixed(1)} / ${targets.carbs}g`,
-        `🥑 *שומן:* ${totals.fat.toFixed(1)} / ${targets.fat}g`
+        `🥑 *שומן:* ${totals.fat.toFixed(1)} / ${targets.fat}g`,
+        workoutSummaryLines.length ? `\n🏋️ *ביצוע אימון (${activeSess.title}):*\n${workoutSummaryLines.join('\n')}` : ''
       ].filter(Boolean).join('\n');
 
       window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
@@ -1567,20 +1991,69 @@
         ? '<p class="text-sm text-slate-400">המנהל טרם שייך תרגילים לאימון זה.</p>'
         : plan.map(ex => {
             const exKey = `${activeSess.id}_${ex.id}`;
+            const numSets = Math.max(1, parseInt(ex.sets, 10) || 1);
             const isDone = !!log.completedExercises[exKey];
             const uploadedVideo = log.clientExerciseVideos?.[exKey] || '';
+            const setLogs = log.exerciseSetLogs?.[exKey] || {};
+            const targetWeights = Array.isArray(ex.setWeights) ? ex.setWeights : [];
+
+            let setsRowsHtml = '';
+            for (let i = 0; i < numSets; i++) {
+              const targetW = targetWeights[i] !== undefined && targetWeights[i] !== '' ? `${targetWeights[i]} ק"ג` : 'לא הוגדר';
+              const actualW = setLogs[`w_${i}`] !== undefined ? setLogs[`w_${i}`] : (targetWeights[i] || '');
+              const setDone = !!setLogs[`d_${i}`];
+              setsRowsHtml += `
+                <tr class="${setDone ? 'bg-emerald-50/70' : ''}">
+                  <td class="py-1.5 px-2.5 font-extrabold text-slate-800">סט ${i + 1}</td>
+                  <td class="py-1.5 px-2.5 text-slate-600 font-semibold">${ex.reps} חזרות</td>
+                  <td class="py-1.5 px-2.5 text-teal-800 font-bold">${targetW}</td>
+                  <td class="py-1.5 px-2.5">
+                    <div class="flex items-center gap-1">
+                      <input type="number" step="0.5" min="0" value="${actualW}" placeholder="ק&quot;ג"
+                        oninput="updateClientSetWeight('${exKey}', ${i}, this.value)"
+                        class="w-20 border border-slate-300 rounded-lg px-2 py-1 text-xs font-extrabold bg-white text-center" />
+                      <span class="text-[11px] text-slate-500 font-bold">ק"ג</span>
+                    </div>
+                  </td>
+                  <td class="py-1.5 px-2.5 text-center">
+                    <input type="checkbox" ${setDone ? 'checked' : ''}
+                      onchange="toggleClientSetDone('${exKey}', ${i}, ${numSets})"
+                      class="w-4 h-4 accent-emerald-600 cursor-pointer" />
+                  </td>
+                </tr>
+              `;
+            }
+
             return `
               <div class="border ${isDone ? 'border-emerald-300 bg-emerald-50/30' : 'border-slate-200 bg-white'} rounded-2xl p-4 space-y-3 transition">
                 <div class="flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">${ex.muscle}</span>
                     <h3 class="font-extrabold text-slate-900 text-base mt-1">${ex.name}</h3>
-                    <p class="text-xs text-teal-700 font-bold">${ex.sets} סטים × ${ex.reps} חזרות</p>
+                    <p class="text-xs text-teal-700 font-bold">${numSets} סטים × ${ex.reps} חזרות</p>
                   </div>
-                  <button type="button" onclick="toggleExerciseDone('${exKey}')" class="px-4 py-2 rounded-xl text-xs font-extrabold cursor-pointer ${isDone ? 'bg-emerald-600 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-800'}">
-                    ${isDone ? '✓ בוצע היום' : 'סמן כבוצע'}
+                  <button type="button" onclick="toggleExerciseDone('${exKey}', ${numSets})" class="px-4 py-2 rounded-xl text-xs font-extrabold cursor-pointer ${isDone ? 'bg-emerald-600 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-800'}">
+                    ${isDone ? '✓ כל הסטים בוצעו' : 'סמן תרגיל כבוצע'}
                   </button>
                 </div>
+
+                <div class="overflow-x-auto border border-slate-200 rounded-xl bg-slate-50/40">
+                  <table class="w-full text-right text-xs">
+                    <thead class="bg-slate-100/80 text-slate-600">
+                      <tr>
+                        <th class="py-1.5 px-2.5 font-bold">סט</th>
+                        <th class="py-1.5 px-2.5 font-bold">חזרות</th>
+                        <th class="py-1.5 px-2.5 font-bold">יעד מאמן</th>
+                        <th class="py-1.5 px-2.5 font-bold">משקל עבודה בפועל</th>
+                        <th class="py-1.5 px-2.5 font-bold text-center">בוצע</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200/70">
+                      ${setsRowsHtml}
+                    </tbody>
+                  </table>
+                </div>
+
                 ${ex.coachNotes ? `
                   <div class="bg-amber-50 border border-amber-200/80 rounded-xl p-3 text-xs text-amber-950">
                     <strong>הערות טכניקה:</strong> ${ex.coachNotes}
@@ -1707,6 +2180,8 @@
       renderMeals();
       renderFoodCatalog();
       renderWorkouts();
+      renderBodyWeightProgress();
+      renderExerciseProgressView();
       renderForms();
     }
 
@@ -1714,6 +2189,7 @@
       applyIncomingClientLinkParams();
       initSignatureCanvas();
       document.getElementById('datePicker').value = selectedDate;
+      document.getElementById('newBodyWeightDate').value = selectedDate;
       document.getElementById('foodDbList').innerHTML = FOOD_DB_100G.map(f => `<option value="${f.name}"></option>`).join('');
       renderAll();
     });
