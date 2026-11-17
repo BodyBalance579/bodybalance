@@ -24,7 +24,7 @@
         </div>
         <div>
           <h1 class="text-lg font-extrabold tracking-tight">BodyBalance · ממשק ניהול מאמן</h1>
-          <p class="text-xs text-slate-300">ניהול מתאמנים, תוכניות אימונים ומשקלי עבודה לכל סט, מנויים, תזונה וגרפים</p>
+          <p class="text-xs text-slate-300">ניהול מתאמנים, מסלולי מנוי, תוכניות אימונים ומשקלי עבודה לכל סט, תזונה וגרפים</p>
         </div>
       </div>
 
@@ -47,6 +47,7 @@
     <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
       <div class="flex flex-wrap items-center gap-2.5 text-xs">
         <span class="font-extrabold text-slate-900 text-sm" id="admHeaderClientName">-</span>
+        <span id="admHeaderPlanBadge" class="px-2.5 py-1 rounded-full font-bold bg-indigo-50 text-indigo-800">מסלול: -</span>
         <span id="admHeaderSubBadge" class="px-2.5 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800">מנוי פעיל ✓</span>
         <span id="admHeaderBdayBadge" class="hidden px-2.5 py-1 rounded-full font-bold bg-pink-100 text-pink-800"></span>
         <span id="admHeaderFormsBadge" class="px-2.5 py-1 rounded-full font-bold bg-amber-100 text-amber-800">טפסים: ממתין</span>
@@ -73,7 +74,7 @@
         📈 גרפי התקדמות מתאמן
       </button>
       <button type="button" data-atab="clientInfo" onclick="switchAdminTab('clientInfo')" class="admin-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100 cursor-pointer">
-        💳 מנוי, פרטים וטפסים
+        💳 מנויים, פרטים וטפסים
       </button>
       <button type="button" data-atab="library" onclick="switchAdminTab('library')" class="admin-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100 cursor-pointer">
         📚 ספריית תרגילים
@@ -101,10 +102,8 @@
           </div>
         </div>
 
-        <!-- בחירת אימון לעריכה -->
         <div id="adminSessionTabs" class="flex flex-wrap gap-2"></div>
 
-        <!-- טופס הוספת תרגיל כולל משקלי עבודה לכל סט -->
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <h3 class="text-sm font-extrabold text-slate-900">+ הוספת תרגיל לאימון הנבחר</h3>
@@ -143,7 +142,6 @@
             </div>
           </div>
 
-          <!-- שדות דינמיים למשקל עבודה לכל סט -->
           <div class="bg-white border border-teal-200 rounded-xl p-3.5 space-y-2.5">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <span class="text-xs font-extrabold text-teal-900">🏋️ משקלי עבודה יעד לכל סט (בק"ג):</span>
@@ -173,12 +171,11 @@
           </button>
         </div>
 
-        <!-- רשימת התרגילים הקיימים באימון + עריכת משקל לכל סט -->
         <div id="adminSessionExercisesList" class="space-y-3"></div>
       </div>
     </section>
 
-    <!-- לשונית 2: יעדי תזונה וצפייה ביומן היומי של המתאמן -->
+    <!-- לשונית 2: יעדי תזונה ויומן מתאמן -->
     <section id="atab-nutrition" class="admin-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
         <div>
@@ -208,7 +205,6 @@
         </button>
       </div>
 
-      <!-- מעקב יומי של המתאמן (ארוחות + משקלים שבוצעו בפועל) -->
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
           <div>
@@ -217,11 +213,11 @@
           </div>
           <input id="admLogDatePicker" type="date" onchange="renderAdminDailyLogs()" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold" />
         </div>
-        <div id="admDailySummaryBox" class="space-y-3"></div>
+        <div id="admDailySummaryBox" class="space-y-4"></div>
       </div>
     </section>
 
-    <!-- לשונית 3: גרפי התקדמות של המתאמן -->
+    <!-- לשונית 3: גרפי התקדמות מתאמן -->
     <section id="atab-progress" class="admin-section hidden space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
@@ -249,17 +245,45 @@
       </div>
     </section>
 
-    <!-- לשונית 4: ניהול מנויים, מחירים, פרטים וטפסים -->
+    <!-- לשונית 4: ניהול מסלולי מנוי מרובים, מחירים, פרטים וטפסים -->
     <section id="atab-clientInfo" class="admin-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5">
         <div class="border-b border-slate-100 pb-3">
-          <h2 class="text-lg font-extrabold text-slate-900">פרטי מתאמן, ניהול מנוי ומחיר, וטפסים דיגיטליים</h2>
-          <p class="text-xs text-slate-500">ניהול סטטוס מנוי, מחיר חודשי, תאריך חידוש, פרטים אישיים וצפייה בהצהרת הבריאות החתומה</p>
+          <h2 class="text-lg font-extrabold text-slate-900">בחירת מסלול מנוי ללקוח, ניהול מסלולים, פרטים וטפסים</h2>
+          <p class="text-xs text-slate-500">בחר עבור הלקוח את המסלול שאותו הוא רוצה או הוסף מסלולים ומחירים מותאמים אישית</p>
+        </div>
+
+        <div class="bg-teal-50/50 border border-teal-200 rounded-2xl p-4 space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="md:col-span-2">
+              <label class="block text-xs font-extrabold text-teal-950 mb-1">בחירת מסלול מנוי עבור הלקוח *</label>
+              <select id="admSubPlanPresetSelect" onchange="onSelectSubscriptionPlanPreset(this.value)" class="w-full border border-teal-300 rounded-xl px-3 py-2.5 text-sm font-extrabold bg-white text-slate-900">
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">מחיר חודשי למסלול (₪)</label>
+              <input id="admSubPrice" type="number" placeholder="450" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-extrabold bg-white" />
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-teal-200/70 flex flex-wrap items-end gap-2">
+            <div class="flex-1 min-w-[180px]">
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">שם מסלול חדש למחירון</label>
+              <input id="newPlanNameInput" type="text" placeholder="למשל: ליווי היברידי / תוכנית אימונים בלבד" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white" />
+            </div>
+            <div class="w-28">
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">מחיר (₪)</label>
+              <input id="newPlanPriceInput" type="number" placeholder="350" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold bg-white" />
+            </div>
+            <button type="button" onclick="addNewSubscriptionPlan()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs cursor-pointer">
+              + הוסף מסלול למחירון
+            </button>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">שם מלא</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1">שם מלא של המתאמן</label>
             <input id="admProfName" type="text" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
           </div>
           <div>
@@ -271,12 +295,8 @@
             <input id="admProfBirthDate" type="date" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">שם מסלול מנוי</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1">כותרת מסלול מותאמת (אופציונלי)</label>
             <input id="admSubTier" type="text" placeholder="מסלול ליווי מלא (אימונים + תזונה)" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">מחיר מנוי חודשי (₪)</label>
-            <input id="admSubPrice" type="number" placeholder="450" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-extrabold" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">תאריך חידוש מנוי הבא</label>
@@ -299,7 +319,6 @@
           </div>
         </div>
 
-        <!-- פרטי הצהרת בריאות ותקנון -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs">
           <div class="space-y-2">
             <div>
@@ -317,7 +336,7 @@
         </div>
 
         <button type="button" onclick="saveAdminClientProfile()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-6 py-2.5 rounded-xl text-xs sm:text-sm cursor-pointer">
-          שמור פרטי מתאמן ומנוי
+          שמור פרטי מתאמן ומסלול מנוי
         </button>
       </div>
     </section>
@@ -356,6 +375,14 @@
   <script>
     const CLIENTS_LIST_KEY = 'BodyBalanceAdminClients_v1';
     const EXERCISE_LIBRARY_KEY = 'BodyBalanceExerciseLibrary_v1';
+    const SUBSCRIPTION_PLANS_KEY = 'BodyBalanceSubscriptionPlans_v1';
+
+    const DEFAULT_SUBSCRIPTION_PLANS = [
+      { id: 'full-coaching', name: 'מסלול ליווי מלא (אימונים + תזונה)', price: 450 },
+      { id: 'training-only', name: 'מסלול תוכנית אימונים ומשקלי עבודה בלבד', price: 280 },
+      { id: 'nutrition-only', name: 'מסלול מעקב ותפריט תזונה בלבד', price: 250 },
+      { id: 'vip-1on1', name: 'מסלול VIP אישי צמוד', price: 750 }
+    ];
 
     const DEFAULT_LIBRARY = [
       { name: 'לחיצת חזה עם מוט (Bench Press)', muscle: 'חזה', videoUrl: 'https://www.youtube.com/embed/rT7DgCr-3pg' },
@@ -369,6 +396,7 @@
       { name: 'פשיטת מרפקים בפולי עליון עם חבל', muscle: 'יד אחורית', videoUrl: 'https://www.youtube.com/embed/vB5OHsJ3EME' }
     ];
 
+    let subscriptionPlans = JSON.parse(localStorage.getItem(SUBSCRIPTION_PLANS_KEY) || 'null') || DEFAULT_SUBSCRIPTION_PLANS;
     let exerciseLibrary = JSON.parse(localStorage.getItem(EXERCISE_LIBRARY_KEY) || 'null') || DEFAULT_LIBRARY;
     let clientIds = JSON.parse(localStorage.getItem(CLIENTS_LIST_KEY) || '["yoav-01"]');
     if (!Array.isArray(clientIds) || clientIds.length === 0) clientIds = ['yoav-01'];
@@ -408,8 +436,9 @@
         const parsed = raw ? JSON.parse(raw) : {};
         return {
           subscriptionActive: parsed.subscriptionActive !== undefined ? parsed.subscriptionActive : true,
+          subscriptionPlanId: parsed.subscriptionPlanId || 'full-coaching',
           subscriptionTierName: parsed.subscriptionTierName || 'מסלול ליווי מלא (אימונים + תזונה)',
-          subscriptionPrice: parsed.subscriptionPrice || 450,
+          subscriptionPrice: parsed.subscriptionPrice !== undefined ? parsed.subscriptionPrice : 450,
           subscriptionRenewalDate: parsed.subscriptionRenewalDate || '',
           nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70, ...(parsed.nutritionTargets || {}) },
           profile: { name: id === 'yoav-01' ? 'יואב כהן' : id, phone: '', birthDate: '', avatarDataUrl: '', weight: 78, height: 178, age: 28, ...(parsed.profile || {}) },
@@ -423,6 +452,7 @@
       } catch (e) {
         return {
           subscriptionActive: true,
+          subscriptionPlanId: 'full-coaching',
           subscriptionTierName: 'מסלול ליווי מלא',
           subscriptionPrice: 450,
           subscriptionRenewalDate: '',
@@ -443,7 +473,37 @@
     function saveClientState() {
       localStorage.setItem(stateStorageKey(activeClientId), JSON.stringify(clientState));
       localStorage.setItem(CLIENTS_LIST_KEY, JSON.stringify(clientIds));
+      localStorage.setItem(SUBSCRIPTION_PLANS_KEY, JSON.stringify(subscriptionPlans));
     }
+
+    window.onSelectSubscriptionPlanPreset = function(planId) {
+      const plan = subscriptionPlans.find(p => p.id === planId);
+      if (!plan) return;
+      clientState.subscriptionPlanId = plan.id;
+      clientState.subscriptionTierName = plan.name;
+      clientState.subscriptionPrice = plan.price;
+      document.getElementById('admSubTier').value = plan.name;
+      document.getElementById('admSubPrice').value = plan.price;
+    };
+
+    window.addNewSubscriptionPlan = function() {
+      const name = (document.getElementById('newPlanNameInput').value || '').trim();
+      const price = parseFloat(document.getElementById('newPlanPriceInput').value);
+      if (!name) return alert('נא להזין שם מסלול חדש.');
+      const newPlan = {
+        id: `plan-${Date.now()}`,
+        name,
+        price: isNaN(price) ? 0 : price
+      };
+      subscriptionPlans.push(newPlan);
+      clientState.subscriptionPlanId = newPlan.id;
+      clientState.subscriptionTierName = newPlan.name;
+      clientState.subscriptionPrice = newPlan.price;
+      saveClientState();
+      document.getElementById('newPlanNameInput').value = '';
+      document.getElementById('newPlanPriceInput').value = '';
+      renderAdminAll();
+    };
 
     function getBirthdayDetails(birthDateStr) {
       if (!birthDateStr) return null;
@@ -503,7 +563,6 @@
       renderAdminAll();
     };
 
-    // --- ניהול סטים ומשקלי עבודה ---
     window.renderNewExSetWeightsInputs = function() {
       const setsCount = Math.min(12, Math.max(1, parseInt(document.getElementById('newExSets').value, 10) || 1));
       const container = document.getElementById('newExSetWeightsContainer');
@@ -570,7 +629,6 @@
       const reps = (document.getElementById('newExReps').value || '8-12').trim();
       const videoUrl = (document.getElementById('newExVideo').value || '').trim();
       const coachNotes = (document.getElementById('newExNotes').value || '').trim();
-
       const setWeights = Array.from(document.querySelectorAll('.new-set-weight-input')).map(inp => (inp.value || '').trim());
 
       const sess = clientState.workoutSessions[activeSessionIdx];
@@ -645,13 +703,14 @@
       clientState.profile.birthDate = (document.getElementById('admProfBirthDate').value || '').trim();
       clientState.profile.weight = parseFloat(document.getElementById('admProfWeight').value) || 75;
       clientState.profile.height = parseInt(document.getElementById('admProfHeight').value, 10) || 175;
+      clientState.subscriptionPlanId = document.getElementById('admSubPlanPresetSelect').value;
       clientState.subscriptionTierName = (document.getElementById('admSubTier').value || '').trim();
       clientState.subscriptionPrice = parseFloat(document.getElementById('admSubPrice').value) || 0;
       clientState.subscriptionRenewalDate = (document.getElementById('admSubRenewal').value || '').trim();
       clientState.subscriptionActive = document.getElementById('admSubActive').value === 'true';
       saveClientState();
       renderAdminAll();
-      alert('פרטי המתאמן והמנוי נשמרו בהצלחה!');
+      alert('פרטי המתאמן ומסלול המנוי נשמרו בהצלחה!');
     };
 
     function buildClientPersonalUrl() {
@@ -672,7 +731,7 @@
       const url = buildClientPersonalUrl();
       try {
         await navigator.clipboard.writeText(url);
-        alert('הקישור האישי המעודכן (כולל תוכנית האימונים ומשקלי העבודה) הועתק ללוח!');
+        alert('הקישור האישי המעודכן (כולל מסלול המנוי, תוכנית האימונים ומשקלי העבודה) הועתק ללוח!');
       } catch (e) {
         prompt('העתק את הקישור האישי של המתאמן:', url);
       }
@@ -682,14 +741,13 @@
       const url = buildClientPersonalUrl();
       const rawPhone = (clientState.profile.phone || '').replace(/\D/g, '');
       const intlPhone = rawPhone.startsWith('0') ? `972${rawPhone.slice(1)}` : rawPhone;
-      const msg = `היי ${clientState.profile.name}! 💪\nעדכנתי עבורך את תוכנית האימונים (כולל משקלי עבודה לכל סט) ואת יעדי התזונה באפליקציית BodyBalance:\n${url}`;
+      const msg = `היי ${clientState.profile.name}! 💪\nעדכנתי עבורך את מסלול המנוי (${clientState.subscriptionTierName}), תוכנית האימונים (כולל משקלי עבודה לכל סט) ואת יעדי התזונה באפליקציית BodyBalance:\n${url}`;
       const waUrl = intlPhone
         ? `https://wa.me/${intlPhone}?text=${encodeURIComponent(msg)}`
         : `https://wa.me/?text=${encodeURIComponent(msg)}`;
       window.open(waUrl, '_blank', 'noopener,noreferrer');
     };
 
-    // --- גרפים למאמן ---
     function buildSvgLineChart(points, strokeColor = '#0f766e', fillColor = 'rgba(15, 118, 110, 0.12)') {
       if (!points || points.length === 0) {
         return '<div class="py-10 text-center text-xs text-slate-400">אין עדיין מספיק נתונים מתועדים להצגת גרף.</div>';
@@ -790,13 +848,77 @@
         cal: a.cal + (m.calories || 0), pro: a.pro + (m.protein || 0), carb: a.carb + (m.carbs || 0), fat: a.fat + (m.fat || 0)
       }), { cal: 0, pro: 0, carb: 0, fat: 0 });
 
+      const mealsListHtml = meals.length
+        ? `<ul class="mt-2 space-y-1 text-slate-700 list-disc pr-4">
+            ${meals.map(m => `<li><strong>${m.name || 'ארוחה'}</strong> — ${Math.round(m.calories || 0)} קק"ל (חלבון: ${(m.protein || 0).toFixed(1)}g, פחמימה: ${(m.carbs || 0).toFixed(1)}g, שומן: ${(m.fat || 0).toFixed(1)}g)</li>`).join('')}
+           </ul>`
+        : '<p class="text-[11px] text-slate-400 mt-1">לא נרשמו ארוחות בתאריך זה.</p>';
+
+      const setLogsByEx = dayLog.exerciseSetLogs || {};
+      const allExercises = [];
+      (clientState.workoutSessions || []).forEach(sess => {
+        (sess.exercises || []).forEach(ex => {
+          allExercises.push({
+            key: `${sess.id}_${ex.id}`,
+            name: ex.name,
+            sessionTitle: sess.title,
+            sets: Math.max(1, parseInt(ex.sets, 10) || 1),
+            targetWeights: Array.isArray(ex.setWeights) ? ex.setWeights : []
+          });
+        });
+      });
+
+      const loggedExCards = allExercises
+        .filter(ex => setLogsByEx[ex.key] && Object.keys(setLogsByEx[ex.key]).length > 0)
+        .map(ex => {
+          const exLog = setLogsByEx[ex.key];
+          let setsBadges = '';
+          for (let s = 0; s < ex.sets; s++) {
+            const actualW = exLog[`w_${s}`];
+            const actualR = exLog[`r_${s}`];
+            const targetW = ex.targetWeights[s];
+            const hasActual = actualW !== undefined && actualW !== '';
+            setsBadges += `
+              <div class="bg-white border ${hasActual ? 'border-teal-200' : 'border-slate-200'} rounded-xl p-2 text-center">
+                <span class="block text-[10px] font-bold text-slate-500">סט ${s + 1}</span>
+                <span class="block text-xs font-extrabold ${hasActual ? 'text-teal-900' : 'text-slate-400'}">
+                  ${hasActual ? `${actualW} ק"ג` : 'לא הוזן'}
+                </span>
+                ${actualR ? `<span class="block text-[10px] font-semibold text-slate-600">${actualR} חזרות</span>` : ''}
+                ${targetW ? `<span class="block text-[10px] text-slate-400">יעד: ${targetW} ק"ג</span>` : ''}
+              </div>
+            `;
+          }
+
+          return `
+            <div class="bg-white border border-slate-200 rounded-xl p-3.5 space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <strong class="text-xs sm:text-sm font-extrabold text-slate-900">${ex.name}</strong>
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">${ex.sessionTitle}</span>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2">
+                ${setsBadges}
+              </div>
+            </div>
+          `;
+        });
+
+      const workoutsSectionHtml = loggedExCards.length
+        ? `<div class="space-y-2.5">
+            <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">🏋️ פירוט תרגילים ומשקלים שהמתאמן הזין בפועל:</h4>
+            <div class="space-y-2.5">${loggedExCards.join('')}</div>
+           </div>`
+        : '<p class="text-xs text-slate-400">לא תועדו משקלי עבודה לתרגילים בתאריך זה.</p>';
+
       box.innerHTML = `
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs space-y-1">
-          <strong class="text-slate-900">סיכום תזונה יומי (${meals.length} ארוחות):</strong>
+          <strong class="text-slate-900">🥗 סיכום תזונה יומי (${meals.length} ארוחות):</strong>
           <p class="text-teal-800 font-bold">
             ${Math.round(totals.cal)} / ${clientState.nutritionTargets.calories} קק"ל · חלבון: ${totals.pro.toFixed(1)}g · פחמימה: ${totals.carb.toFixed(1)}g · שומן: ${totals.fat.toFixed(1)}g
           </p>
+          ${mealsListHtml}
         </div>
+        ${workoutsSectionHtml}
       `;
     };
 
@@ -914,6 +1036,8 @@
       }).join('');
 
       document.getElementById('admHeaderClientName').textContent = `${clientState.profile.name} (#${activeClientId})`;
+      document.getElementById('admHeaderPlanBadge').textContent = `מסלול: ${clientState.subscriptionTierName || 'לא נבחר'}`;
+
       const subBadge = document.getElementById('admHeaderSubBadge');
       if (clientState.subscriptionActive) {
         subBadge.textContent = `מנוי פעיל · ${clientState.subscriptionPrice || 0} ₪`;
@@ -935,6 +1059,11 @@
         ? 'px-2.5 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800'
         : 'px-2.5 py-1 rounded-full font-bold bg-amber-100 text-amber-800';
 
+      const planSel = document.getElementById('admSubPlanPresetSelect');
+      planSel.innerHTML = subscriptionPlans.map(p =>
+        `<option value="${p.id}" ${p.id === clientState.subscriptionPlanId ? 'selected' : ''}>${p.name} — ${p.price} ₪/חודש</option>`
+      ).join('');
+
       document.getElementById('admTargetCal').value = clientState.nutritionTargets.calories;
       document.getElementById('admTargetPro').value = clientState.nutritionTargets.protein;
       document.getElementById('admTargetCarb').value = clientState.nutritionTargets.carbs;
@@ -946,7 +1075,7 @@
       document.getElementById('admProfWeight').value = clientState.profile.weight || '';
       document.getElementById('admProfHeight').value = clientState.profile.height || '';
       document.getElementById('admSubTier').value = clientState.subscriptionTierName || '';
-      document.getElementById('admSubPrice').value = clientState.subscriptionPrice || '';
+      document.getElementById('admSubPrice').value = clientState.subscriptionPrice ?? '';
       document.getElementById('admSubRenewal').value = clientState.subscriptionRenewalDate || '';
       document.getElementById('admSubActive').value = String(!!clientState.subscriptionActive);
 
