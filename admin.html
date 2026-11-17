@@ -245,27 +245,38 @@
       </div>
     </section>
 
-    <!-- לשונית 4: ניהול מסלולי מנוי מרובים, מחירים, פרטים וטפסים -->
+    <!-- לשונית 4: ניהול מסלולי מנוי מרובים (הוספה, עריכה, מחיקה ובחירה ללקוח), מחירים, פרטים וטפסים -->
     <section id="atab-clientInfo" class="admin-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5">
         <div class="border-b border-slate-100 pb-3">
-          <h2 class="text-lg font-extrabold text-slate-900">בחירת מסלול מנוי ללקוח, ניהול מסלולים, פרטים וטפסים</h2>
-          <p class="text-xs text-slate-500">בחר עבור הלקוח את המסלול שאותו הוא רוצה או הוסף מסלולים ומחירים מותאמים אישית</p>
+          <h2 class="text-lg font-extrabold text-slate-900">ניהול מסלולי מנוי (הוספה, עריכה ומחיקה) ובחירת מסלול ללקוח</h2>
+          <p class="text-xs text-slate-500">נהל את מחירון המסלולים שלך, ערוך שמות ומחירים, מחק מסלולים מיותרים ובחר עבור הלקוח את המסלול הרצוי</p>
         </div>
 
+        <!-- ניהול מלא של מסלולי המנוי + בחירה עבור הלקוח -->
         <div class="bg-teal-50/50 border border-teal-200 rounded-2xl p-4 space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div class="md:col-span-2">
-              <label class="block text-xs font-extrabold text-teal-950 mb-1">בחירת מסלול מנוי עבור הלקוח *</label>
+              <label class="block text-xs font-extrabold text-teal-950 mb-1">בחירת מסלול מנוי עבור הלקוח הנבחר *</label>
               <select id="admSubPlanPresetSelect" onchange="onSelectSubscriptionPlanPreset(this.value)" class="w-full border border-teal-300 rounded-xl px-3 py-2.5 text-sm font-extrabold bg-white text-slate-900">
               </select>
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">מחיר חודשי למסלול (₪)</label>
+              <label class="block text-xs font-bold text-slate-700 mb-1">מחיר חודשי ללקוח (₪)</label>
               <input id="admSubPrice" type="number" placeholder="450" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-extrabold bg-white" />
             </div>
           </div>
 
+          <!-- רשימת מסלולי המנוי הקיימים לעריכה ישירה או מחיקה -->
+          <div class="bg-white border border-slate-200 rounded-xl p-3.5 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-extrabold text-slate-800">📋 עריכה ומחיקה של מסלולי המנוי במחירון:</span>
+              <span class="text-[11px] text-slate-500">שינוי שם או מחיר מתעדכן אוטומטית</span>
+            </div>
+            <div id="admSubscriptionPlansManagerList" class="space-y-2"></div>
+          </div>
+
+          <!-- הוספת מסלול מנוי חדש למאגר המסלולים -->
           <div class="pt-2 border-t border-teal-200/70 flex flex-wrap items-end gap-2">
             <div class="flex-1 min-w-[180px]">
               <label class="block text-[11px] font-bold text-slate-600 mb-1">שם מסלול חדש למחירון</label>
@@ -484,6 +495,8 @@
       clientState.subscriptionPrice = plan.price;
       document.getElementById('admSubTier').value = plan.name;
       document.getElementById('admSubPrice').value = plan.price;
+      saveClientState();
+      renderAdminAll();
     };
 
     window.addNewSubscriptionPlan = function() {
@@ -502,6 +515,56 @@
       saveClientState();
       document.getElementById('newPlanNameInput').value = '';
       document.getElementById('newPlanPriceInput').value = '';
+      renderAdminAll();
+    };
+
+    window.updateSubscriptionPlanField = function(planIdx, field, value) {
+      const plan = subscriptionPlans[planIdx];
+      if (!plan) return;
+      if (field === 'name') {
+        plan.name = value.trim() || plan.name;
+      } else if (field === 'price') {
+        const num = parseFloat(value);
+        plan.price = isNaN(num) ? 0 : num;
+      }
+
+      // סנכרון כל הלקוחות שמשויכים למסלול שנערך
+      clientIds.forEach(cId => {
+        const st = cId === activeClientId ? clientState : loadClientState(cId);
+        if (st.subscriptionPlanId === plan.id) {
+          st.subscriptionTierName = plan.name;
+          st.subscriptionPrice = plan.price;
+          localStorage.setItem(stateStorageKey(cId), JSON.stringify(st));
+        }
+      });
+
+      saveClientState();
+      renderAdminAll();
+    };
+
+    window.deleteSubscriptionPlan = function(planIdx) {
+      if (subscriptionPlans.length <= 1) {
+        return alert('חייב להישאר לפחות מסלול מנוי אחד במערכת.');
+      }
+      const planToRemove = subscriptionPlans[planIdx];
+      if (!planToRemove) return;
+      if (!confirm(`האם למחוק את המסלול "${planToRemove.name}"?`)) return;
+
+      subscriptionPlans.splice(planIdx, 1);
+      const fallbackPlan = subscriptionPlans[0];
+
+      // העברת לקוחות שהיו במסלול שנמחק למסלול ברירת המחדל הנותר
+      clientIds.forEach(cId => {
+        const st = cId === activeClientId ? clientState : loadClientState(cId);
+        if (st.subscriptionPlanId === planToRemove.id) {
+          st.subscriptionPlanId = fallbackPlan.id;
+          st.subscriptionTierName = fallbackPlan.name;
+          st.subscriptionPrice = fallbackPlan.price;
+          localStorage.setItem(stateStorageKey(cId), JSON.stringify(st));
+        }
+      });
+
+      saveClientState();
       renderAdminAll();
     };
 
@@ -1028,6 +1091,39 @@
       }).join('');
     }
 
+    function renderSubscriptionPlansManager() {
+      const planSel = document.getElementById('admSubPlanPresetSelect');
+      planSel.innerHTML = subscriptionPlans.map(p =>
+        `<option value="${p.id}" ${p.id === clientState.subscriptionPlanId ? 'selected' : ''}>${p.name} — ${p.price} ₪/חודש</option>`
+      ).join('');
+
+      const managerList = document.getElementById('admSubscriptionPlansManagerList');
+      managerList.innerHTML = subscriptionPlans.map((p, idx) => {
+        const isCurrent = p.id === clientState.subscriptionPlanId;
+        return `
+          <div class="flex flex-wrap items-center gap-2 p-2 rounded-xl border ${isCurrent ? 'border-teal-400 bg-teal-50/40' : 'border-slate-200 bg-slate-50/60'}">
+            <input type="text" value="${p.name.replace(/"/g, '&quot;')}"
+              onchange="updateSubscriptionPlanField(${idx}, 'name', this.value)"
+              class="flex-1 min-w-[180px] border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold bg-white" />
+            <div class="flex items-center gap-1">
+              <input type="number" min="0" value="${p.price}"
+                onchange="updateSubscriptionPlanField(${idx}, 'price', this.value)"
+                class="w-20 border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-extrabold text-center bg-white" />
+              <span class="text-xs font-bold text-slate-600">₪</span>
+            </div>
+            <button type="button" onclick="onSelectSubscriptionPlanPreset('${p.id}')"
+              class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer ${isCurrent ? 'bg-teal-700 text-white' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-100'}">
+              ${isCurrent ? 'נבחר ללקוח ✓' : 'בחר ללקוח'}
+            </button>
+            <button type="button" onclick="deleteSubscriptionPlan(${idx})"
+              class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-600 hover:bg-rose-50 cursor-pointer" title="מחק מסלול">
+              🗑️
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
     function renderAdminAll() {
       const sel = document.getElementById('adminClientSelect');
       sel.innerHTML = clientIds.map(id => {
@@ -1059,10 +1155,7 @@
         ? 'px-2.5 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800'
         : 'px-2.5 py-1 rounded-full font-bold bg-amber-100 text-amber-800';
 
-      const planSel = document.getElementById('admSubPlanPresetSelect');
-      planSel.innerHTML = subscriptionPlans.map(p =>
-        `<option value="${p.id}" ${p.id === clientState.subscriptionPlanId ? 'selected' : ''}>${p.name} — ${p.price} ₪/חודש</option>`
-      ).join('');
+      renderSubscriptionPlansManager();
 
       document.getElementById('admTargetCal').value = clientState.nutritionTargets.calories;
       document.getElementById('admTargetPro').value = clientState.nutritionTargets.protein;
