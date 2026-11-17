@@ -74,7 +74,7 @@
       </div>
     </div>
 
-    <!-- לשונית 1: יומן ארוחות וסריקת ברקוד (ללא צילום תמונה בארוחות) -->
+    <!-- לשונית 1: יומן ארוחות וסריקת ברקוד -->
     <section id="tab-meals" class="tab-section space-y-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-2">
@@ -138,19 +138,19 @@
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-xl font-extrabold text-slate-900">יומן ארוחות וסריקת ברקוד</h2>
-            <p class="text-xs text-slate-500">סרוק ברקוד של מוצר או בחר מאכלים מתוך מאגר המזונות לפי מידה מדויקת</p>
+            <p class="text-xs text-slate-500">סרוק ברקוד לקבלת ערכי יחידה שלמה של המוצר, או בחר מאכלים מוכנים לאחר בישול/אפייה ממאגר המזונות</p>
           </div>
           <button type="button" onclick="switchTab('foods')" class="text-xs bg-teal-50 hover:bg-teal-100 text-teal-800 font-bold px-3 py-1.5 rounded-xl cursor-pointer">
             פתח מאגר מזונות מלא →
           </button>
         </div>
 
-        <!-- אזור סריקת ברקוד (סורק חי + הקלדת מספר ברקוד בלבד) -->
+        <!-- אזור סריקת ברקוד — מציג כברירת מחדל יחידה שלמה של המוצר (לפי משקל האריזה בגרמים) -->
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h3 class="text-sm font-extrabold text-slate-900">🔍 זיהוי מוצר לפי ברקוד והוספה לארוחה הנבחרת</h3>
-              <p id="barcodeStatusText" class="text-xs text-slate-500">סרוק ברקוד של אריזה במצלמה או הקלד את מספר הברקוד</p>
+              <h3 class="text-sm font-extrabold text-slate-900">🔍 זיהוי מוצר לפי ברקוד (חישוב לפי יחידה שלמה של המוצר)</h3>
+              <p id="barcodeStatusText" class="text-xs text-slate-500">סרוק ברקוד של אריזה במצלמה או הקלד ברקוד (לדוגמה: 7290000000027 מעדן חלבון 200g, או 7290000000065 קופסת חומוס 250g)</p>
             </div>
             <button type="button" onclick="openLiveBarcodeScanner()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-4 py-2 rounded-xl text-xs cursor-pointer">
               📷 סרוק ברקוד במצלמה
@@ -158,7 +158,7 @@
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
-            <input id="manualBarcodeInput" type="text" placeholder="הקלד מספר ברקוד (למשל 7290000000010 או 7290000000027)" class="flex-1 min-w-[200px] border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-mono bg-white" />
+            <input id="manualBarcodeInput" type="text" placeholder="הקלד מספר ברקוד (למשל 7290000000027 או 7290000000065)" class="flex-1 min-w-[200px] border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-mono bg-white" />
             <button type="button" onclick="lookupBarcodeProduct(document.getElementById('manualBarcodeInput').value)" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs cursor-pointer">
               זהה ברקוד
             </button>
@@ -167,29 +167,33 @@
           <div id="scannedBarcodeBox" class="hidden bg-white border border-teal-200 rounded-xl p-3.5 space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-800">מוצר מזוהה מברקוד</span>
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-800">מוצר מזוהה מברקוד · ערכים ליחידה שלמה</span>
                 <h4 id="scannedProdTitle" class="text-sm font-extrabold text-slate-900 mt-1">-</h4>
-                <p id="scannedProdBaseMeta" class="text-[11px] text-slate-500">-</p>
+                <p id="scannedProdBaseMeta" class="text-xs text-teal-900 font-bold mt-0.5">-</p>
               </div>
               <button type="button" onclick="addScannedProductToMeal()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-4 py-2 rounded-xl text-xs cursor-pointer">
                 + הוסף לארוחה שנבחרה
               </button>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
               <div>
-                <label class="block text-[11px] font-bold text-slate-600 mb-1">כמות</label>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">כמות יחידות / מנות</label>
                 <input id="scannedQtyInput" type="number" step="0.5" min="0.1" value="1" oninput="updateScannedProductPreview()" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold bg-white" />
               </div>
               <div class="sm:col-span-2">
                 <label class="block text-[11px] font-bold text-slate-600 mb-1">יחידת מידה למוצר</label>
                 <select id="scannedUnitSelect" onchange="updateScannedProductPreview()" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold bg-white">
-                  <option value="unit">יחידה אחת של מוצר</option>
-                  <option value="100g">100 גרם</option>
+                  <option id="scannedUnitWholeOption" value="unit">יחידה שלמה של המוצר</option>
+                  <option value="half">חצי יחידה של המוצר</option>
                   <option value="spoon">כף אחת (15g)</option>
                   <option value="cup">כוס אחת (200g)</option>
                   <option value="1g">גרם אחד (1g)</option>
                 </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">משקל יחידה שלמה (גרם)</label>
+                <input id="scannedUnitGramsInput" type="number" min="1" step="1" value="200" oninput="onScannedUnitGramsChange()" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold bg-white" />
               </div>
             </div>
 
@@ -212,7 +216,7 @@
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">שם המאכל *</label>
-            <input id="mealFoodInput" type="text" list="foodDbList" oninput="autoCalculateNutrients()" placeholder="חפש מאכל מהמאגר..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
+            <input id="mealFoodInput" type="text" list="foodDbList" oninput="autoCalculateNutrients()" placeholder="חפש מאכל מוכן מהמאגר..." class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
             <datalist id="foodDbList"></datalist>
           </div>
           <div>
@@ -222,8 +226,8 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">יחידת מידה</label>
             <select id="mealUnitSelect" onchange="autoCalculateNutrients()" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white">
-              <option value="full">יחידה אחת של מוצר</option>
-              <option value="half">חצי מוצר</option>
+              <option value="full">יחידה שלמה / מנה מוכנה</option>
+              <option value="half">חצי יחידה / חצי מנה</option>
               <option value="100g">100 גרם</option>
               <option value="spoon">כף אחת (15g)</option>
               <option value="cup">כוס אחת (200g)</option>
@@ -277,13 +281,13 @@
       </div>
     </section>
 
-    <!-- לשונית 2: מאגר מזונות מלא -->
+    <!-- לשונית 2: מאגר מזונות מלא (כל המזונות המבושלים מחושבים לאחר בישול / אפייה) -->
     <section id="tab-foods" class="tab-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 class="text-xl font-extrabold text-slate-900">מאגר מזונות מלא</h2>
-            <p class="text-xs text-slate-500">ערכים עבור: <strong>100 גרם</strong>, <strong>מוצר שלם</strong>, <strong>חצי מוצר</strong>, <strong>כף אחת</strong> ו-<strong>כוס אחת</strong></p>
+            <h2 class="text-xl font-extrabold text-slate-900">מאגר מזונות מלא (לאחר בישול / אפייה)</h2>
+            <p class="text-xs text-slate-500">כל המזונות המצריכים בישול מחושבים <strong>לאחר בישול / צלייה / אפייה</strong>. ערכים מוצגים עבור <strong>100 גרם</strong>, <strong>יחידה שלמה / מנה</strong>, <strong>חצי מנה</strong>, <strong>כף אחת</strong> ו-<strong>כוס אחת</strong></p>
           </div>
           <div class="flex flex-wrap gap-2">
             <select id="foodCategoryFilter" onchange="renderFoodCatalog()" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold bg-white">
@@ -292,11 +296,11 @@
               <option value="חלב ומשקאות חלבון">חלב ומשקאות חלבון</option>
               <option value="יוגורטים ומעדני חלבון">יוגורטים ומעדני חלבון</option>
               <option value="גבינות וביצים">גבינות וביצים</option>
-              <option value="בשרים">בשרים</option>
-              <option value="דגים">דגים</option>
-              <option value="חלבון מהצומח">חלבון מהצומח</option>
+              <option value="בשרים">בשרים (מבושל / צלוי)</option>
+              <option value="דגים">דגים (צלוי / אפוי)</option>
+              <option value="חלבון מהצומח">חלבון מהצומח (מבושל / צלוי)</option>
               <option value="לחמים ותצורות">לחמים ותצורות</option>
-              <option value="קמחים ודגנים">קמחים ודגנים</option>
+              <option value="קמחים ודגנים">דגנים ופסטות (לאחר בישול)</option>
               <option value="שומנים מן החי והצומח">שומנים מן החי והצומח</option>
               <option value="פירות">פירות</option>
               <option value="ירקות">ירקות</option>
@@ -439,7 +443,6 @@
           <p class="text-xs text-slate-500">הוסף תמונת פרופיל אישית ועדכן את שמך, קוד המתאמן ומספר הטלפון הנייד</p>
         </div>
 
-        <!-- אזור תמונת פרופיל של המתאמן -->
         <div class="flex flex-wrap items-center gap-4 bg-slate-50 border border-slate-200 rounded-2xl p-4">
           <div class="w-20 h-20 rounded-full bg-teal-100 border-2 border-teal-600 overflow-hidden flex items-center justify-center shrink-0 shadow-xs">
             <img id="profilePageAvatarImg" src="" alt="תמונת פרופיל" class="hidden w-full h-full object-cover" />
@@ -568,48 +571,59 @@
     const SPOON_GRAMS = 15;
     const CUP_GRAMS = 200;
 
+    // מאגר ברקודים מקומי — כולל משקל יחידה שלמה של המוצר (למשל קופסת חומוס שלמה 250g, מעדן חלבון 200g)
     const LOCAL_BARCODE_DB = {
-      '7290000000010': { name: 'קורנפלקס רגיל', unitGrams: 35, unitLabel: 'יחידה אחת / מנה (35g)', cal100: 378, pro100: 7.5, carb100: 84, fat100: 0.9 },
-      '7290000000027': { name: 'יוגורט פרו / יוגורט חלבון 20g', unitGrams: 200, unitLabel: 'יחידה אחת / גביע (200g)', cal100: 68, pro100: 10, carb100: 4.2, fat100: 1 },
-      '7290000000034': { name: 'חלב 1% (דל שומן)', unitGrams: 200, unitLabel: 'יחידה אחת / כוס (200ml)', cal100: 42, pro100: 3.4, carb100: 4.9, fat100: 1 },
-      '7290000000041': { name: 'טונה משומרת במים (מסוננת)', unitGrams: 112, unitLabel: 'יחידה אחת / קופסה (112g)', cal100: 116, pro100: 26, carb100: 0, fat100: 1 },
-      '7290000000058': { name: 'במבה', unitGrams: 80, unitLabel: 'יחידה אחת / שקית (80g)', cal100: 530, pro100: 13.5, carb100: 47, fat100: 31.5 }
+      '7290000000010': { name: 'קורנפלקס רגיל (מנה ארוזה)', unitGrams: 35, unitLabel: 'יחידה שלמה (35g)', cal100: 378, pro100: 7.5, carb100: 84, fat100: 0.9 },
+      '7290000000027': { name: 'מעדן / יוגורט חלבון מולר PRO (200g)', unitGrams: 200, unitLabel: 'גביע שלם (200g)', cal100: 72, pro100: 10, carb100: 4.5, fat100: 1.2 },
+      '7290000000034': { name: 'משקה חלבון מוכן (330ml)', unitGrams: 330, unitLabel: 'בקבוק שלם (330g)', cal100: 68, pro100: 7.6, carb100: 4.5, fat100: 1.8 },
+      '7290000000041': { name: 'טונה משומרת במים (קופסה מסוננת 112g)', unitGrams: 112, unitLabel: 'קופסה שלמה (112g)', cal100: 116, pro100: 26, carb100: 0, fat100: 1 },
+      '7290000000058': { name: 'במבה (שקית 80g)', unitGrams: 80, unitLabel: 'שקית שלמה (80g)', cal100: 530, pro100: 13.5, carb100: 47, fat100: 31.5 },
+      '7290000000065': { name: 'קופסת חומוס (250g)', unitGrams: 250, unitLabel: 'קופסה שלמה (250g)', cal100: 250, pro100: 7.5, carb100: 14, fat100: 18 }
     };
 
+    // כל המזונות שדורשים בישול/אפייה מחושבים לאחר בישול / צלייה / אפייה (ערכי בסיס ל-100g מוכן לאכילה)
     const FOOD_DB_100G = [
       { name: 'קורנפלקס רגיל', category: 'דגני בוקר', unitGrams: 35, unitLabel: 'קערה / מנה (35g)', cal: 378, pro: 7.5, carb: 84, fat: 0.9 },
       { name: 'כריות (נוגט / וניל / שוקולד)', category: 'דגני בוקר', unitGrams: 40, unitLabel: 'מנה (40g)', cal: 465, pro: 7.2, carb: 64, fat: 19.5 },
       { name: 'ברנפלקס', category: 'דגני בוקר', unitGrams: 40, unitLabel: 'מנה (40g)', cal: 332, pro: 10.5, carb: 68, fat: 2.1 },
-      { name: 'גרנולה רגילה / ללא תוספת סוכר', category: 'דגני בוקר', unitGrams: 45, unitLabel: 'מנה (45g)', cal: 435, pro: 9.5, carb: 62, fat: 15.5 },
-      { name: 'חלב 3% (רגיל)', category: 'חלב ומשקאות חלבון', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 61, pro: 3.3, carb: 4.8, fat: 3 },
-      { name: 'חלב 1% (דל שומן)', category: 'חלב ומשקאות חלבון', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 42, pro: 3.4, carb: 4.9, fat: 1 },
-      { name: 'משקה חלבון מוכן (20–30g חלבון)', category: 'חלב ומשקאות חלבון', unitGrams: 330, unitLabel: 'בקבוק (330ml)', cal: 68, pro: 7.5, carb: 4.5, fat: 1.8 },
+      { name: 'גרנולה', category: 'דגני בוקר', unitGrams: 45, unitLabel: 'מנה (45g)', cal: 435, pro: 9.5, carb: 62, fat: 15.5 },
+      { name: 'חלב 3%', category: 'חלב ומשקאות חלבון', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 61, pro: 3.3, carb: 4.8, fat: 3 },
+      { name: 'חלב 1%', category: 'חלב ומשקאות חלבון', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 42, pro: 3.4, carb: 4.9, fat: 1 },
+      { name: 'משקה חלבון מוכן (330ml)', category: 'חלב ומשקאות חלבון', unitGrams: 330, unitLabel: 'בקבוק שלם (330ml)', cal: 68, pro: 7.6, carb: 4.5, fat: 1.8 },
       { name: 'אבקת חלבון (מי גבינה / צמחית)', category: 'חלב ומשקאות חלבון', unitGrams: 30, unitLabel: 'סקופ (30g)', cal: 385, pro: 78, carb: 7, fat: 5.5 },
-      { name: 'יוגורט פרו / יוגורט חלבון 20g', category: 'יוגורטים ומעדני חלבון', unitGrams: 200, unitLabel: 'גביע (200g)', cal: 68, pro: 10, carb: 4.2, fat: 1 },
-      { name: 'מעדן חלבון (שוקולד / וניל / קרמל)', category: 'יוגורטים ומעדני חלבון', unitGrams: 200, unitLabel: 'גביע (200g)', cal: 76, pro: 10, carb: 5.5, fat: 1.4 },
-      { name: 'קוטג׳ 5% / 3%', category: 'גבינות וביצים', unitGrams: 250, unitLabel: 'גביע (250g)', cal: 95, pro: 10.5, carb: 1.5, fat: 5 },
-      { name: 'גבינה לבנה 5% / 9%', category: 'גבינות וביצים', unitGrams: 250, unitLabel: 'גביע (250g)', cal: 105, pro: 9.8, carb: 3.5, fat: 5.5 },
+      { name: 'יוגורט פרו / מעדן חלבון (200g)', category: 'יוגורטים ומעדני חלבון', unitGrams: 200, unitLabel: 'גביע שלם (200g)', cal: 72, pro: 10, carb: 4.5, fat: 1.2 },
+      { name: 'קוטג׳ 5% / 3% (גביע 250g)', category: 'גבינות וביצים', unitGrams: 250, unitLabel: 'גביע שלם (250g)', cal: 95, pro: 10.5, carb: 1.5, fat: 5 },
+      { name: 'גבינה לבנה 5% (גביע 250g)', category: 'גבינות וביצים', unitGrams: 250, unitLabel: 'גביע שלם (250g)', cal: 98, pro: 9.8, carb: 3.5, fat: 5 },
       { name: 'גבינה צהובה לייט 9%', category: 'גבינות וביצים', unitGrams: 28, unitLabel: 'פרוסה (28g)', cal: 195, pro: 28, carb: 1, fat: 9 },
-      { name: 'ביצה שלמה', category: 'גבינות וביצים', unitGrams: 60, unitLabel: 'ביצה (60g)', cal: 155, pro: 13, carb: 1.1, fat: 11 },
-      { name: 'חזה עוף מבושל / צלוי', category: 'בשרים', unitGrams: 150, unitLabel: 'מנה (150g)', cal: 165, pro: 31, carb: 0, fat: 3.6 },
-      { name: 'בקר רזה מבושל / צלוי', category: 'בשרים', unitGrams: 150, unitLabel: 'מנה (150g)', cal: 185, pro: 28, carb: 0, fat: 8 },
-      { name: 'פילה סלמון צלוי / אפוי', category: 'דגים', unitGrams: 160, unitLabel: 'פילה (160g)', cal: 208, pro: 20, carb: 0, fat: 13 },
-      { name: 'טופו טבעי', category: 'חלבון מהצומח', unitGrams: 200, unitLabel: 'חבילה (200g)', cal: 144, pro: 17.3, carb: 2.8, fat: 8.7 },
+      { name: 'ביצה קשה / חביתה (לאחר בישול/הכנה)', category: 'גבינות וביצים', unitGrams: 60, unitLabel: 'ביצה שלמה (60g)', cal: 155, pro: 13, carb: 1.1, fat: 11 },
+      { name: 'חזה עוף מבושל / צלוי / אפוי (לאחר בישול)', category: 'בשרים', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 165, pro: 31, carb: 0, fat: 3.6 },
+      { name: 'פרגית צלויה / אפויה (לאחר בישול)', category: 'בשרים', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 195, pro: 26, carb: 0, fat: 9.5 },
+      { name: 'בקר רזה מבושל / צלוי (לאחר בישול)', category: 'בשרים', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 185, pro: 28, carb: 0, fat: 8 },
+      { name: 'פילה סלמון צלוי / אפוי (לאחר אפייה)', category: 'דגים', unitGrams: 160, unitLabel: 'פילה אפוי (160g)', cal: 208, pro: 20, carb: 0, fat: 13 },
+      { name: 'פילה אמנון / דניס אפוי (לאחר אפייה)', category: 'דגים', unitGrams: 160, unitLabel: 'פילה אפוי (160g)', cal: 128, pro: 26, carb: 0, fat: 2.7 },
+      { name: 'טופו צלוי / אפוי (לאחר הכנה)', category: 'חלבון מהצומח', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 144, pro: 17.3, carb: 2.8, fat: 8.7 },
+      { name: 'עדשים מבושלות (לאחר בישול)', category: 'חלבון מהצומח', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 116, pro: 9, carb: 20, fat: 0.4 },
+      { name: 'חומוס גרגרים מבושל (לאחר בישול)', category: 'חלבון מהצומח', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 164, pro: 8.9, carb: 27.4, fat: 2.6 },
       { name: 'לחם מלא / כוסמין', category: 'לחמים ותצורות', unitGrams: 35, unitLabel: 'פרוסה (35g)', cal: 250, pro: 9, carb: 45, fat: 3 },
-      { name: 'פיתה מקמח מלא', category: 'לחמים ותצורות', unitGrams: 90, unitLabel: 'פיתה (90g)', cal: 248, pro: 9.8, carb: 49.5, fat: 1.8 },
-      { name: 'אורז לבן מבושל', category: 'קמחים ודגנים', unitGrams: 200, unitLabel: 'כוס מבושל (200g)', cal: 130, pro: 2.7, carb: 28, fat: 0.3 },
-      { name: 'שיבולת שועל', category: 'קמחים ודגנים', unitGrams: 100, unitLabel: 'כוס (100g)', cal: 379, pro: 13.2, carb: 67.7, fat: 6.5 },
-      { name: 'פסטה מבושלת (לבנה / מלאה)', category: 'קמחים ודגנים', unitGrams: 200, unitLabel: 'כוס (200g)', cal: 131, pro: 5, carb: 25, fat: 1.1 },
-      { name: 'שמן זית (שמן צמחי)', category: 'שומנים מן החי והצומח', unitGrams: 15, unitLabel: 'כף (15g)', cal: 884, pro: 0, carb: 0, fat: 100 },
-      { name: 'אבוקדו (שומן צמחי)', category: 'שומנים מן החי והצומח', unitGrams: 150, unitLabel: 'יחידה (150g)', cal: 160, pro: 2, carb: 8.5, fat: 14.7 },
-      { name: 'טחינה גולמית (שומן צמחי)', category: 'שומנים מן החי והצומח', unitGrams: 20, unitLabel: 'כף (20g)', cal: 595, pro: 18, carb: 18, fat: 53 },
+      { name: 'פיתה מקמח מלא', category: 'לחמים ותצורות', unitGrams: 90, unitLabel: 'פיתה שלמה (90g)', cal: 248, pro: 9.8, carb: 49.5, fat: 1.8 },
+      { name: 'אורז לבן מבושל (לאחר בישול)', category: 'קמחים ודגנים', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 130, pro: 2.7, carb: 28, fat: 0.3 },
+      { name: 'אורז מלא מבושל (לאחר בישול)', category: 'קמחים ודגנים', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 123, pro: 2.7, carb: 25.6, fat: 1 },
+      { name: 'שיבולת שועל מבושלת (דייסה לאחר בישול)', category: 'קמחים ודגנים', unitGrams: 200, unitLabel: 'קערה / כוס מבושלת (200g)', cal: 71, pro: 2.5, carb: 12, fat: 1.5 },
+      { name: 'פסטה מבושלת (לאחר בישול)', category: 'קמחים ודגנים', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 131, pro: 5, carb: 25, fat: 1.1 },
+      { name: 'קינואה מבושלת (לאחר בישול)', category: 'קמחים ודגנים', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 120, pro: 4.4, carb: 21.3, fat: 1.9 },
+      { name: 'בטטה אפויה / מבושלת (לאחר אפייה)', category: 'קמחים ודגנים', unitGrams: 180, unitLabel: 'יחידה בינונית אפויה (180g)', cal: 90, pro: 2, carb: 20.7, fat: 0.1 },
+      { name: 'תפוח אדמה אפוי / מבושל (לאחר אפייה)', category: 'קמחים ודגנים', unitGrams: 180, unitLabel: 'יחידה בינונית אפויה (180g)', cal: 93, pro: 2.5, carb: 21, fat: 0.1 },
+      { name: 'שמן זית', category: 'שומנים מן החי והצומח', unitGrams: 15, unitLabel: 'כף (15g)', cal: 884, pro: 0, carb: 0, fat: 100 },
+      { name: 'אבוקדו', category: 'שומנים מן החי והצומח', unitGrams: 150, unitLabel: 'יחידה שלמה (150g)', cal: 160, pro: 2, carb: 8.5, fat: 14.7 },
+      { name: 'טחינה גולמית', category: 'שומנים מן החי והצומח', unitGrams: 20, unitLabel: 'כף (20g)', cal: 595, pro: 18, carb: 18, fat: 53 },
       { name: 'חמאת בוטנים טבעית', category: 'שומנים מן החי והצומח', unitGrams: 20, unitLabel: 'כף (20g)', cal: 588, pro: 25, carb: 20, fat: 50 },
-      { name: 'בננה', category: 'פירות', unitGrams: 120, unitLabel: 'יחידה (120g)', cal: 89, pro: 1.1, carb: 23, fat: 0.3 },
-      { name: 'תפוח עץ', category: 'פירות', unitGrams: 150, unitLabel: 'יחידה (150g)', cal: 52, pro: 0.3, carb: 13.8, fat: 0.2 },
-      { name: 'מלפפון', category: 'ירקות', unitGrams: 120, unitLabel: 'יחידה (120g)', cal: 15, pro: 0.7, carb: 3.6, fat: 0.1 },
-      { name: 'עגבנייה', category: 'ירקות', unitGrams: 130, unitLabel: 'יחידה (130g)', cal: 18, pro: 0.9, carb: 3.9, fat: 0.2 },
-      { name: 'טונה משומרת במים (מסוננת)', category: 'שימורים', unitGrams: 112, unitLabel: 'קופסה (112g)', cal: 116, pro: 26, carb: 0, fat: 1 },
-      { name: 'במבה', category: 'חטיפים ושוקולדים', unitGrams: 80, unitLabel: 'שקית (80g)', cal: 530, pro: 13.5, carb: 47, fat: 31.5 }
+      { name: 'קופסת חומוס מוכן (250g)', category: 'שומנים מן החי והצומח', unitGrams: 250, unitLabel: 'קופסה שלמה (250g)', cal: 250, pro: 7.5, carb: 14, fat: 18 },
+      { name: 'בננה', category: 'פירות', unitGrams: 120, unitLabel: 'יחידה שלמה (120g)', cal: 89, pro: 1.1, carb: 23, fat: 0.3 },
+      { name: 'תפוח עץ', category: 'פירות', unitGrams: 150, unitLabel: 'יחידה שלמה (150g)', cal: 52, pro: 0.3, carb: 13.8, fat: 0.2 },
+      { name: 'מלפפון', category: 'ירקות', unitGrams: 120, unitLabel: 'יחידה שלמה (120g)', cal: 15, pro: 0.7, carb: 3.6, fat: 0.1 },
+      { name: 'עגבנייה', category: 'ירקות', unitGrams: 130, unitLabel: 'יחידה שלמה (130g)', cal: 18, pro: 0.9, carb: 3.9, fat: 0.2 },
+      { name: 'טונה משומרת במים (קופסה מסוננת 112g)', category: 'שימורים', unitGrams: 112, unitLabel: 'קופסה שלמה (112g)', cal: 116, pro: 26, carb: 0, fat: 1 },
+      { name: 'במבה (שקית 80g)', category: 'חטיפים ושוקולדים', unitGrams: 80, unitLabel: 'שקית שלמה (80g)', cal: 530, pro: 13.5, carb: 47, fat: 31.5 }
     ];
 
     function stateStorageKey(id = clientId) { return `BodyBalanceUnifiedState_${id}`; }
@@ -712,7 +726,6 @@
       } catch (e) {}
     }
 
-    // --- העלאת תמונת פרופיל אישית ---
     window.handleProfileAvatarUpload = function(event) {
       const file = event.target.files?.[0];
       if (!file) return;
@@ -750,7 +763,6 @@
       renderProfile();
     };
 
-    // --- חתימה דיגיטלית ב-Canvas ---
     let isDrawingSig = false;
     let hasSigStrokes = false;
 
@@ -850,7 +862,7 @@
       alert('התקנון ומדיניות השירות אושרו בהצלחה!');
     };
 
-    // --- חישובי מידות וברקוד ---
+    // --- חישובי מידות וברקוד (ערכים מחושבים ישירות ליחידה שלמה של המוצר) ---
     function getGramsForMeasure(food, qty, unitKey) {
       const q = Math.max(0, parseFloat(qty) || 0);
       const fullG = food?.unitGrams || 100;
@@ -875,22 +887,36 @@
       };
     }
 
-    function parseGramsFromString(str) {
-      if (!str) return 0;
-      const match = String(str).match(/(\d+(?:\.\d+)?)\s*(?:g|גרם|ml|מ"ל)/i);
+    function parseGramsFromProductData(product) {
+      if (product && Number(product.product_quantity) > 0) {
+        return Number(product.product_quantity);
+      }
+      const rawStr = product?.quantity || product?.serving_size || '';
+      const match = String(rawStr).match(/(\d+(?:\.\d+)?)\s*(?:g|גרם|ml|מ"ל)/i);
       return match ? parseFloat(match[1]) : 0;
     }
 
     function computeScannedProductNutrients(prod, qty, unitKey) {
       const q = Math.max(0, parseFloat(qty) || 0);
-      const unitGrams = prod.unitGrams || 100;
+      const unitGrams = Math.max(1, Number(prod.unitGrams) || 100);
       let grams = 0, measureLabel = '';
 
-      if (unitKey === 'unit') { grams = q * unitGrams; measureLabel = `יחידה אחת (${unitGrams}g)`; }
-      else if (unitKey === '100g') { grams = q * 100; measureLabel = '100 גרם'; }
-      else if (unitKey === 'spoon') { grams = q * SPOON_GRAMS; measureLabel = `כף אחת (${SPOON_GRAMS}g)`; }
-      else if (unitKey === 'cup') { grams = q * CUP_GRAMS; measureLabel = `כוס אחת (${CUP_GRAMS}g)`; }
-      else { grams = q * 1; measureLabel = 'גרם אחד (1g)'; }
+      if (unitKey === 'unit') {
+        grams = q * unitGrams;
+        measureLabel = `יחידה שלמה של המוצר (${unitGrams}g)`;
+      } else if (unitKey === 'half') {
+        grams = q * (unitGrams / 2);
+        measureLabel = `חצי יחידה (${Math.round(unitGrams / 2)}g)`;
+      } else if (unitKey === 'spoon') {
+        grams = q * SPOON_GRAMS;
+        measureLabel = `כף אחת (${SPOON_GRAMS}g)`;
+      } else if (unitKey === 'cup') {
+        grams = q * CUP_GRAMS;
+        measureLabel = `כוס אחת (${CUP_GRAMS}g)`;
+      } else {
+        grams = q * 1;
+        measureLabel = 'גרם אחד (1g)';
+      }
 
       const factor = grams / 100;
       const decimals = unitKey === '1g' ? 3 : 1;
@@ -906,23 +932,35 @@
       };
     }
 
+    window.onScannedUnitGramsChange = function() {
+      if (!activeScannedProduct) return;
+      const newGrams = Math.max(1, parseFloat(document.getElementById('scannedUnitGramsInput').value) || 1);
+      activeScannedProduct.unitGrams = newGrams;
+      document.getElementById('scannedUnitWholeOption').textContent = `יחידה שלמה של המוצר (${newGrams}g)`;
+      updateScannedProductPreview();
+    };
+
     window.updateScannedProductPreview = function() {
       if (!activeScannedProduct) return;
       const qty = parseFloat(document.getElementById('scannedQtyInput').value) || 0;
       const unitKey = document.getElementById('scannedUnitSelect').value;
       const selectedMeal = document.getElementById('mealCategory')?.value || 'ארוחה';
+      const wholeCalc = computeScannedProductNutrients(activeScannedProduct, 1, 'unit');
       const calc = computeScannedProductNutrients(activeScannedProduct, qty, unitKey);
 
+      document.getElementById('scannedProdBaseMeta').textContent =
+        `ערכים ליחידה שלמה של המוצר (${activeScannedProduct.unitGrams}g): ${wholeCalc.calories} קק"ל · חלבון ${wholeCalc.protein}g · פחמימה ${wholeCalc.carbs}g · שומן ${wholeCalc.fat}g`;
+
       document.getElementById('scannedCalculatedSummary').innerHTML =
-        `יעד: <strong>${selectedMeal}</strong> · ${calc.amountSummary} (${calc.grams}g) → <strong>${calc.calories} קק"ל</strong> · חלבון: <strong>${calc.protein}g</strong> · פחמימה: <strong>${calc.carbs}g</strong> · שומן: <strong>${calc.fat}g</strong>`;
+        `יעד: <strong>${selectedMeal}</strong> · ${calc.amountSummary} → <strong>${calc.calories} קק"ל</strong> · חלבון: <strong>${calc.protein}g</strong> · פחמימה: <strong>${calc.carbs}g</strong> · שומן: <strong>${calc.fat}g</strong>`;
     };
 
     function presentScannedProduct(prod) {
-      activeScannedProduct = prod;
+      activeScannedProduct = { ...prod };
       document.getElementById('scannedBarcodeBox').classList.remove('hidden');
       document.getElementById('scannedProdTitle').textContent = prod.name;
-      document.getElementById('scannedProdBaseMeta').textContent =
-        `בסיס 100g: ${Math.round(prod.cal100)} קק"ל, חלבון ${prod.pro100}g, פחמימה ${prod.carb100}g, שומן ${prod.fat100}g · משקל יחידה: ${prod.unitGrams}g`;
+      document.getElementById('scannedUnitGramsInput').value = prod.unitGrams;
+      document.getElementById('scannedUnitWholeOption').textContent = `יחידה שלמה של המוצר (${prod.unitGrams}g)`;
       document.getElementById('scannedQtyInput').value = 1;
       document.getElementById('scannedUnitSelect').value = 'unit';
       updateScannedProductPreview();
@@ -965,7 +1003,7 @@
       if (LOCAL_BARCODE_DB[code]) {
         const local = LOCAL_BARCODE_DB[code];
         presentScannedProduct(local);
-        setBarcodeStatus(`✓ זוהה מוצר: ${local.name}. בחר כמות ויחידת מידה ולחץ "הוסף לארוחה שנבחרה".`);
+        setBarcodeStatus(`✓ זוהה מוצר: ${local.name} — מוצגים הערכים ליחידה שלמה (${local.unitGrams}g).`);
         return;
       }
 
@@ -982,18 +1020,18 @@
             const pro100 = Number(n.proteins_100g ?? 0) || 0;
             const carb100 = Number(n.carbohydrates_100g ?? 0) || 0;
             const fat100 = Number(n.fat_100g ?? 0) || 0;
-            const parsedQtyGrams = parseGramsFromString(p.quantity);
-            const unitGrams = parsedQtyGrams > 0 ? parsedQtyGrams : 100;
+            const parsedQtyGrams = parseGramsFromProductData(p);
+            const unitGrams = parsedQtyGrams > 0 ? parsedQtyGrams : 200;
 
-            presentScannedProduct({ name: productName, unitGrams, cal100, pro100, carb100, fat100 });
-            setBarcodeStatus(`✓ זוהה מוצר: ${productName}.`);
+            presentScannedProduct({ name: `${productName} (${unitGrams}g)`, unitGrams, cal100, pro100, carb100, fat100 });
+            setBarcodeStatus(`✓ זוהה מוצר: ${productName} — מחושב ליחידה שלמה (${unitGrams}g).`);
             return;
           }
         }
       } catch (e) {}
 
-      presentScannedProduct({ name: `מוצר (${code})`, unitGrams: 100, cal100: 150, pro100: 10, carb100: 15, fat100: 5 });
-      setBarcodeStatus(`ברקוד ${code} נטען למחשבון המידות.`, true);
+      presentScannedProduct({ name: `מוצר (${code})`, unitGrams: 200, cal100: 150, pro100: 10, carb100: 15, fat100: 5 });
+      setBarcodeStatus(`ברקוד ${code} נטען למחשבון יחידה שלמה (ניתן לדייק את משקל האריזה בגרמים).`, true);
     };
 
     window.openLiveBarcodeScanner = async function() {
@@ -1348,14 +1386,14 @@
               <div class="border border-slate-200 rounded-2xl p-4 bg-white space-y-3">
                 <div class="flex items-center justify-between gap-2">
                   <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">${f.category}</span>
-                  <span class="text-[11px] font-semibold text-slate-500">מוצר שלם: ${f.unitLabel}</span>
+                  <span class="text-[11px] font-semibold text-slate-500">יחידה / מנה: ${f.unitLabel}</span>
                 </div>
                 <h4 class="font-extrabold text-slate-900 text-base">${f.name}</h4>
                 <div class="overflow-x-auto border border-slate-100 rounded-xl">
                   <table class="w-full text-right text-xs">
                     <thead class="bg-slate-50 text-slate-600">
                       <tr>
-                        <th class="py-1.5 px-2 font-bold">מידה</th>
+                        <th class="py-1.5 px-2 font-bold">מידה (מוכן)</th>
                         <th class="py-1.5 px-2 font-bold">קק"ל</th>
                         <th class="py-1.5 px-2 font-bold">חלבון</th>
                         <th class="py-1.5 px-2 font-bold">פחמימה</th>
@@ -1373,7 +1411,7 @@
                         <td class="py-1.5 px-2"><button type="button" onclick="selectFoodMeasureToDiary('${safeName}', '100g', 1)" class="text-[11px] bg-teal-50 hover:bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded cursor-pointer">הוסף</button></td>
                       </tr>
                       <tr>
-                        <td class="py-1.5 px-2 font-semibold">מוצר שלם (${nFull.grams}g)</td>
+                        <td class="py-1.5 px-2 font-semibold">יחידה שלמה / מנה (${nFull.grams}g)</td>
                         <td class="py-1.5 px-2 font-bold">${nFull.cal}</td>
                         <td class="py-1.5 px-2">${nFull.pro}g</td>
                         <td class="py-1.5 px-2">${nFull.carb}g</td>
@@ -1381,7 +1419,7 @@
                         <td class="py-1.5 px-2"><button type="button" onclick="selectFoodMeasureToDiary('${safeName}', 'full', 1)" class="text-[11px] bg-teal-50 hover:bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded cursor-pointer">הוסף</button></td>
                       </tr>
                       <tr>
-                        <td class="py-1.5 px-2 font-semibold">חצי מוצר (${nHalf.grams}g)</td>
+                        <td class="py-1.5 px-2 font-semibold">חצי מנה (${nHalf.grams}g)</td>
                         <td class="py-1.5 px-2 font-bold">${nHalf.cal}</td>
                         <td class="py-1.5 px-2">${nHalf.pro}g</td>
                         <td class="py-1.5 px-2">${nHalf.carb}g</td>
