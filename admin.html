@@ -244,19 +244,22 @@
         </div>
       </div>
 
-      <!-- מדדים והיקפים של הגוף (גברים / נשים) + גרף מגמה -->
+      <!-- מדדים והיקפים של הגוף (גברים / נשים) + גרף מגמה + שליחה לוואטסאפ -->
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
           <div>
             <h2 class="text-lg font-extrabold text-slate-900">📏 מעקב מדדים והיקפי גוף (בכל מועד שתבחר)</h2>
             <p class="text-xs text-slate-500">תיעוד היקפים בס"מ ללא תאריך קבוע: חזה (גברים בלבד), אגן (נשים בלבד), ידיים, מותניים (מתחת לקו טבור) וירכיים</p>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
             <label class="text-xs font-bold text-slate-600">מין המתאמן:</label>
             <select id="admMeasGenderSelect" onchange="onChangeAdminClientGender(this.value)" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-extrabold bg-white">
               <option value="male">גבר ♂️</option>
               <option value="female">אישה ♀️</option>
             </select>
+            <button type="button" onclick="sendMeasurementsWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs cursor-pointer">
+              💬 שלח מדדים למתאמן בוואטסאפ
+            </button>
           </div>
         </div>
 
@@ -292,7 +295,6 @@
           </div>
         </div>
 
-        <!-- גרף התקדמות לפי מדד היקף -->
         <div class="bg-slate-50/70 border border-slate-200 rounded-2xl p-4 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-2">
@@ -306,6 +308,25 @@
         </div>
 
         <div id="admMeasurementsHistoryBox" class="overflow-x-auto"></div>
+
+        <!-- שליחת המדדים וההיקפים ללקוח דרך הוואטסאפ -->
+        <div class="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-sm font-extrabold text-emerald-950">💬 שליחת נתוני ההיקפים והמדדים ללקוח בוואטסאפ</h3>
+              <p id="admMeasWaStatus" class="text-[11px] text-emerald-800">ההודעה נבנית אוטומטית מהמדידה האחרונה וההשוואה למדידה הקודמת — ניתן לערוך לפני השליחה</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onclick="refreshMeasurementsWhatsAppText()" class="bg-white hover:bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold px-3 py-1.5 rounded-xl text-xs cursor-pointer">
+                ↻ רענן נוסח
+              </button>
+              <button type="button" onclick="sendMeasurementsWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-1.5 rounded-xl text-xs cursor-pointer">
+                📤 שלח מדדים בוואטסאפ
+              </button>
+            </div>
+          </div>
+          <textarea id="admMeasurementsWhatsAppText" rows="7" class="w-full border border-emerald-300 rounded-xl p-3 text-xs leading-relaxed bg-white text-slate-800"></textarea>
+        </div>
       </div>
     </section>
 
@@ -555,7 +576,81 @@
       localStorage.setItem(stateStorageKey(activeClientId), JSON.stringify(clientState));
       localStorage.setItem(CLIENTS_LIST_KEY, JSON.stringify(clientIds));
       localStorage.setItem(SUBSCRIPTION_PLANS_KEY, JSON.stringify(subscriptionPlans));
+      localStorage.setItem(EXERCISE_LIBRARY_KEY, JSON.stringify(exerciseLibrary));
     }
+
+    function normalizeIntlPhone(rawPhone) {
+      const digits = (rawPhone || '').replace(/\D/g, '');
+      if (!digits) return '';
+      if (digits.startsWith('0')) return `972${digits.slice(1)}`;
+      return digits;
+    }
+
+    function buildMeasurementsWhatsAppText() {
+      const name = clientState.profile.name || 'מתאמן/ת';
+      const gender = clientState.profile.gender === 'female' ? 'female' : 'male';
+      const sorted = [...(clientState.bodyMeasurementsHistory || [])].sort((a, b) => b.date.localeCompare(a.date));
+      const latest = sorted[0];
+      const previous = sorted[1];
+
+      const lines = [`היי ${name}! 📏 להלן עדכון המדדים וההיקפים שלך מ-BodyBalance:`];
+
+      if (clientState.profile.weight) {
+        lines.push(`⚖️ משקל גוף נוכחי: ${clientState.profile.weight} ק"ג`);
+      }
+
+      if (!latest) {
+        lines.push('טרם הוזנו מדידות היקפים.');
+        return lines.join('\n');
+      }
+
+      lines.push(`📅 תאריך מדידה: ${latest.date}`);
+
+      const appendMetric = (label, key) => {
+        const val = latest[key];
+        if (val === null || val === undefined || isNaN(val)) return;
+        const prevVal = previous?.[key];
+        let diffStr = '';
+        if (prevVal !== null && prevVal !== undefined && !isNaN(prevVal)) {
+          const diff = Number((val - prevVal).toFixed(1));
+          if (diff !== 0) diffStr = ` (${diff > 0 ? '+' : ''}${diff} ס"מ)`;
+        }
+        lines.push(`• ${label}: ${val} ס"מ${diffStr}`);
+      };
+
+      if (gender === 'female') {
+        appendMetric('היקף אגן (נשים)', 'hips');
+      } else {
+        appendMetric('היקף חזה (גברים)', 'chest');
+      }
+      appendMetric('היקף ידיים', 'arms');
+      appendMetric('היקף מותניים (מתחת לטבור)', 'waist');
+      appendMetric('היקף ירכיים', 'thighs');
+
+      lines.push('\nעבודה מצוינת, נמשיך להתקדם יחד! 💪');
+      return lines.join('\n');
+    }
+
+    window.refreshMeasurementsWhatsAppText = function() {
+      const ta = document.getElementById('admMeasurementsWhatsAppText');
+      if (ta) ta.value = buildMeasurementsWhatsAppText();
+    };
+
+    window.sendMeasurementsWhatsApp = function() {
+      const ta = document.getElementById('admMeasurementsWhatsAppText');
+      const msg = (ta && ta.value.trim()) || buildMeasurementsWhatsAppText();
+      const intlPhone = normalizeIntlPhone(clientState.profile.phone);
+      const waUrl = intlPhone
+        ? `https://wa.me/${intlPhone}?text=${encodeURIComponent(msg)}`
+        : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+      const statusEl = document.getElementById('admMeasWaStatus');
+      if (statusEl) {
+        statusEl.textContent = intlPhone
+          ? `נפתח וואטסאפ עבור ${clientState.profile.name} (${intlPhone}) ✓`
+          : 'נפתח וואטסאפ (לא הוזן מספר טלפון — ניתן לבחור נמען בוואטסאפ)';
+      }
+    };
 
     window.onChangeAdminClientGender = function(gender) {
       clientState.profile.gender = gender === 'female' ? 'female' : 'male';
@@ -611,6 +706,7 @@
     window.renderAdminMeasurementChart = function() {
       const gender = clientState.profile.gender === 'female' ? 'female' : 'male';
       const metricSel = document.getElementById('admMeasChartMetricSelect');
+      if (!metricSel) return;
       const options = [
         { key: 'waist', label: 'מותניים (מתחת לטבור)' },
         { key: 'arms', label: 'ידיים' },
@@ -629,16 +725,21 @@
         .map(m => ({ label: m.date.slice(5), value: Number(m[chosenKey]) }));
 
       const badge = document.getElementById('admMeasDeltaBadge');
-      if (pts.length >= 2) {
-        const diff = Number((pts[pts.length - 1].value - pts[0].value).toFixed(1));
-        badge.textContent = `שינוי: ${diff > 0 ? '+' : ''}${diff} ס"מ`;
-      } else if (pts.length === 1) {
-        badge.textContent = `${pts[0].value} ס"מ`;
-      } else {
-        badge.textContent = 'אין נתונים';
+      if (badge) {
+        if (pts.length >= 2) {
+          const diff = Number((pts[pts.length - 1].value - pts[0].value).toFixed(1));
+          badge.textContent = `שינוי: ${diff > 0 ? '+' : ''}${diff} ס"מ`;
+        } else if (pts.length === 1) {
+          badge.textContent = `${pts[0].value} ס"מ`;
+        } else {
+          badge.textContent = 'אין נתונים';
+        }
       }
 
-      document.getElementById('admMeasChartBox').innerHTML = buildSvgLineChart(pts, '#0d9488', 'rgba(13, 148, 136, 0.12)');
+      const chartBox = document.getElementById('admMeasChartBox');
+      if (chartBox) {
+        chartBox.innerHTML = buildSvgLineChart(pts, '#0d9488', 'rgba(13, 148, 136, 0.12)');
+      }
     };
 
     function renderAdminMeasurements() {
@@ -653,8 +754,10 @@
       document.getElementById('admMeasHipsWrap')?.classList.toggle('hidden', gender !== 'female');
 
       renderAdminMeasurementChart();
+      refreshMeasurementsWhatsAppText();
 
       const box = document.getElementById('admMeasurementsHistoryBox');
+      if (!box) return;
       const list = [...(clientState.bodyMeasurementsHistory || [])].sort((a, b) => b.date.localeCompare(a.date));
 
       if (list.length === 0) {
@@ -1024,8 +1127,7 @@
 
     window.sendClientLinkWhatsApp = function() {
       const url = buildClientPersonalUrl();
-      const rawPhone = (clientState.profile.phone || '').replace(/\D/g, '');
-      const intlPhone = rawPhone.startsWith('0') ? `972${rawPhone.slice(1)}` : rawPhone;
+      const intlPhone = normalizeIntlPhone(clientState.profile.phone);
       const msg = `היי ${clientState.profile.name}! 💪\nעדכנתי עבורך את מסלול המנוי (${clientState.subscriptionTierName}), תוכנית האימונים (כולל משקלי עבודה לכל סט) ואת יעדי התזונה באפליקציית BodyBalance:\n${url}`;
       const waUrl = intlPhone
         ? `https://wa.me/${intlPhone}?text=${encodeURIComponent(msg)}`
