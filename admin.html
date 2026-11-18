@@ -71,7 +71,7 @@
         🥗 יעדי תזונה ויומן מתאמן
       </button>
       <button type="button" data-atab="progress" onclick="switchAdminTab('progress')" class="admin-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100 cursor-pointer">
-        📈 גרפי התקדמות מתאמן
+        📈 גרפים, מדדים והיקפים
       </button>
       <button type="button" data-atab="clientInfo" onclick="switchAdminTab('clientInfo')" class="admin-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100 cursor-pointer">
         💳 מנויים, פרטים וטפסים
@@ -217,7 +217,7 @@
       </div>
     </section>
 
-    <!-- לשונית 3: גרפי התקדמות מתאמן -->
+    <!-- לשונית 3: גרפי התקדמות ומדדי היקפים -->
     <section id="atab-progress" class="admin-section hidden space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
@@ -243,9 +243,73 @@
           <div id="admExChartBox" class="bg-slate-50/70 border border-slate-200 rounded-2xl p-3"></div>
         </div>
       </div>
+
+      <!-- מדדים והיקפים של הגוף (גברים / נשים) + גרף מגמה -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">📏 מעקב מדדים והיקפי גוף (בכל מועד שתבחר)</h2>
+            <p class="text-xs text-slate-500">תיעוד היקפים בס"מ ללא תאריך קבוע: חזה (גברים בלבד), אגן (נשים בלבד), ידיים, מותניים (מתחת לקו טבור) וירכיים</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-bold text-slate-600">מין המתאמן:</label>
+            <select id="admMeasGenderSelect" onchange="onChangeAdminClientGender(this.value)" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-extrabold bg-white">
+              <option value="male">גבר ♂️</option>
+              <option value="female">אישה ♀️</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200 items-end">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">תאריך מדידה (גמיש)</label>
+            <input id="admMeasDateInput" type="date" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold bg-white" />
+          </div>
+          <div id="admMeasChestWrap">
+            <label class="block text-xs font-bold text-slate-600 mb-1">היקף חזה (ס"מ) · גברים</label>
+            <input id="admMeasChest" type="number" step="0.1" min="20" placeholder="לדוגמה: 102" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-extrabold bg-white" />
+          </div>
+          <div id="admMeasHipsWrap" class="hidden">
+            <label class="block text-xs font-bold text-slate-600 mb-1">היקף אגן (ס"מ) · נשים</label>
+            <input id="admMeasHips" type="number" step="0.1" min="20" placeholder="לדוגמה: 96" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-extrabold bg-white" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">היקף ידיים (ס"מ)</label>
+            <input id="admMeasArms" type="number" step="0.1" min="10" placeholder="לדוגמה: 36.5" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-extrabold bg-white" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">מותניים - מתחת לטבור (ס"מ)</label>
+            <input id="admMeasWaist" type="number" step="0.1" min="20" placeholder="לדוגמה: 82" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-extrabold bg-white" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">היקף ירכיים (ס"מ)</label>
+            <input id="admMeasThighs" type="number" step="0.1" min="20" placeholder="לדוגמה: 58" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-extrabold bg-white" />
+          </div>
+          <div class="lg:col-span-6 flex justify-end">
+            <button type="button" onclick="saveAdminBodyMeasurement()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-5 py-2.5 rounded-xl text-xs cursor-pointer">
+              + שמור מדידת היקפים למתאמן
+            </button>
+          </div>
+        </div>
+
+        <!-- גרף התקדמות לפי מדד היקף -->
+        <div class="bg-slate-50/70 border border-slate-200 rounded-2xl p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs sm:text-sm font-extrabold text-slate-900">📉 גרף מגמה להיקף (ס"מ):</span>
+              <span id="admMeasDeltaBadge" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800">-</span>
+            </div>
+            <select id="admMeasChartMetricSelect" onchange="renderAdminMeasurementChart()" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-extrabold bg-white">
+            </select>
+          </div>
+          <div id="admMeasChartBox"></div>
+        </div>
+
+        <div id="admMeasurementsHistoryBox" class="overflow-x-auto"></div>
+      </div>
     </section>
 
-    <!-- לשונית 4: ניהול מסלולי מנוי מרובים (הוספה, עריכה, מחיקה ובחירה ללקוח), מחירים, פרטים וטפסים -->
+    <!-- לשונית 4: ניהול מסלולי מנוי מרובים, מחירים, פרטים וטפסים -->
     <section id="atab-clientInfo" class="admin-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5">
         <div class="border-b border-slate-100 pb-3">
@@ -253,7 +317,6 @@
           <p class="text-xs text-slate-500">נהל את מחירון המסלולים שלך, ערוך שמות ומחירים, מחק מסלולים מיותרים ובחר עבור הלקוח את המסלול הרצוי</p>
         </div>
 
-        <!-- ניהול מלא של מסלולי המנוי + בחירה עבור הלקוח -->
         <div class="bg-teal-50/50 border border-teal-200 rounded-2xl p-4 space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div class="md:col-span-2">
@@ -267,7 +330,6 @@
             </div>
           </div>
 
-          <!-- רשימת מסלולי המנוי הקיימים לעריכה ישירה או מחיקה -->
           <div class="bg-white border border-slate-200 rounded-xl p-3.5 space-y-2.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-extrabold text-slate-800">📋 עריכה ומחיקה של מסלולי המנוי במחירון:</span>
@@ -276,7 +338,6 @@
             <div id="admSubscriptionPlansManagerList" class="space-y-2"></div>
           </div>
 
-          <!-- הוספת מסלול מנוי חדש למאגר המסלולים -->
           <div class="pt-2 border-t border-teal-200/70 flex flex-wrap items-end gap-2">
             <div class="flex-1 min-w-[180px]">
               <label class="block text-[11px] font-bold text-slate-600 mb-1">שם מסלול חדש למחירון</label>
@@ -296,6 +357,13 @@
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">שם מלא של המתאמן</label>
             <input id="admProfName" type="text" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">מין המתאמן (להתאמת מדדי היקפים)</label>
+            <select id="admProfGender" onchange="onChangeAdminClientGender(this.value)" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white font-bold">
+              <option value="male">גבר ♂️ (כולל היקף חזה)</option>
+              <option value="female">אישה ♀️ (כולל היקף אגן)</option>
+            </select>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">מספר טלפון נייד (וואטסאפ)</label>
@@ -452,8 +520,9 @@
           subscriptionPrice: parsed.subscriptionPrice !== undefined ? parsed.subscriptionPrice : 450,
           subscriptionRenewalDate: parsed.subscriptionRenewalDate || '',
           nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70, ...(parsed.nutritionTargets || {}) },
-          profile: { name: id === 'yoav-01' ? 'יואב כהן' : id, phone: '', birthDate: '', avatarDataUrl: '', weight: 78, height: 178, age: 28, ...(parsed.profile || {}) },
+          profile: { name: id === 'yoav-01' ? 'יואב כהן' : id, gender: 'male', phone: '', birthDate: '', avatarDataUrl: '', weight: 78, height: 178, age: 28, ...(parsed.profile || {}) },
           bodyWeightHistory: Array.isArray(parsed.bodyWeightHistory) ? parsed.bodyWeightHistory : [],
+          bodyMeasurementsHistory: Array.isArray(parsed.bodyMeasurementsHistory) ? parsed.bodyMeasurementsHistory : [],
           weeklyWorkoutsPerWeek: (parsed.workoutSessions && parsed.workoutSessions.length) || 3,
           workoutSessions: Array.isArray(parsed.workoutSessions) && parsed.workoutSessions.length ? parsed.workoutSessions : createDefaultSessions(3),
           healthDeclaration: parsed.healthDeclaration || { signed: false },
@@ -468,8 +537,9 @@
           subscriptionPrice: 450,
           subscriptionRenewalDate: '',
           nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70 },
-          profile: { name: id, phone: '', birthDate: '', weight: 75, height: 175, age: 28 },
+          profile: { name: id, gender: 'male', phone: '', birthDate: '', weight: 75, height: 175, age: 28 },
           bodyWeightHistory: [],
+          bodyMeasurementsHistory: [],
           weeklyWorkoutsPerWeek: 3,
           workoutSessions: createDefaultSessions(3),
           healthDeclaration: { signed: false },
@@ -485,6 +555,157 @@
       localStorage.setItem(stateStorageKey(activeClientId), JSON.stringify(clientState));
       localStorage.setItem(CLIENTS_LIST_KEY, JSON.stringify(clientIds));
       localStorage.setItem(SUBSCRIPTION_PLANS_KEY, JSON.stringify(subscriptionPlans));
+    }
+
+    window.onChangeAdminClientGender = function(gender) {
+      clientState.profile.gender = gender === 'female' ? 'female' : 'male';
+      saveClientState();
+      renderAdminMeasurements();
+      const profG = document.getElementById('admProfGender');
+      if (profG) profG.value = clientState.profile.gender;
+      const measG = document.getElementById('admMeasGenderSelect');
+      if (measG) measG.value = clientState.profile.gender;
+    };
+
+    window.saveAdminBodyMeasurement = function() {
+      const dateInput = document.getElementById('admMeasDateInput');
+      const dateStr = (dateInput && dateInput.value) || new Date().toISOString().slice(0, 10);
+      const gender = clientState.profile.gender === 'female' ? 'female' : 'male';
+
+      const chest = gender === 'male' ? parseFloat(document.getElementById('admMeasChest').value) : null;
+      const hips = gender === 'female' ? parseFloat(document.getElementById('admMeasHips').value) : null;
+      const arms = parseFloat(document.getElementById('admMeasArms').value);
+      const waist = parseFloat(document.getElementById('admMeasWaist').value);
+      const thighs = parseFloat(document.getElementById('admMeasThighs').value);
+
+      const hasAny = [chest, hips, arms, waist, thighs].some(v => v !== null && !isNaN(v) && v > 0);
+      if (!hasAny) return alert('נא להזין לפחות מדד היקף אחד (בס"מ).');
+
+      if (!Array.isArray(clientState.bodyMeasurementsHistory)) clientState.bodyMeasurementsHistory = [];
+      clientState.bodyMeasurementsHistory.push({
+        id: `meas-${Date.now()}`,
+        date: dateStr,
+        gender,
+        chest: !isNaN(chest) && chest > 0 ? Number(chest.toFixed(1)) : null,
+        hips: !isNaN(hips) && hips > 0 ? Number(hips.toFixed(1)) : null,
+        arms: !isNaN(arms) && arms > 0 ? Number(arms.toFixed(1)) : null,
+        waist: !isNaN(waist) && waist > 0 ? Number(waist.toFixed(1)) : null,
+        thighs: !isNaN(thighs) && thighs > 0 ? Number(thighs.toFixed(1)) : null
+      });
+
+      ['admMeasChest', 'admMeasHips', 'admMeasArms', 'admMeasWaist', 'admMeasThighs'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+
+      saveClientState();
+      renderAdminMeasurements();
+    };
+
+    window.deleteAdminBodyMeasurement = function(measId) {
+      clientState.bodyMeasurementsHistory = (clientState.bodyMeasurementsHistory || []).filter(m => m.id !== measId);
+      saveClientState();
+      renderAdminMeasurements();
+    };
+
+    window.renderAdminMeasurementChart = function() {
+      const gender = clientState.profile.gender === 'female' ? 'female' : 'male';
+      const metricSel = document.getElementById('admMeasChartMetricSelect');
+      const options = [
+        { key: 'waist', label: 'מותניים (מתחת לטבור)' },
+        { key: 'arms', label: 'ידיים' },
+        ...(gender === 'male' ? [{ key: 'chest', label: 'חזה (גברים)' }] : [{ key: 'hips', label: 'אגן (נשים)' }]),
+        { key: 'thighs', label: 'ירכיים' }
+      ];
+
+      const prev = metricSel.value;
+      metricSel.innerHTML = options.map(o => `<option value="${o.key}">${o.label}</option>`).join('');
+      if (prev && options.some(o => o.key === prev)) metricSel.value = prev;
+      const chosenKey = metricSel.value || 'waist';
+
+      const sorted = [...(clientState.bodyMeasurementsHistory || [])].sort((a, b) => a.date.localeCompare(b.date));
+      const pts = sorted
+        .filter(m => m[chosenKey] !== null && m[chosenKey] !== undefined && !isNaN(m[chosenKey]))
+        .map(m => ({ label: m.date.slice(5), value: Number(m[chosenKey]) }));
+
+      const badge = document.getElementById('admMeasDeltaBadge');
+      if (pts.length >= 2) {
+        const diff = Number((pts[pts.length - 1].value - pts[0].value).toFixed(1));
+        badge.textContent = `שינוי: ${diff > 0 ? '+' : ''}${diff} ס"מ`;
+      } else if (pts.length === 1) {
+        badge.textContent = `${pts[0].value} ס"מ`;
+      } else {
+        badge.textContent = 'אין נתונים';
+      }
+
+      document.getElementById('admMeasChartBox').innerHTML = buildSvgLineChart(pts, '#0d9488', 'rgba(13, 148, 136, 0.12)');
+    };
+
+    function renderAdminMeasurements() {
+      const gender = clientState.profile.gender === 'female' ? 'female' : 'male';
+      const measG = document.getElementById('admMeasGenderSelect');
+      if (measG) measG.value = gender;
+
+      const dateInput = document.getElementById('admMeasDateInput');
+      if (dateInput && !dateInput.value) dateInput.value = new Date().toISOString().slice(0, 10);
+
+      document.getElementById('admMeasChestWrap')?.classList.toggle('hidden', gender !== 'male');
+      document.getElementById('admMeasHipsWrap')?.classList.toggle('hidden', gender !== 'female');
+
+      renderAdminMeasurementChart();
+
+      const box = document.getElementById('admMeasurementsHistoryBox');
+      const list = [...(clientState.bodyMeasurementsHistory || [])].sort((a, b) => b.date.localeCompare(a.date));
+
+      if (list.length === 0) {
+        box.innerHTML = '<p class="text-xs text-slate-400">טרם תועדו מדידות היקפים למתאמן זה. הזן מדדים למעלה בכל מועד שתבחר.</p>';
+        return;
+      }
+
+      const oldest = list[list.length - 1];
+      const formatValWithDelta = (curVal, oldVal) => {
+        if (curVal === null || curVal === undefined) return '<span class="text-slate-300">-</span>';
+        if (oldVal === null || oldVal === undefined || list.length < 2) return `<span class="font-extrabold text-slate-900">${curVal} ס"מ</span>`;
+        const diff = Number((curVal - oldVal).toFixed(1));
+        if (diff === 0) return `<span class="font-extrabold text-slate-900">${curVal} ס"מ</span>`;
+        const color = diff < 0 ? 'text-emerald-700' : 'text-indigo-700';
+        return `<span class="font-extrabold text-slate-900">${curVal} ס"מ</span> <span class="text-[10px] font-bold ${color}">(${diff > 0 ? '+' : ''}${diff})</span>`;
+      };
+
+      box.innerHTML = `
+        <table class="w-full text-right border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+              <th class="py-2.5 px-3 font-extrabold">תאריך מדידה</th>
+              ${gender === 'male' ? '<th class="py-2.5 px-3 font-extrabold">חזה (גברים)</th>' : '<th class="py-2.5 px-3 font-extrabold">אגן (נשים)</th>'}
+              <th class="py-2.5 px-3 font-extrabold">ידיים</th>
+              <th class="py-2.5 px-3 font-extrabold">מותניים (מתחת לטבור)</th>
+              <th class="py-2.5 px-3 font-extrabold">ירכיים</th>
+              <th class="py-2.5 px-2 text-center font-extrabold">פעולות</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            ${list.map((m, idx) => {
+              const isLatest = idx === 0;
+              return `
+                <tr class="${isLatest ? 'bg-teal-50/30' : 'hover:bg-slate-50'}">
+                  <td class="py-2.5 px-3 font-bold text-slate-800">${m.date} ${isLatest ? '<span class="text-[10px] bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded-full mr-1">אחרון</span>' : ''}</td>
+                  ${gender === 'male'
+                    ? `<td class="py-2.5 px-3">${isLatest ? formatValWithDelta(m.chest, oldest.chest) : (m.chest ? `${m.chest} ס"מ` : '-')}</td>`
+                    : `<td class="py-2.5 px-3">${isLatest ? formatValWithDelta(m.hips, oldest.hips) : (m.hips ? `${m.hips} ס"מ` : '-')}</td>`
+                  }
+                  <td class="py-2.5 px-3">${isLatest ? formatValWithDelta(m.arms, oldest.arms) : (m.arms ? `${m.arms} ס"מ` : '-')}</td>
+                  <td class="py-2.5 px-3">${isLatest ? formatValWithDelta(m.waist, oldest.waist) : (m.waist ? `${m.waist} ס"מ` : '-')}</td>
+                  <td class="py-2.5 px-3">${isLatest ? formatValWithDelta(m.thighs, oldest.thighs) : (m.thighs ? `${m.thighs} ס"מ` : '-')}</td>
+                  <td class="py-2.5 px-2 text-center">
+                    <button type="button" onclick="deleteAdminBodyMeasurement('${m.id}')" class="text-rose-600 hover:bg-rose-50 px-2 py-1 rounded-lg font-bold cursor-pointer">🗑️</button>
+                  </td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      `;
     }
 
     window.onSelectSubscriptionPlanPreset = function(planId) {
@@ -528,7 +749,6 @@
         plan.price = isNaN(num) ? 0 : num;
       }
 
-      // סנכרון כל הלקוחות שמשויכים למסלול שנערך
       clientIds.forEach(cId => {
         const st = cId === activeClientId ? clientState : loadClientState(cId);
         if (st.subscriptionPlanId === plan.id) {
@@ -553,7 +773,6 @@
       subscriptionPlans.splice(planIdx, 1);
       const fallbackPlan = subscriptionPlans[0];
 
-      // העברת לקוחות שהיו במסלול שנמחק למסלול ברירת המחדל הנותר
       clientIds.forEach(cId => {
         const st = cId === activeClientId ? clientState : loadClientState(cId);
         if (st.subscriptionPlanId === planToRemove.id) {
@@ -762,6 +981,7 @@
 
     window.saveAdminClientProfile = function() {
       clientState.profile.name = (document.getElementById('admProfName').value || '').trim() || activeClientId;
+      clientState.profile.gender = document.getElementById('admProfGender').value === 'female' ? 'female' : 'male';
       clientState.profile.phone = (document.getElementById('admProfPhone').value || '').trim();
       clientState.profile.birthDate = (document.getElementById('admProfBirthDate').value || '').trim();
       clientState.profile.weight = parseFloat(document.getElementById('admProfWeight').value) || 75;
@@ -779,11 +999,13 @@
     function buildClientPersonalUrl() {
       const payload = {
         name: clientState.profile.name,
+        gender: clientState.profile.gender || 'male',
         phone: clientState.profile.phone,
         birthDate: clientState.profile.birthDate,
         tier: clientState.subscriptionTierName,
         targets: clientState.nutritionTargets,
-        sessions: clientState.workoutSessions
+        sessions: clientState.workoutSessions,
+        measurements: clientState.bodyMeasurementsHistory || []
       };
       const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
       const baseUrl = window.location.href.replace(/admin\.html.*$/, 'index.html');
@@ -1163,6 +1385,7 @@
       document.getElementById('admTargetFat').value = clientState.nutritionTargets.fat;
 
       document.getElementById('admProfName').value = clientState.profile.name || '';
+      document.getElementById('admProfGender').value = clientState.profile.gender === 'female' ? 'female' : 'male';
       document.getElementById('admProfPhone').value = clientState.profile.phone || '';
       document.getElementById('admProfBirthDate').value = clientState.profile.birthDate || '';
       document.getElementById('admProfWeight').value = clientState.profile.weight || '';
@@ -1198,6 +1421,7 @@
       renderAdminWorkouts();
       renderAdminDailyLogs();
       renderAdminProgressCharts();
+      renderAdminMeasurements();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
