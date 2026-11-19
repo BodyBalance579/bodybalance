@@ -65,7 +65,6 @@
           </div>
           <div class="flex flex-wrap items-center gap-2 mt-0.5">
             <span id="bannerPhoneBadge" class="text-xs text-teal-800 font-semibold"></span>
-            <span id="bannerPlanBadge" class="text-xs font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200"></span>
             <span id="bannerBirthdayBadge" class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-pink-50 text-pink-800 border border-pink-200"></span>
           </div>
         </div>
@@ -78,9 +77,8 @@
         <button type="button" onclick="switchTab('forms')" id="bannerFormsAlertBtn" class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-3 py-1.5 rounded-xl cursor-pointer">
           📋 הצהרת בריאות ותקנון
         </button>
-        <button type="button" onclick="switchTab('profile')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3 py-1.5 rounded-xl cursor-pointer">✏️ פרטים והיקפים</button>
-        <button type="button" onclick="shareWhatsAppSummary()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl cursor-pointer">💬 סיכום וואטסאפ</button>
-        <button type="button" onclick="sendAppLinkViaWhatsApp()" class="text-xs bg-teal-700 hover:bg-teal-800 text-white font-bold px-3 py-1.5 rounded-xl cursor-pointer">🔗 שלח אפליקציה ללקוח</button>
+        <span class="text-[11px] bg-slate-100 text-slate-700 font-bold px-2.5 py-1.5 rounded-xl border border-slate-200">🔒 הכרטיס האישי שלי בלבד</span>
+        <button type="button" onclick="switchTab('profile')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3 py-1.5 rounded-xl cursor-pointer">✏️ הכרטיס שלי והיקפים</button>
       </div>
     </div>
 
@@ -582,8 +580,8 @@
             <input id="profName" type="text" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">קוד מתאמן *</label>
-            <input id="profCode" type="text" placeholder="למשל: yoav-01" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono" />
+            <label class="block text-xs font-bold text-slate-600 mb-1">קוד כרטיס לקוח אישי (נעול לכרטיס שלך בלבד)</label>
+            <input id="profCode" type="text" readonly class="w-full border border-slate-200 bg-slate-100 text-slate-600 rounded-xl px-3 py-2 text-sm font-mono cursor-not-allowed" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">מגדר (להתאמת היקפים)</label>
@@ -645,25 +643,6 @@
               <input id="circThighs" type="number" step="0.5" min="0" placeholder="למשל: 58" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white" />
             </div>
           </div>
-        </div>
-
-        <!-- קישור לוואטסאפ לשליחת האפליקציה ללקוח הספציפי -->
-        <div class="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-4 space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h3 class="text-sm font-extrabold text-emerald-950">🔗 קישור לוואטסאפ לשליחת האפליקציה ללקוח הספציפי</h3>
-              <p class="text-xs text-emerald-800">הקישור מכיל את מזהה הלקוח והנתונים האישיים/התוכנית המקודדים עבור לקוח זה</p>
-            </div>
-            <div class="flex flex-wrap items-center gap-2">
-              <button type="button" onclick="copyClientAppLink()" class="bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-300 font-bold px-3 py-1.5 rounded-xl text-xs cursor-pointer">
-                📋 העתק קישור
-              </button>
-              <button type="button" onclick="sendAppLinkViaWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-1.5 rounded-xl text-xs cursor-pointer">
-                💬 שלח בוואטסאפ ללקוח
-              </button>
-            </div>
-          </div>
-          <input id="clientAppShareUrlInput" type="text" readonly class="w-full border border-emerald-300 bg-white rounded-xl px-3 py-2 text-xs font-mono text-slate-700" />
         </div>
 
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-600">
@@ -1040,6 +1019,8 @@
         bodyWeightHistory: [{ date: todayStr, weight: 78 }],
         weeklyWorkoutsPerWeek: 3,
         workoutSessions: createDefaultSessions(3),
+        bodyMeasurementsHistory: [],
+        clientCardSettings: { visibilityMode: 'own_only', showSubAndCirc: true, ownerClientId: null },
         healthDeclaration: { signed: false, idNumber: '', answers: {}, signatureDataUrl: '', signedAt: '' },
         termsAcceptance: { accepted: false, acceptedAt: '' },
         dayLogs: {}
@@ -1048,147 +1029,26 @@
 
     let state = loadState();
 
-
-    // === BodyBalance Admin <-> Index Client Data Sync Bridge ===
-    const BB_SYNC_CHANNEL_NAME = 'BodyBalanceClientSync_v1';
-    const bbSyncChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel(BB_SYNC_CHANNEL_NAME) : null;
-
-    function bbReadClientsRegistry() {
-      try {
-        const raw = localStorage.getItem('BodyBalanceAdminClients_v1');
-        const list = raw ? JSON.parse(raw) : [];
-        return Array.isArray(list) && list.length ? list : ['yoav-01'];
-      } catch (e) {
-        return ['yoav-01'];
-      }
-    }
-
-    function bbRegisterClientId(id) {
-      if (!id) return;
-      const list = bbReadClientsRegistry();
-      if (!list.includes(id)) {
-        list.push(id);
-        localStorage.setItem('BodyBalanceAdminClients_v1', JSON.stringify(list));
-      }
-    }
-
-    function bbReadUnifiedState(id) {
-      try {
-        const raw = localStorage.getItem(`BodyBalanceUnifiedState_${id}`);
-        return raw ? JSON.parse(raw) : null;
-      } catch (e) {
-        return null;
-      }
-    }
-
-    function bbNormalizeCircumferences(stateObj) {
-      const prof = stateObj?.profile || {};
-      const circ = { ...(prof.circumferences || {}) };
-      const hist = Array.isArray(stateObj?.bodyMeasurementsHistory) ? stateObj.bodyMeasurementsHistory : [];
-      if (hist.length > 0) {
-        const sorted = [...hist].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
-        const latest = sorted[0] || {};
-        if (!circ.chest && latest.chest !== null && latest.chest !== undefined) circ.chest = String(latest.chest);
-        if (!circ.hips && latest.hips !== null && latest.hips !== undefined) circ.hips = String(latest.hips);
-        if (!circ.arm && latest.arms !== null && latest.arms !== undefined) circ.arm = String(latest.arms);
-        if (!circ.waist && latest.waist !== null && latest.waist !== undefined) circ.waist = String(latest.waist);
-        if (!circ.thighs && latest.thighs !== null && latest.thighs !== undefined) circ.thighs = String(latest.thighs);
-      }
-      return circ;
-    }
-
-    function bbMergeClientStates(id, adminOrIncoming, existingState) {
-      const base = existingState || {};
-      const inc = adminOrIncoming || {};
-      const baseProf = base.profile || {};
-      const incProf = inc.profile || {};
-
-      const mergedProfile = {
-        ...baseProf,
-        ...incProf,
-        name: incProf.name || baseProf.name || id,
-        gender: incProf.gender || baseProf.gender || 'male',
-        phone: incProf.phone !== undefined ? incProf.phone : (baseProf.phone || ''),
-        birthDate: incProf.birthDate !== undefined ? incProf.birthDate : (baseProf.birthDate || ''),
-        avatarDataUrl: incProf.avatarDataUrl || baseProf.avatarDataUrl || '',
-        weight: incProf.weight !== undefined && incProf.weight !== '' ? incProf.weight : (baseProf.weight || 78),
-        height: incProf.height !== undefined && incProf.height !== '' ? incProf.height : (baseProf.height || 178),
-        age: incProf.age !== undefined && incProf.age !== '' ? incProf.age : (baseProf.age || 28),
-        circumferences: {
-          ...(baseProf.circumferences || {}),
-          ...(incProf.circumferences || {})
-        }
-      };
-
-      const merged = {
-        ...base,
-        ...inc,
-        subscriptionActive: inc.subscriptionActive !== undefined ? inc.subscriptionActive : (base.subscriptionActive !== undefined ? base.subscriptionActive : true),
-        subscriptionPlanId: inc.subscriptionPlanId || base.subscriptionPlanId || 'full-coaching',
-        subscriptionTierName: inc.subscriptionTierName || base.subscriptionTierName || 'מסלול ליווי מלא (אימונים + תזונה)',
-        subscriptionPrice: inc.subscriptionPrice !== undefined ? inc.subscriptionPrice : (base.subscriptionPrice !== undefined ? base.subscriptionPrice : 450),
-        subscriptionRenewalDate: inc.subscriptionRenewalDate !== undefined ? inc.subscriptionRenewalDate : (base.subscriptionRenewalDate || ''),
-        nutritionTargets: {
-          calories: 2200,
-          protein: 160,
-          carbs: 220,
-          fat: 70,
-          ...(base.nutritionTargets || {}),
-          ...(inc.nutritionTargets || {})
-        },
-        profile: mergedProfile,
-        bodyWeightHistory: Array.isArray(inc.bodyWeightHistory) && inc.bodyWeightHistory.length
-          ? inc.bodyWeightHistory
-          : (Array.isArray(base.bodyWeightHistory) ? base.bodyWeightHistory : []),
-        bodyMeasurementsHistory: Array.isArray(inc.bodyMeasurementsHistory) && inc.bodyMeasurementsHistory.length
-          ? inc.bodyMeasurementsHistory
-          : (Array.isArray(base.bodyMeasurementsHistory) ? base.bodyMeasurementsHistory : []),
-        workoutSessions: Array.isArray(inc.workoutSessions) && inc.workoutSessions.length
-          ? inc.workoutSessions
-          : (Array.isArray(base.workoutSessions) ? base.workoutSessions : []),
-        healthDeclaration: {
-          signed: false,
-          ...(base.healthDeclaration || {}),
-          ...(inc.healthDeclaration || {})
-        },
-        termsAcceptance: {
-          accepted: false,
-          ...(base.termsAcceptance || {}),
-          ...(inc.termsAcceptance || {})
-        },
-        dayLogs: {
-          ...(base.dayLogs || {}),
-          ...(inc.dayLogs || {})
-        }
-      };
-
-      merged.profile.circumferences = bbNormalizeCircumferences(merged);
-      merged.weeklyWorkoutsPerWeek = merged.workoutSessions.length || merged.weeklyWorkoutsPerWeek || 3;
-      return merged;
-    }
-
-    function bbBroadcastClientUpdate(id, stateObj, sourceRole) {
-      if (!id || !stateObj) return;
-      bbRegisterClientId(id);
-      const key = `BodyBalanceUnifiedState_${id}`;
-      const serialized = JSON.stringify(stateObj);
-      localStorage.setItem(key, serialized);
-      if (bbSyncChannel) {
-        bbSyncChannel.postMessage({
-          type: 'CLIENT_STATE_SYNC',
-          clientId: id,
-          sourceRole: sourceRole || 'unknown',
-          state: stateObj,
-          timestamp: Date.now()
-        });
-      }
-    }
-
     function loadState() {
       try {
+        const raw = localStorage.getItem(stateStorageKey(clientId));
+        const parsed = raw ? JSON.parse(raw) : {};
         const def = getDefaultClientState();
-        const parsed = bbReadUnifiedState(clientId) || {};
-        const merged = bbMergeClientStates(clientId, parsed, def);
+        const merged = {
+          ...def,
+          ...parsed,
+          nutritionTargets: { ...def.nutritionTargets, ...(parsed.nutritionTargets || {}) },
+          profile: {
+            ...def.profile,
+            ...(parsed.profile || {}),
+            circumferences: {
+              ...def.profile.circumferences,
+              ...((parsed.profile && parsed.profile.circumferences) || {})
+            }
+          },
+          healthDeclaration: { ...def.healthDeclaration, ...(parsed.healthDeclaration || {}) },
+          termsAcceptance: { ...def.termsAcceptance, ...(parsed.termsAcceptance || {}) }
+        };
 
         if (!Array.isArray(merged.bodyWeightHistory)) {
           merged.bodyWeightHistory = merged.profile.weight
@@ -1204,16 +1064,49 @@
           merged.workoutSessions = fallbackSessions;
         }
         merged.weeklyWorkoutsPerWeek = merged.workoutSessions.length;
+        merged.clientCardSettings = {
+          visibilityMode: 'own_only',
+          showSubAndCirc: true,
+          ...(merged.clientCardSettings || {}),
+          ownerClientId: clientId
+        };
+        if (!Array.isArray(merged.bodyMeasurementsHistory)) {
+          merged.bodyMeasurementsHistory = [];
+        }
+        const latestMeas = [...merged.bodyMeasurementsHistory].sort((a, b) => b.date.localeCompare(a.date))[0];
+        if (latestMeas) {
+          merged.profile.circumferences = {
+            chest: merged.profile.circumferences?.chest || (latestMeas.chest ? String(latestMeas.chest) : ''),
+            hips: merged.profile.circumferences?.hips || (latestMeas.hips ? String(latestMeas.hips) : ''),
+            arm: merged.profile.circumferences?.arm || (latestMeas.arms ? String(latestMeas.arms) : ''),
+            waist: merged.profile.circumferences?.waist || (latestMeas.waist ? String(latestMeas.waist) : ''),
+            thighs: merged.profile.circumferences?.thighs || (latestMeas.thighs ? String(latestMeas.thighs) : '')
+          };
+        }
         return merged;
       } catch (e) {
         return getDefaultClientState();
       }
     }
 
-    function saveState() {
-      state.profile.circumferences = bbNormalizeCircumferences(state);
-      bbRegisterClientId(clientId);
-      bbBroadcastClientUpdate(clientId, state, 'index');
+    function saveState() { localStorage.setItem(stateStorageKey(clientId), JSON.stringify(state)); }
+
+    const OWN_CARD_LOCK_KEY = 'BodyBalanceOwnClientCardId_v1';
+
+    function enforceOwnClientCardOnly(requestedId = '') {
+      const lockedOwner = (localStorage.getItem(OWN_CARD_LOCK_KEY) || '').trim();
+      const cleanReq = (requestedId || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
+
+      if (lockedOwner) {
+        // לקוח שכבר משויך לכרטיס אישי רואה רק את הכרטיס שלו ולא יכול לעבור לכרטיס לקוח אחר
+        clientId = lockedOwner;
+      } else if (cleanReq) {
+        clientId = cleanReq;
+        localStorage.setItem(OWN_CARD_LOCK_KEY, clientId);
+      } else {
+        localStorage.setItem(OWN_CARD_LOCK_KEY, clientId);
+      }
+      localStorage.setItem(CLIENT_ID_KEY, clientId);
     }
 
     function applyIncomingClientLinkParams() {
@@ -1222,124 +1115,51 @@
         const paramClient = (params.get('client') || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
         const paramPlan = params.get('plan');
 
-        if (paramClient) {
-          clientId = paramClient;
-          localStorage.setItem(CLIENT_ID_KEY, clientId);
-          bbRegisterClientId(clientId);
-          state = loadState();
-        }
+        enforceOwnClientCardOnly(paramClient);
+        state = loadState();
 
         if (paramPlan) {
           const decoded = JSON.parse(decodeURIComponent(escape(atob(paramPlan))));
           if (decoded && typeof decoded === 'object') {
-            const incomingPatch = {
-              profile: {
-                ...(decoded.name ? { name: decoded.name } : {}),
-                ...(decoded.gender ? { gender: decoded.gender } : {}),
-                ...(decoded.phone !== undefined ? { phone: decoded.phone } : {}),
-                ...(decoded.birthDate !== undefined ? { birthDate: decoded.birthDate } : {}),
-                ...(decoded.weight ? { weight: decoded.weight } : {}),
-                ...(decoded.height ? { height: decoded.height } : {}),
-                ...(decoded.age ? { age: decoded.age } : {}),
-                ...(decoded.circumferences ? { circumferences: decoded.circumferences } : {})
-              },
-              ...(decoded.subscriptionActive !== undefined ? { subscriptionActive: !!decoded.subscriptionActive } : {}),
-              ...(decoded.tier ? { subscriptionTierName: decoded.tier } : {}),
-              ...(decoded.price !== undefined ? { subscriptionPrice: decoded.price } : {}),
-              ...(decoded.renewalDate !== undefined ? { subscriptionRenewalDate: decoded.renewalDate } : {}),
-              ...(decoded.targets ? { nutritionTargets: decoded.targets } : {}),
-              ...(Array.isArray(decoded.sessions) && decoded.sessions.length > 0 ? {
-                workoutSessions: decoded.sessions,
-                weeklyWorkoutsPerWeek: decoded.sessions.length
-              } : {}),
-              ...(Array.isArray(decoded.measurements) && decoded.measurements.length > 0 ? {
-                bodyMeasurementsHistory: decoded.measurements
-              } : {}),
-              ...(Array.isArray(decoded.bodyWeightHistory) && decoded.bodyWeightHistory.length > 0 ? {
-                bodyWeightHistory: decoded.bodyWeightHistory
-              } : {})
-            };
-            state = bbMergeClientStates(clientId, incomingPatch, state);
+            if (decoded.name) state.profile.name = decoded.name;
+            if (decoded.gender) state.profile.gender = decoded.gender;
+            if (decoded.phone) state.profile.phone = decoded.phone;
+            if (decoded.birthDate) state.profile.birthDate = decoded.birthDate;
+            if (decoded.weight) state.profile.weight = decoded.weight;
+            if (decoded.height) state.profile.height = decoded.height;
+            if (decoded.circumferences) {
+              state.profile.circumferences = { ...state.profile.circumferences, ...decoded.circumferences };
+            }
+            if (Array.isArray(decoded.measurements)) {
+              state.bodyMeasurementsHistory = decoded.measurements;
+            }
+            if (Array.isArray(decoded.bodyWeightHistory) && decoded.bodyWeightHistory.length > 0) {
+              state.bodyWeightHistory = decoded.bodyWeightHistory;
+            }
+            if (decoded.subscriptionActive !== undefined) {
+              state.subscriptionActive = !!decoded.subscriptionActive;
+            }
+            if (decoded.subscriptionRenewalDate !== undefined) {
+              state.subscriptionRenewalDate = decoded.subscriptionRenewalDate;
+            }
+            if (decoded.clientCardSettings && typeof decoded.clientCardSettings === 'object') {
+              state.clientCardSettings = {
+                ...(state.clientCardSettings || {}),
+                ...decoded.clientCardSettings,
+                ownerClientId: clientId
+              };
+            }
+            if (decoded.tier) state.subscriptionTierName = decoded.tier;
+            if (decoded.targets) state.nutritionTargets = { ...state.nutritionTargets, ...decoded.targets };
+            if (Array.isArray(decoded.sessions) && decoded.sessions.length > 0) {
+              state.workoutSessions = decoded.sessions;
+              state.weeklyWorkoutsPerWeek = decoded.sessions.length;
+            }
             saveState();
           }
         }
       } catch (e) {}
     }
-
-    function bindIndexLiveSyncListeners() {
-      window.addEventListener('storage', (ev) => {
-        if (!ev.key) return;
-        if (ev.key === stateStorageKey(clientId)) {
-          renderAll();
-        }
-      });
-
-      if (bbSyncChannel) {
-        bbSyncChannel.onmessage = (event) => {
-          const msg = event.data || {};
-          if (msg.type === 'CLIENT_STATE_SYNC' && msg.sourceRole === 'admin' && msg.clientId === clientId) {
-            renderAll();
-          }
-        };
-      }
-    }
-
-    function buildClientAppShareUrl() {
-      const payloadObj = {
-        name: state.profile.name || '',
-        gender: state.profile.gender || 'male',
-        phone: state.profile.phone || '',
-        birthDate: state.profile.birthDate || '',
-        weight: state.profile.weight || '',
-        height: state.profile.height || '',
-        circumferences: state.profile.circumferences || {},
-        tier: state.subscriptionTierName || '',
-        targets: state.nutritionTargets || {},
-        sessions: state.workoutSessions || []
-      };
-      const encodedPlan = btoa(unescape(encodeURIComponent(JSON.stringify(payloadObj))));
-      const base = window.location.href.split('?')[0];
-      return `${base}?client=${encodeURIComponent(clientId)}&plan=${encodeURIComponent(encodedPlan)}`;
-    }
-
-    function normalizePhoneForWhatsApp(rawPhone) {
-      let digits = (rawPhone || '').replace(/\D/g, '');
-      if (!digits) return '';
-      if (digits.startsWith('0')) {
-        digits = '972' + digits.slice(1);
-      }
-      return digits;
-    }
-
-    window.sendAppLinkViaWhatsApp = function() {
-      const shareUrl = buildClientAppShareUrl();
-      const inputEl = document.getElementById('clientAppShareUrlInput');
-      if (inputEl) inputEl.value = shareUrl;
-
-      const phoneDigits = normalizePhoneForWhatsApp(state.profile.phone);
-      const clientName = state.profile.name || clientId;
-      const msg = [
-        `שלום ${clientName} 👋`,
-        `להלן הקישור האישי שלך לאפליקציית *BodyBalance* למעקב תזונה, אימונים והתקדמות:`,
-        shareUrl
-      ].join('\n');
-
-      const waUrl = phoneDigits
-        ? `https://wa.me/${phoneDigits}?text=${encodeURIComponent(msg)}`
-        : `https://wa.me/?text=${encodeURIComponent(msg)}`;
-      window.open(waUrl, '_blank', 'noopener,noreferrer');
-    };
-
-    window.copyClientAppLink = function() {
-      const shareUrl = buildClientAppShareUrl();
-      const inputEl = document.getElementById('clientAppShareUrlInput');
-      if (inputEl) inputEl.value = shareUrl;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          alert('הקישור האישי של הלקוח הועתק ללוח!');
-        }).catch(() => {});
-      }
-    };
 
     // --- בניית גרף SVG רספונסיבי ---
     function buildSvgLineChart(points, unitSuffix = 'ק"ג', strokeColor = '#0f766e', fillColor = 'rgba(15, 118, 110, 0.12)') {
@@ -2312,19 +2132,21 @@
     window.closeVideoModal = function() { document.getElementById('videoModal').classList.add('hidden'); };
 
     window.saveProfile = function() {
-      const nextCode = (document.getElementById('profCode').value || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
+      enforceOwnClientCardOnly();
       const existingAvatar = state.profile.avatarDataUrl || '';
-      if (nextCode && nextCode !== clientId) {
-        clientId = nextCode;
-        localStorage.setItem(CLIENT_ID_KEY, clientId);
-        selectedWorkoutSessionIndex = 0;
-        state = loadState();
-      }
       const birthDateVal = (document.getElementById('profBirthDate').value || '').trim();
       const bInfo = getBirthdayDetails(birthDateVal);
       const calculatedAge = bInfo ? bInfo.age : (parseInt(document.getElementById('profAge').value, 10) || 28);
       const newWeight = parseFloat(document.getElementById('profWeight').value) || 75;
       const genderVal = document.getElementById('profGender').value || 'male';
+
+      const circObj = {
+        chest: (document.getElementById('circChest')?.value || '').trim(),
+        arm: (document.getElementById('circArm')?.value || '').trim(),
+        waist: (document.getElementById('circWaist')?.value || '').trim(),
+        hips: (document.getElementById('circHips')?.value || '').trim(),
+        thighs: (document.getElementById('circThighs')?.value || '').trim()
+      };
 
       state.profile = {
         name: (document.getElementById('profName').value || '').trim() || 'מתאמן',
@@ -2335,89 +2157,47 @@
         weight: newWeight,
         height: parseInt(document.getElementById('profHeight').value, 10) || 175,
         age: calculatedAge,
-        circumferences: {
-          chest: (document.getElementById('circChest')?.value || '').trim(),
-          arm: (document.getElementById('circArm')?.value || '').trim(),
-          waist: (document.getElementById('circWaist')?.value || '').trim(),
-          hips: (document.getElementById('circHips')?.value || '').trim(),
-          thighs: (document.getElementById('circThighs')?.value || '').trim()
-        }
+        circumferences: circObj
       };
+
+      // סנכרון היקפים לרשומת המדידה של התאריך הנבחר כדי שיופיעו גם בממשק המנהל
+      const pNum = (v) => {
+        const n = parseFloat(v);
+        return !isNaN(n) && n > 0 ? Number(n.toFixed(1)) : null;
+      };
+      const mChest = genderVal === 'male' ? pNum(circObj.chest) : null;
+      const mHips = genderVal === 'female' ? pNum(circObj.hips) : null;
+      const mArms = pNum(circObj.arm);
+      const mWaist = pNum(circObj.waist);
+      const mThighs = pNum(circObj.thighs);
+      if ([mChest, mHips, mArms, mWaist, mThighs].some(v => v !== null)) {
+        if (!Array.isArray(state.bodyMeasurementsHistory)) state.bodyMeasurementsHistory = [];
+        const idx = state.bodyMeasurementsHistory.findIndex(m => m.date === selectedDate);
+        const rec = {
+          id: idx >= 0 ? state.bodyMeasurementsHistory[idx].id : `meas-${Date.now()}`,
+          date: selectedDate,
+          gender: genderVal,
+          chest: mChest,
+          hips: mHips,
+          arms: mArms,
+          waist: mWaist,
+          thighs: mThighs
+        };
+        if (idx >= 0) state.bodyMeasurementsHistory[idx] = rec;
+        else state.bodyMeasurementsHistory.push(rec);
+      }
+
+      state.clientCardSettings = {
+        visibilityMode: 'own_only',
+        showSubAndCirc: true,
+        ...(state.clientCardSettings || {}),
+        ownerClientId: clientId
+      };
+
       upsertBodyWeightRecord(selectedDate, newWeight);
       saveState();
       renderAll();
       alert('הפרטים האישיים, ההיקפים ומשקל הגוף נשמרו בהצלחה!');
-    };
-
-    window.shareWhatsAppSummary = function() {
-      const log = getDayLog();
-      const targets = state.nutritionTargets || { calories: 2200, protein: 160, carbs: 220, fat: 70 };
-      const totals = log.meals.reduce((acc, m) => ({
-        cal: acc.cal + (m.calories || 0),
-        pro: acc.pro + (m.protein || 0),
-        carb: acc.carb + (m.carbs || 0),
-        fat: acc.fat + (m.fat || 0)
-      }), { cal: 0, pro: 0, carb: 0, fat: 0 });
-
-      const activeSess = (state.workoutSessions || [])[selectedWorkoutSessionIndex];
-      const workoutSummaryLines = [];
-      if (activeSess && Array.isArray(activeSess.exercises)) {
-        activeSess.exercises.forEach(ex => {
-          const exKey = `${activeSess.id}_${ex.id}`;
-          const setLogs = log.exerciseSetLogs?.[exKey] || {};
-          const numSets = getExerciseActiveSetsCount(ex, setLogs);
-          const setsArr = [];
-          for (let i = 0; i < numSets; i++) {
-            const actualW = setLogs[`w_${i}`] || (ex.setWeights && ex.setWeights[i]) || '';
-            const actualReps = setLogs[`reps_${i}`] || (ex.setReps && ex.setReps[i]) || ex.reps || '';
-            const actualRir = setLogs[`rir_${i}`] !== undefined && setLogs[`rir_${i}`] !== ''
-              ? setLogs[`rir_${i}`]
-              : (ex.setRirs && ex.setRirs[i] ? ex.setRirs[i] : '');
-            const status = getSetCircleStatus(setLogs, i);
-            const statusIcon = status === 'done' ? '✓' : status === 'missed' ? '✕' : '';
-            if (actualW || status !== 'none') {
-              const infoParts = [
-                actualW ? `${actualW} ק"ג` : '',
-                actualReps ? `${actualReps} חז׳` : '',
-                actualRir !== '' ? `RIR ${actualRir}` : ''
-              ].filter(Boolean).join(', ');
-              setsArr.push(`סט ${i + 1}${statusIcon ? ` [${statusIcon}]` : ''}: ${infoParts}`);
-            }
-          }
-          if (log.completedExercises?.[exKey] || setsArr.length > 0) {
-            workoutSummaryLines.push(`• ${ex.name}${setsArr.length ? ` (${setsArr.join(' | ')})` : ''}`);
-          }
-        });
-      }
-
-      const bInfo = getBirthdayDetails(state.profile.birthDate);
-      const circ = state.profile.circumferences || {};
-      const circParts = [];
-      if (state.profile.gender === 'female') {
-        if (circ.hips) circParts.push(`אגן: ${circ.hips} ס"מ`);
-      } else {
-        if (circ.chest) circParts.push(`חזה: ${circ.chest} ס"מ`);
-      }
-      if (circ.arm) circParts.push(`יד: ${circ.arm} ס"מ`);
-      if (circ.waist) circParts.push(`מותניים: ${circ.waist} ס"מ`);
-      if (circ.thighs) circParts.push(`ירכיים: ${circ.thighs} ס"מ`);
-
-      const text = [
-        '📊 *סיכום יומי — BodyBalance*',
-        `👤 *מתאמן:* ${state.profile.name} (${clientId})`,
-        state.profile.phone ? `📱 *טלפון:* ${state.profile.phone}` : '',
-        bInfo ? `${bInfo.statusText}` : '',
-        `📅 *תאריך:* ${selectedDate}`,
-        `⚖️ *משקל גוף:* ${state.profile.weight} ק"ג`,
-        circParts.length ? `📏 *היקפים:* ${circParts.join(' · ')}` : '',
-        `🔥 *קלוריות:* ${Math.round(totals.cal)} / ${targets.calories} קק"ל`,
-        `🥩 *חלבון:* ${totals.pro.toFixed(1)} / ${targets.protein}g`,
-        `🌾 *פחמימה:* ${totals.carb.toFixed(1)} / ${targets.carbs}g`,
-        `🥑 *שומן:* ${totals.fat.toFixed(1)} / ${targets.fat}g`,
-        workoutSummaryLines.length ? `\n🏋️ *ביצוע אימון (${activeSess.title}):*\n${workoutSummaryLines.join('\n')}` : ''
-      ].filter(Boolean).join('\n');
-
-      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
     };
 
     function updateMacroProgress(val, target, valId, targetId, pctId, barId, decimals = 0) {
@@ -2803,11 +2583,6 @@
       document.getElementById('bannerCode').textContent = clientId;
       document.getElementById('bannerGenderBadge').textContent = genderVal === 'female' ? 'אישה' : 'גבר';
       document.getElementById('bannerPhoneBadge').textContent = state.profile.phone ? `📱 ${state.profile.phone}` : 'לא הוזן טלפון נייד';
-      const planBadgeEl = document.getElementById('bannerPlanBadge');
-      if (planBadgeEl) {
-        const subStatusText = state.subscriptionActive === false ? ' · מנוי מושהה' : '';
-        planBadgeEl.textContent = `${state.subscriptionTierName || 'מסלול ליווי אישי'}${subStatusText}`;
-      }
       document.getElementById('headerSub').textContent = `${state.profile.name} · ${state.profile.weight} ק"ג`;
 
       const bBadge = document.getElementById('bannerBirthdayBadge');
@@ -2841,8 +2616,7 @@
       document.getElementById('circThighs').value = circ.thighs || '';
       onGenderInputChange();
 
-      const shareUrlEl = document.getElementById('clientAppShareUrlInput');
-      if (shareUrlEl) shareUrlEl.value = buildClientAppShareUrl();
+
     }
 
     function renderAll() {
@@ -2858,9 +2632,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      bbRegisterClientId(clientId);
       applyIncomingClientLinkParams();
-      bindIndexLiveSyncListeners();
       initSignatureCanvas();
       document.getElementById('datePicker').value = selectedDate;
       document.getElementById('newBodyWeightDate').value = selectedDate;
