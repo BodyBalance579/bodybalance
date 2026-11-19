@@ -53,12 +53,6 @@
         <span id="admHeaderFormsBadge" class="px-2.5 py-1 rounded-full font-bold bg-amber-100 text-amber-800">טפסים: ממתין</span>
       </div>
       <div class="flex flex-wrap items-center gap-2">
-        <span id="admSyncStatusPill" class="px-2.5 py-1.5 rounded-xl font-bold bg-teal-50 text-teal-800 border border-teal-200 text-xs">
-          🔄 סנכרון פעיל עם ממשק לקוח
-        </span>
-        <button type="button" onclick="openClientPortalPreview()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3.5 py-2 rounded-xl text-xs cursor-pointer">
-          👁️ פתח ממשק לקוח מסונכרן
-        </button>
         <button type="button" onclick="copyClientMagicLink()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-3.5 py-2 rounded-xl text-xs cursor-pointer">
           🔗 העתק קישור אישי למתאמן
         </button>
@@ -425,6 +419,36 @@
           </div>
         </div>
 
+        <div class="bg-indigo-50/60 border border-indigo-200 rounded-2xl p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-sm font-extrabold text-indigo-950">🔒 הרשאות כרטיס לקוח בממשק הלקוחות</h3>
+              <p class="text-xs text-indigo-800">כל לקוח רואה כברירת מחדל רק את הכרטיס האישי שלו (ללא חשיפה לכרטיסים של לקוחות אחרים)</p>
+            </div>
+            <span class="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-900">כרטיס אישי מבודד ✓</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">מצב צפייה בכרטיס לקוח</label>
+              <select id="admCardVisibilityMode" class="w-full border border-indigo-200 rounded-xl px-3 py-2 font-bold bg-white">
+                <option value="own_only">כרטיס אישי בלבד (מומלץ — ללא לקוחות אחרים)</option>
+                <option value="own_locked">כרטיס אישי נעול לעריכת קוד לקוח</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">הצגת כרטיס מנוי והיקפים ללקוח</label>
+              <select id="admCardShowSubAndCirc" class="w-full border border-indigo-200 rounded-xl px-3 py-2 font-bold bg-white">
+                <option value="true">מוצג בכרטיס האישי של הלקוח</option>
+                <option value="false">מוסתר (מוצג למנהל בלבד)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">מזהה כרטיס לקוח משויך</label>
+              <input id="admCardBoundId" type="text" readonly class="w-full border border-slate-200 rounded-xl px-3 py-2 font-mono bg-slate-100 text-slate-700" />
+            </div>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs">
           <div class="space-y-2">
             <div>
@@ -536,178 +560,31 @@
       return sessions;
     }
 
-
-    // === BodyBalance Admin <-> Index Client Data Sync Bridge ===
-    const BB_SYNC_CHANNEL_NAME = 'BodyBalanceClientSync_v1';
-    const bbSyncChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel(BB_SYNC_CHANNEL_NAME) : null;
-
-    function bbReadClientsRegistry() {
-      try {
-        const raw = localStorage.getItem('BodyBalanceAdminClients_v1');
-        const list = raw ? JSON.parse(raw) : [];
-        return Array.isArray(list) && list.length ? list : ['yoav-01'];
-      } catch (e) {
-        return ['yoav-01'];
-      }
-    }
-
-    function bbRegisterClientId(id) {
-      if (!id) return;
-      const list = bbReadClientsRegistry();
-      if (!list.includes(id)) {
-        list.push(id);
-        localStorage.setItem('BodyBalanceAdminClients_v1', JSON.stringify(list));
-      }
-    }
-
-    function bbReadUnifiedState(id) {
-      try {
-        const raw = localStorage.getItem(`BodyBalanceUnifiedState_${id}`);
-        return raw ? JSON.parse(raw) : null;
-      } catch (e) {
-        return null;
-      }
-    }
-
-    function bbNormalizeCircumferences(stateObj) {
-      const prof = stateObj?.profile || {};
-      const circ = { ...(prof.circumferences || {}) };
-      const hist = Array.isArray(stateObj?.bodyMeasurementsHistory) ? stateObj.bodyMeasurementsHistory : [];
-      if (hist.length > 0) {
-        const sorted = [...hist].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
-        const latest = sorted[0] || {};
-        if (!circ.chest && latest.chest !== null && latest.chest !== undefined) circ.chest = String(latest.chest);
-        if (!circ.hips && latest.hips !== null && latest.hips !== undefined) circ.hips = String(latest.hips);
-        if (!circ.arm && latest.arms !== null && latest.arms !== undefined) circ.arm = String(latest.arms);
-        if (!circ.waist && latest.waist !== null && latest.waist !== undefined) circ.waist = String(latest.waist);
-        if (!circ.thighs && latest.thighs !== null && latest.thighs !== undefined) circ.thighs = String(latest.thighs);
-      }
-      return circ;
-    }
-
-    function bbMergeClientStates(id, adminOrIncoming, existingState) {
-      const base = existingState || {};
-      const inc = adminOrIncoming || {};
-      const baseProf = base.profile || {};
-      const incProf = inc.profile || {};
-
-      const mergedProfile = {
-        ...baseProf,
-        ...incProf,
-        name: incProf.name || baseProf.name || id,
-        gender: incProf.gender || baseProf.gender || 'male',
-        phone: incProf.phone !== undefined ? incProf.phone : (baseProf.phone || ''),
-        birthDate: incProf.birthDate !== undefined ? incProf.birthDate : (baseProf.birthDate || ''),
-        avatarDataUrl: incProf.avatarDataUrl || baseProf.avatarDataUrl || '',
-        weight: incProf.weight !== undefined && incProf.weight !== '' ? incProf.weight : (baseProf.weight || 78),
-        height: incProf.height !== undefined && incProf.height !== '' ? incProf.height : (baseProf.height || 178),
-        age: incProf.age !== undefined && incProf.age !== '' ? incProf.age : (baseProf.age || 28),
-        circumferences: {
-          ...(baseProf.circumferences || {}),
-          ...(incProf.circumferences || {})
-        }
-      };
-
-      const merged = {
-        ...base,
-        ...inc,
-        subscriptionActive: inc.subscriptionActive !== undefined ? inc.subscriptionActive : (base.subscriptionActive !== undefined ? base.subscriptionActive : true),
-        subscriptionPlanId: inc.subscriptionPlanId || base.subscriptionPlanId || 'full-coaching',
-        subscriptionTierName: inc.subscriptionTierName || base.subscriptionTierName || 'מסלול ליווי מלא (אימונים + תזונה)',
-        subscriptionPrice: inc.subscriptionPrice !== undefined ? inc.subscriptionPrice : (base.subscriptionPrice !== undefined ? base.subscriptionPrice : 450),
-        subscriptionRenewalDate: inc.subscriptionRenewalDate !== undefined ? inc.subscriptionRenewalDate : (base.subscriptionRenewalDate || ''),
-        nutritionTargets: {
-          calories: 2200,
-          protein: 160,
-          carbs: 220,
-          fat: 70,
-          ...(base.nutritionTargets || {}),
-          ...(inc.nutritionTargets || {})
-        },
-        profile: mergedProfile,
-        bodyWeightHistory: Array.isArray(inc.bodyWeightHistory) && inc.bodyWeightHistory.length
-          ? inc.bodyWeightHistory
-          : (Array.isArray(base.bodyWeightHistory) ? base.bodyWeightHistory : []),
-        bodyMeasurementsHistory: Array.isArray(inc.bodyMeasurementsHistory) && inc.bodyMeasurementsHistory.length
-          ? inc.bodyMeasurementsHistory
-          : (Array.isArray(base.bodyMeasurementsHistory) ? base.bodyMeasurementsHistory : []),
-        workoutSessions: Array.isArray(inc.workoutSessions) && inc.workoutSessions.length
-          ? inc.workoutSessions
-          : (Array.isArray(base.workoutSessions) ? base.workoutSessions : []),
-        healthDeclaration: {
-          signed: false,
-          ...(base.healthDeclaration || {}),
-          ...(inc.healthDeclaration || {})
-        },
-        termsAcceptance: {
-          accepted: false,
-          ...(base.termsAcceptance || {}),
-          ...(inc.termsAcceptance || {})
-        },
-        dayLogs: {
-          ...(base.dayLogs || {}),
-          ...(inc.dayLogs || {})
-        }
-      };
-
-      merged.profile.circumferences = bbNormalizeCircumferences(merged);
-      merged.weeklyWorkoutsPerWeek = merged.workoutSessions.length || merged.weeklyWorkoutsPerWeek || 3;
-      return merged;
-    }
-
-    function bbBroadcastClientUpdate(id, stateObj, sourceRole) {
-      if (!id || !stateObj) return;
-      bbRegisterClientId(id);
-      const key = `BodyBalanceUnifiedState_${id}`;
-      const serialized = JSON.stringify(stateObj);
-      localStorage.setItem(key, serialized);
-      if (bbSyncChannel) {
-        bbSyncChannel.postMessage({
-          type: 'CLIENT_STATE_SYNC',
-          clientId: id,
-          sourceRole: sourceRole || 'unknown',
-          state: stateObj,
-          timestamp: Date.now()
-        });
-      }
-    }
-
     function loadClientState(id = activeClientId) {
       try {
-        const parsed = bbReadUnifiedState(id) || {};
-        const fallbackSessions = createDefaultSessions(3);
-        const sessions = Array.isArray(parsed.workoutSessions) && parsed.workoutSessions.length
-          ? parsed.workoutSessions
-          : fallbackSessions;
-        const merged = bbMergeClientStates(id, parsed, {
-          subscriptionActive: true,
-          subscriptionPlanId: 'full-coaching',
-          subscriptionTierName: 'מסלול ליווי מלא (אימונים + תזונה)',
-          subscriptionPrice: 450,
-          subscriptionRenewalDate: '',
-          nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70 },
-          profile: {
-            name: id === 'yoav-01' ? 'יואב כהן' : id,
-            gender: 'male',
-            phone: '',
-            birthDate: '',
-            avatarDataUrl: '',
-            weight: 78,
-            height: 178,
-            age: 28,
-            circumferences: { chest: '', arm: '', waist: '', hips: '', thighs: '' }
+        const raw = localStorage.getItem(stateStorageKey(id));
+        const parsed = raw ? JSON.parse(raw) : {};
+        return {
+          subscriptionActive: parsed.subscriptionActive !== undefined ? parsed.subscriptionActive : true,
+          subscriptionPlanId: parsed.subscriptionPlanId || 'full-coaching',
+          subscriptionTierName: parsed.subscriptionTierName || 'מסלול ליווי מלא (אימונים + תזונה)',
+          subscriptionPrice: parsed.subscriptionPrice !== undefined ? parsed.subscriptionPrice : 450,
+          subscriptionRenewalDate: parsed.subscriptionRenewalDate || '',
+          nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70, ...(parsed.nutritionTargets || {}) },
+          profile: { name: id === 'yoav-01' ? 'יואב כהן' : id, gender: 'male', phone: '', birthDate: '', avatarDataUrl: '', weight: 78, height: 178, age: 28, ...(parsed.profile || {}) },
+          bodyWeightHistory: Array.isArray(parsed.bodyWeightHistory) ? parsed.bodyWeightHistory : [],
+          bodyMeasurementsHistory: Array.isArray(parsed.bodyMeasurementsHistory) ? parsed.bodyMeasurementsHistory : [],
+          weeklyWorkoutsPerWeek: (parsed.workoutSessions && parsed.workoutSessions.length) || 3,
+          workoutSessions: Array.isArray(parsed.workoutSessions) && parsed.workoutSessions.length ? parsed.workoutSessions : createDefaultSessions(3),
+          healthDeclaration: parsed.healthDeclaration || { signed: false },
+          termsAcceptance: parsed.termsAcceptance || { accepted: false },
+          clientCardSettings: {
+            visibilityMode: 'own_only',
+            showSubAndCirc: true,
+            ...((parsed.clientCardSettings) || {})
           },
-          bodyWeightHistory: [],
-          bodyMeasurementsHistory: [],
-          weeklyWorkoutsPerWeek: sessions.length,
-          workoutSessions: sessions,
-          healthDeclaration: { signed: false },
-          termsAcceptance: { accepted: false },
-          dayLogs: {}
-        });
-        merged.workoutSessions = sessions;
-        merged.weeklyWorkoutsPerWeek = sessions.length;
-        return merged;
+          dayLogs: parsed.dayLogs || {}
+        };
       } catch (e) {
         return {
           subscriptionActive: true,
@@ -716,7 +593,7 @@
           subscriptionPrice: 450,
           subscriptionRenewalDate: '',
           nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70 },
-          profile: { name: id, gender: 'male', phone: '', birthDate: '', weight: 75, height: 175, age: 28, circumferences: {} },
+          profile: { name: id, gender: 'male', phone: '', birthDate: '', weight: 75, height: 175, age: 28 },
           bodyWeightHistory: [],
           bodyMeasurementsHistory: [],
           weeklyWorkoutsPerWeek: 3,
@@ -731,56 +608,10 @@
     let clientState = loadClientState(activeClientId);
 
     function saveClientState() {
-      clientState.profile.circumferences = bbNormalizeCircumferences(clientState);
-      if (clientState.profile.weight && (!Array.isArray(clientState.bodyWeightHistory) || clientState.bodyWeightHistory.length === 0)) {
-        clientState.bodyWeightHistory = [{ date: new Date().toISOString().slice(0, 10), weight: Number(clientState.profile.weight) }];
-      }
-      bbBroadcastClientUpdate(activeClientId, clientState, 'admin');
+      localStorage.setItem(stateStorageKey(activeClientId), JSON.stringify(clientState));
       localStorage.setItem(CLIENTS_LIST_KEY, JSON.stringify(clientIds));
       localStorage.setItem(SUBSCRIPTION_PLANS_KEY, JSON.stringify(subscriptionPlans));
       localStorage.setItem(EXERCISE_LIBRARY_KEY, JSON.stringify(exerciseLibrary));
-    }
-
-    window.openClientPortalPreview = function() {
-      saveClientState();
-      const url = buildClientPersonalUrl();
-      window.open(url, '_blank', 'noopener,noreferrer');
-    };
-
-    function bindAdminLiveSyncListeners() {
-      window.addEventListener('storage', (ev) => {
-        if (!ev.key) return;
-        if (ev.key === CLIENTS_LIST_KEY) {
-          const updatedIds = bbReadClientsRegistry();
-          if (updatedIds.length) clientIds = updatedIds;
-          renderAdminAll();
-        } else if (ev.key === stateStorageKey(activeClientId)) {
-          clientState = loadClientState(activeClientId);
-          renderAdminAll();
-        }
-      });
-
-      if (bbSyncChannel) {
-        bbSyncChannel.onmessage = (event) => {
-          const msg = event.data || {};
-          if (msg.type === 'CLIENT_STATE_SYNC' && msg.sourceRole === 'index') {
-            bbRegisterClientId(msg.clientId);
-            clientIds = bbReadClientsRegistry();
-            if (msg.clientId === activeClientId) {
-              clientState = loadClientState(activeClientId);
-              renderAdminAll();
-            } else {
-              const sel = document.getElementById('adminClientSelect');
-              if (sel) {
-                sel.innerHTML = clientIds.map(id => {
-                  const st = loadClientState(id);
-                  return `<option value="${id}" ${id === activeClientId ? 'selected' : ''}>${st.profile.name} (#${id})</option>`;
-                }).join('');
-              }
-            }
-          }
-        };
-      }
     }
 
     function normalizeIntlPhone(rawPhone) {
@@ -892,14 +723,16 @@
         thighs: !isNaN(thighs) && thighs > 0 ? Number(thighs.toFixed(1)) : null
       });
 
-      clientState.profile.circumferences = {
-        ...(clientState.profile.circumferences || {}),
-        ...(chest !== null && !isNaN(chest) && chest > 0 ? { chest: String(chest.toFixed(1)) } : {}),
-        ...(hips !== null && !isNaN(hips) && hips > 0 ? { hips: String(hips.toFixed(1)) } : {}),
-        ...(arms !== null && !isNaN(arms) && arms > 0 ? { arm: String(arms.toFixed(1)) } : {}),
-        ...(waist !== null && !isNaN(waist) && waist > 0 ? { waist: String(waist.toFixed(1)) } : {}),
-        ...(thighs !== null && !isNaN(thighs) && thighs > 0 ? { thighs: String(thighs.toFixed(1)) } : {})
-      };
+      const latestSaved = [...clientState.bodyMeasurementsHistory].sort((a, b) => b.date.localeCompare(a.date))[0];
+      if (latestSaved) {
+        clientState.profile.circumferences = {
+          chest: latestSaved.chest !== null && latestSaved.chest !== undefined ? String(latestSaved.chest) : (clientState.profile.circumferences?.chest || ''),
+          hips: latestSaved.hips !== null && latestSaved.hips !== undefined ? String(latestSaved.hips) : (clientState.profile.circumferences?.hips || ''),
+          arm: latestSaved.arms !== null && latestSaved.arms !== undefined ? String(latestSaved.arms) : (clientState.profile.circumferences?.arm || ''),
+          waist: latestSaved.waist !== null && latestSaved.waist !== undefined ? String(latestSaved.waist) : (clientState.profile.circumferences?.waist || ''),
+          thighs: latestSaved.thighs !== null && latestSaved.thighs !== undefined ? String(latestSaved.thighs) : (clientState.profile.circumferences?.thighs || '')
+        };
+      }
 
       ['admMeasChest', 'admMeasHips', 'admMeasArms', 'admMeasWaist', 'admMeasThighs'].forEach(id => {
         const el = document.getElementById(id);
@@ -1307,6 +1140,11 @@
       clientState.subscriptionPrice = parseFloat(document.getElementById('admSubPrice').value) || 0;
       clientState.subscriptionRenewalDate = (document.getElementById('admSubRenewal').value || '').trim();
       clientState.subscriptionActive = document.getElementById('admSubActive').value === 'true';
+      clientState.clientCardSettings = {
+        visibilityMode: document.getElementById('admCardVisibilityMode')?.value || 'own_only',
+        showSubAndCirc: (document.getElementById('admCardShowSubAndCirc')?.value || 'true') === 'true',
+        ownerClientId: activeClientId
+      };
       saveClientState();
       renderAdminAll();
       alert('פרטי המתאמן ומסלול המנוי נשמרו בהצלחה!');
@@ -1314,22 +1152,27 @@
 
     function buildClientPersonalUrl() {
       const payload = {
+        clientId: activeClientId,
         name: clientState.profile.name,
         gender: clientState.profile.gender || 'male',
         phone: clientState.profile.phone,
         birthDate: clientState.profile.birthDate,
         weight: clientState.profile.weight,
         height: clientState.profile.height,
-        age: clientState.profile.age,
-        circumferences: bbNormalizeCircumferences(clientState),
-        subscriptionActive: !!clientState.subscriptionActive,
+        circumferences: clientState.profile.circumferences || {},
+        subscriptionActive: clientState.subscriptionActive,
+        subscriptionRenewalDate: clientState.subscriptionRenewalDate || '',
         tier: clientState.subscriptionTierName,
-        price: clientState.subscriptionPrice,
-        renewalDate: clientState.subscriptionRenewalDate || '',
         targets: clientState.nutritionTargets,
         sessions: clientState.workoutSessions,
         measurements: clientState.bodyMeasurementsHistory || [],
-        bodyWeightHistory: clientState.bodyWeightHistory || []
+        bodyWeightHistory: clientState.bodyWeightHistory || [],
+        clientCardSettings: {
+          visibilityMode: 'own_only',
+          showSubAndCirc: true,
+          ...(clientState.clientCardSettings || {}),
+          ownerClientId: activeClientId
+        }
       };
       const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
       const baseUrl = window.location.href.replace(/admin\.html.*$/, 'index.html');
@@ -1717,6 +1560,16 @@
       document.getElementById('admSubPrice').value = clientState.subscriptionPrice ?? '';
       document.getElementById('admSubRenewal').value = clientState.subscriptionRenewalDate || '';
       document.getElementById('admSubActive').value = String(!!clientState.subscriptionActive);
+      const cardCfg = clientState.clientCardSettings || { visibilityMode: 'own_only', showSubAndCirc: true };
+      if (document.getElementById('admCardVisibilityMode')) {
+        document.getElementById('admCardVisibilityMode').value = cardCfg.visibilityMode || 'own_only';
+      }
+      if (document.getElementById('admCardShowSubAndCirc')) {
+        document.getElementById('admCardShowSubAndCirc').value = String(cardCfg.showSubAndCirc !== false);
+      }
+      if (document.getElementById('admCardBoundId')) {
+        document.getElementById('admCardBoundId').value = `#${activeClientId} (כרטיס בלעדי ללקוח זה)`;
+      }
 
       const hd = clientState.healthDeclaration || {};
       const hdEl = document.getElementById('admHealthStatus');
@@ -1748,8 +1601,6 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      bbRegisterClientId(activeClientId);
-      bindAdminLiveSyncListeners();
       renderNewExSetWeightsInputs();
       renderAdminAll();
     });
