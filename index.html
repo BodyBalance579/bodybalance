@@ -61,6 +61,7 @@
             <span class="text-slate-500">מתאמן:</span>
             <strong id="bannerName" class="text-slate-900">טרם הוזן שם</strong>
             <span class="text-xs text-slate-400 font-mono">(#<span id="bannerCode">-</span>)</span>
+            <span id="bannerGenderBadge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700"></span>
           </div>
           <div class="flex flex-wrap items-center gap-2 mt-0.5">
             <span id="bannerPhoneBadge" class="text-xs text-teal-800 font-semibold"></span>
@@ -76,12 +77,13 @@
         <button type="button" onclick="switchTab('forms')" id="bannerFormsAlertBtn" class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-3 py-1.5 rounded-xl cursor-pointer">
           📋 הצהרת בריאות ותקנון
         </button>
-        <button type="button" onclick="switchTab('profile')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3 py-1.5 rounded-xl cursor-pointer">✏️ פרטים ותמונה</button>
+        <button type="button" onclick="switchTab('profile')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3 py-1.5 rounded-xl cursor-pointer">✏️ פרטים והיקפים</button>
         <button type="button" onclick="shareWhatsAppSummary()" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl cursor-pointer">💬 סיכום וואטסאפ</button>
+        <button type="button" onclick="sendAppLinkViaWhatsApp()" class="text-xs bg-teal-700 hover:bg-teal-800 text-white font-bold px-3 py-1.5 rounded-xl cursor-pointer">🔗 שלח אפליקציה ללקוח</button>
       </div>
     </div>
 
-    <!-- לשונית 1: יומן ארוחות וסריקת ברקוד -->
+    <!-- לשונית 1: יומן ארוחות וסריקת ברקוד (ללא צילום ארוחה) -->
     <section id="tab-meals" class="tab-section space-y-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-2">
@@ -320,13 +322,13 @@
       </div>
     </section>
 
-    <!-- לשונית 3: תוכנית אימונים שבועית כולל משקלי עבודה, RIR וסימון עגול לכל סט -->
+    <!-- לשונית 3: תוכנית אימונים שבועית כולל בחירת כמות סטים, משקלי עבודה, חזרות, RIR וסימון עגול לכל סט -->
     <section id="tab-workouts" class="tab-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
           <div>
             <h2 class="text-xl font-extrabold text-slate-900">תוכנית האימונים השבועית שלי ומשקלי עבודה</h2>
-            <p class="text-xs text-slate-500">בחר את האימון היומי, הזן משקל עבודה (ק"ג) ו-RIR (חזרות רזרבה) לכל סט, ולחץ על העיגול לסימון בוצע (✓) או לא בוצע (✕)</p>
+            <p class="text-xs text-slate-500">בחר אימון וכמות סטים לתרגיל, הזן משקל עבודה (ק"ג), חזרות ו-RIR (חזרות רזרבה) לכל סט, וסמן בעיגול בוצע (✓ ירוק) או לא בוצע (✕ אדום)</p>
           </div>
           <div class="flex items-center gap-2">
             <span id="weeklyFrequencyBadge" class="text-xs font-extrabold px-3 py-1 rounded-full bg-indigo-50 text-indigo-800">3 אימונים בשבוע</span>
@@ -418,7 +420,7 @@
                 <tr>
                   <th class="py-2 px-3 font-bold">תאריך אימון</th>
                   <th class="py-2 px-3 font-bold">משקל שיא (ק"ג)</th>
-                  <th class="py-2 px-3 font-bold">פירוט משקלים ו-RIR לכל סט</th>
+                  <th class="py-2 px-3 font-bold">פירוט משקלים, חזרות ו-RIR לכל סט</th>
                 </tr>
               </thead>
               <tbody id="exerciseHistoryTbody" class="divide-y divide-slate-100"></tbody>
@@ -494,6 +496,10 @@
               <button type="button" onclick="clearSignatureCanvas()" class="text-xs text-rose-600 font-bold underline cursor-pointer">נקה חתימה</button>
             </div>
             <canvas id="healthSignatureCanvas" width="460" height="140" class="sig-pad w-full h-36 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl cursor-crosshair"></canvas>
+            <div id="savedSignaturePreviewBox" class="hidden pt-1">
+              <span class="text-[11px] font-bold text-emerald-700 block mb-1">חתימה דיגיטלית שמורה:</span>
+              <img id="savedSignaturePreviewImg" src="" alt="חתימה שמורה" class="h-16 border border-slate-200 rounded-lg bg-white p-1" />
+            </div>
           </div>
 
           <button type="button" onclick="submitHealthDeclaration()" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold py-2.5 rounded-xl text-sm cursor-pointer">
@@ -513,7 +519,7 @@
           <div class="text-xs leading-relaxed text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2.5 max-h-80 overflow-y-auto">
             <p><strong>1. מהות הליווי והמוצר:</strong> אפליקציית BodyBalance מספקת ליווי מקצועי הכולל תוכנית אימונים אישית ומעקב תזונתי מותאם יעדים. ההנחיות ניתנות לצורכי כושר ואורח חיים בריא ואינן מהוות ייעוץ רפואי.</p>
             <p><strong>2. אחריות המתאמן:</strong> המתאמן מתחייב לבצע את התרגילים בהתאם להדגמות ולהנחיות הטכניקה, להפסיק כל פעילות במקרה של כאב חריג או סחרחורת ולעדכן את המאמן.</p>
-            <p><strong>3. עדכונים ומעקב שוטף:</strong> לצורך התאמת התוכנית, המתאמן מתבקש לתעד ארוחות, שקילות וביצוע אימונים ביומן האפליקציה.</p>
+            <p><strong>3. עדכונים ומעקב שוטף:</strong> לצורך התאמת התוכנית, המתאמן מתבקש לתעד ארוחות, שקילות, היקפים וביצוע אימונים ביומן האפליקציה.</p>
             <p><strong>4. תוקף המנוי ותנאי תשלום:</strong> המנוי הינו אישי ואינו ניתן להעברה. חידוש או הקפאת מנוי יתבצעו ישירות מול המאמן.</p>
             <p><strong>5. שמירה על פרטיות:</strong> כל הנתונים האישיים וסרטוני הביצוע נשמרים לצורכי הליווי האישי בלבד.</p>
           </div>
@@ -531,12 +537,12 @@
       </div>
     </section>
 
-    <!-- לשונית 6: הפרטים האישיים שלי -->
+    <!-- לשונית 6: הפרטים האישיים שלי (כולל מגדר, היקפים, תמונה, טלפון, תאריך לידה וקישור וואטסאפ ללקוח) -->
     <section id="tab-profile" class="tab-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5">
         <div>
-          <h2 class="text-xl font-extrabold text-slate-900">הפרטים האישיים שלי</h2>
-          <p class="text-xs text-slate-500">עדכן תמונת פרופיל אישית, מספר טלפון ותאריך לידה למעקב יום הולדת</p>
+          <h2 class="text-xl font-extrabold text-slate-900">הפרטים האישיים שלי, היקפים ותמונת פרופיל</h2>
+          <p class="text-xs text-slate-500">עדכן תמונת פרופיל אישית, מספר טלפון, תאריך לידה ונתוני היקפים (בס"מ)</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-4 bg-slate-50 border border-slate-200 rounded-2xl p-4">
@@ -569,7 +575,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">שם מלא *</label>
             <input id="profName" type="text" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
@@ -577,6 +583,13 @@
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">קוד מתאמן *</label>
             <input id="profCode" type="text" placeholder="למשל: yoav-01" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-mono" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">מגדר (להתאמת היקפים)</label>
+            <select id="profGender" onchange="onGenderInputChange()" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white font-semibold">
+              <option value="male">גבר</option>
+              <option value="female">אישה</option>
+            </select>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">מספר טלפון נייד (לוואטסאפ) *</label>
@@ -591,7 +604,7 @@
             <input id="profAge" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-slate-50" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">משקל נוכחי (ק"ג) — מתעדכן אוטומטית בגרף</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1">משקל נוכחי (ק"ג) — מתעדכן בגרף</label>
             <input id="profWeight" type="number" step="0.1" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
           </div>
           <div>
@@ -600,12 +613,64 @@
           </div>
         </div>
 
+        <!-- נתוני היקפים (ס"מ) -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-sm font-extrabold text-slate-900">📏 נתוני היקפים (בס"מ)</h3>
+              <p class="text-xs text-slate-500">חזה מוצג לגברים בלבד ואגן מוצג לנשים בלבד; יד, מותניים וירכיים מוצגים לכולם</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div id="circChestBox">
+              <label class="block text-xs font-bold text-slate-700 mb-1">חזה — גברים בלבד (ס"מ)</label>
+              <input id="circChest" type="number" step="0.5" min="0" placeholder="למשל: 102" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">יד (ס"מ)</label>
+              <input id="circArm" type="number" step="0.5" min="0" placeholder="למשל: 38" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">מותניים (ס"מ)</label>
+              <input id="circWaist" type="number" step="0.5" min="0" placeholder="למשל: 80" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white" />
+            </div>
+            <div id="circHipsBox" class="hidden">
+              <label class="block text-xs font-bold text-slate-700 mb-1">אגן — נשים בלבד (ס"מ)</label>
+              <input id="circHips" type="number" step="0.5" min="0" placeholder="למשל: 98" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">ירכיים (ס"מ)</label>
+              <input id="circThighs" type="number" step="0.5" min="0" placeholder="למשל: 58" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white" />
+            </div>
+          </div>
+        </div>
+
+        <!-- קישור לוואטסאפ לשליחת האפליקציה ללקוח הספציפי -->
+        <div class="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-sm font-extrabold text-emerald-950">🔗 קישור לוואטסאפ לשליחת האפליקציה ללקוח הספציפי</h3>
+              <p class="text-xs text-emerald-800">הקישור מכיל את מזהה הלקוח והנתונים האישיים/התוכנית המקודדים עבור לקוח זה</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onclick="copyClientAppLink()" class="bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-300 font-bold px-3 py-1.5 rounded-xl text-xs cursor-pointer">
+                📋 העתק קישור
+              </button>
+              <button type="button" onclick="sendAppLinkViaWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-1.5 rounded-xl text-xs cursor-pointer">
+                💬 שלח בוואטסאפ ללקוח
+              </button>
+            </div>
+          </div>
+          <input id="clientAppShareUrlInput" type="text" readonly class="w-full border border-emerald-300 bg-white rounded-xl px-3 py-2 text-xs font-mono text-slate-700" />
+        </div>
+
         <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-600">
           <strong>מסלול מנוי פעיל:</strong> <span id="profTierLabel" class="text-teal-800 font-bold">-</span>
         </div>
 
         <button type="button" onclick="saveProfile()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-6 py-2.5 rounded-xl text-sm cursor-pointer">
-          שמור פרטים ותמונה
+          שמור פרטים, היקפים ותמונה
         </button>
       </div>
     </section>
@@ -693,9 +758,7 @@
       '7290000000065': { name: 'קופסת חומוס (250g)', unitGrams: 250, unitLabel: 'קופסה שלמה (250g)', cal100: 250, pro100: 7.5, carb100: 14, fat100: 18 }
     };
 
-    // מאגר מזונות מקיף — כל הפריטים הדורשים הכנה מחושבים לאחר בישול / צלייה / אפייה
     const FOOD_DB_100G = [
-      // --- בשרים ועופות (מבושל / צלוי / אפוי) ---
       { name: 'חזה עוף מבושל / צלוי / אפוי (לאחר בישול)', category: 'בשרים ועופות', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 165, pro: 31, carb: 0, fat: 3.6 },
       { name: 'שניצל חזה עוף מטוגן (לאחר טיגון)', category: 'בשרים ועופות', unitGrams: 150, unitLabel: 'יחידה בינונית מוכנה (150g)', cal: 265, pro: 23, carb: 13.5, fat: 13 },
       { name: 'שניצל חזה עוף אפוי בתנור (לאחר אפייה)', category: 'בשרים ועופות', unitGrams: 150, unitLabel: 'יחידה בינונית אפויה (150g)', cal: 205, pro: 25, carb: 12, fat: 6.2 },
@@ -716,8 +779,6 @@
       { name: 'בקר טחון רזה מבושל / מוקפץ (לאחר בישול)', category: 'בשרים ועופות', unitGrams: 150, unitLabel: 'מנה מבושלת (150g)', cal: 215, pro: 26.5, carb: 0, fat: 11.5 },
       { name: 'קציצות בקר / קבב מזרחי צלוי (לאחר צלייה)', category: 'בשרים ועופות', unitGrams: 160, unitLabel: '3 קציצות / קבבים מוכנים (160g)', cal: 245, pro: 22, carb: 4.5, fat: 15.2 },
       { name: 'נקניקיות עוף / בקר מבושלות (לאחר בישול)', category: 'בשרים ועופות', unitGrams: 100, unitLabel: '2 נקניקיות מוכנות (100g)', cal: 265, pro: 12.5, carb: 4, fat: 22 },
-
-      // --- דגים ופירות ים (מבושל / צלוי / אפוי) ---
       { name: 'פילה סלמון צלוי / אפוי בתנור (לאחר אפייה)', category: 'דגים ופירות ים', unitGrams: 160, unitLabel: 'פילה אפוי (160g)', cal: 208, pro: 20.4, carb: 0, fat: 13.4 },
       { name: 'פילה אמנון (מושט) אפוי / מבושל (לאחר אפייה)', category: 'דגים ופירות ים', unitGrams: 160, unitLabel: 'פילה אפוי (160g)', cal: 128, pro: 26.2, carb: 0, fat: 2.7 },
       { name: 'פילה דניס אפוי / צלוי (לאחר אפייה)', category: 'דגים ופירות ים', unitGrams: 160, unitLabel: 'פילה אפוי (160g)', cal: 144, pro: 24.5, carb: 0, fat: 4.8 },
@@ -727,8 +788,6 @@
       { name: 'פילה מקרל אפוי / מעושן (לאחר הכנה)', category: 'דגים ופירות ים', unitGrams: 140, unitLabel: 'פילה מוכן (140g)', cal: 262, pro: 23.8, carb: 0, fat: 17.8 },
       { name: 'סלמון מעושן (פרוסות)', category: 'דגים ופירות ים', unitGrams: 100, unitLabel: 'חבילה / מנה (100g)', cal: 117, pro: 18.3, carb: 0, fat: 4.3 },
       { name: 'קציצות דגים מבושלות ברוטב (לאחר בישול)', category: 'דגים ופירות ים', unitGrams: 170, unitLabel: '3 קציצות מוכנות (170g)', cal: 158, pro: 18.5, carb: 8.2, fat: 5.5 },
-
-      // --- ביצים ומנות ביצים (כולל גדלים S, M, L, XL ומנות מוכנות) ---
       { name: 'ביצה מבושלת / קשה — מידה S (קטנה, 45g)', category: 'ביצים ומנות ביצים', unitGrams: 45, unitLabel: 'ביצה S שלמה (45g)', cal: 155, pro: 12.6, carb: 1.1, fat: 10.6 },
       { name: 'ביצה מבושלת / קשה — מידה M (בינונית, 53g)', category: 'ביצים ומנות ביצים', unitGrams: 53, unitLabel: 'ביצה M שלמה (53g)', cal: 155, pro: 12.6, carb: 1.1, fat: 10.6 },
       { name: 'ביצה מבושלת / קשה — מידה L (גדולה, 63g)', category: 'ביצים ומנות ביצים', unitGrams: 63, unitLabel: 'ביצה L שלמה (63g)', cal: 155, pro: 12.6, carb: 1.1, fat: 10.6 },
@@ -738,8 +797,6 @@
       { name: 'ביצה מקושקשת מ-2 ביצים L (מוכנה)', category: 'ביצים ומנות ביצים', unitGrams: 130, unitLabel: 'מנת מקושקשת (130g)', cal: 178, pro: 11.8, carb: 1.6, fat: 13.8 },
       { name: 'ביצת עין (מטוגנת במעט שמן, ביצה L)', category: 'ביצים ומנות ביצים', unitGrams: 60, unitLabel: 'ביצת עין אחת (60g)', cal: 196, pro: 13.6, carb: 0.9, fat: 15.3 },
       { name: 'שקשוקה ביתית (2 ביצים + רוטב עגבניות ופלפלים)', category: 'ביצים ומנות ביצים', unitGrams: 320, unitLabel: 'מחבת / מנת שקשוקה (320g)', cal: 95, pro: 5.5, carb: 5.8, fat: 5.4 },
-
-      // --- מוצרי חלב ותחליפי חלב ---
       { name: 'חלב תנובה / טרה 3% שומן', category: 'מוצרי חלב ותחליפים', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 61, pro: 3.3, carb: 4.8, fat: 3 },
       { name: 'חלב 1% שומן', category: 'מוצרי חלב ותחליפים', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 42, pro: 3.4, carb: 4.9, fat: 1 },
       { name: 'חלב מועשר בחלבון (חלב PRO / יוטבתה)', category: 'מוצרי חלב ותחליפים', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 54, pro: 5, carb: 4.8, fat: 1.5 },
@@ -768,8 +825,6 @@
       { name: 'גבינה בולגרית / פטה 16%-24% שומן', category: 'מוצרי חלב ותחליפים', unitGrams: 50, unitLabel: 'קוביית מנה (50g)', cal: 245, pro: 15, carb: 2, fat: 19.5 },
       { name: 'גבינת ריקוטה 5% / 9%', category: 'מוצרי חלב ותחליפים', unitGrams: 50, unitLabel: '2 כפות (50g)', cal: 118, pro: 11.5, carb: 3.8, fat: 6 },
       { name: 'לאבנה 5% / 9% שומן', category: 'מוצרי חלב ותחליפים', unitGrams: 50, unitLabel: '2 כפות (50g)', cal: 125, pro: 7.5, carb: 4.5, fat: 8.5 },
-
-      // --- לחמים, מאפים וכריכים ---
       { name: 'לחם אחיד / לבן פרוס', category: 'לחמים, מאפים וכריכים', unitGrams: 32, unitLabel: 'פרוסה אחת (32g)', cal: 265, pro: 8.5, carb: 50, fat: 3.2 },
       { name: 'לחם חיטה מלאה / כוסמין / שיפון', category: 'לחמים, מאפים וכריכים', unitGrams: 35, unitLabel: 'פרוסה אחת (35g)', cal: 245, pro: 9.5, carb: 44, fat: 3 },
       { name: 'לחם קל (חיטה מלאה / שיפון)', category: 'לחמים, מאפים וכריכים', unitGrams: 25, unitLabel: 'פרוסה אחת (25g)', cal: 185, pro: 9.2, carb: 31, fat: 2.2 },
@@ -789,8 +844,6 @@
       { name: 'סמבוסק גבינה / חומוס אפוי', category: 'לחמים, מאפים וכריכים', unitGrams: 130, unitLabel: 'יחידה שלמה (130g)', cal: 285, pro: 10.5, carb: 38, fat: 10 },
       { name: 'טוסט גבינה צהובה בלחם / בייגל', category: 'לחמים, מאפים וכריכים', unitGrams: 160, unitLabel: 'טוסט שלם (160g)', cal: 285, pro: 14.5, carb: 32, fat: 11 },
       { name: 'כריך טונה / חביתה מוכן (לחם מלא + ממרח וירקות)', category: 'לחמים, מאפים וכריכים', unitGrams: 220, unitLabel: 'כריך שלם (220g)', cal: 195, pro: 11.5, carb: 23, fat: 6.2 },
-
-      // --- עוגות ועוגיות ---
       { name: 'עוגת שוקולד בחושה', category: 'עוגות ועוגיות', unitGrams: 80, unitLabel: 'פרוסה (80g)', cal: 395, pro: 5.2, carb: 51, fat: 18.8 },
       { name: 'עוגת גבינה אפויה', category: 'עוגות ועוגיות', unitGrams: 110, unitLabel: 'פרוסה (110g)', cal: 310, pro: 7.5, carb: 27, fat: 19 },
       { name: 'עוגת שמרים שוקולד / קינמון', category: 'עוגות ועוגיות', unitGrams: 75, unitLabel: 'פרוסה (75g)', cal: 375, pro: 6.8, carb: 49, fat: 16.5 },
@@ -802,8 +855,6 @@
       { name: 'ביסקוויט פתי בר', category: 'עוגות ועוגיות', unitGrams: 7, unitLabel: 'יחידה אחת (7g)', cal: 435, pro: 7.5, carb: 74, fat: 11.5 },
       { name: 'פנקייק ביתי (יחידה בינונית)', category: 'עוגות ועוגיות', unitGrams: 60, unitLabel: 'פנקייק אחד (60g)', cal: 227, pro: 6.4, carb: 28.3, fat: 9.7 },
       { name: 'וופל בלגי (ללא תוספות)', category: 'עוגות ועוגיות', unitGrams: 110, unitLabel: 'יחידה שלמה (110g)', cal: 310, pro: 7.2, carb: 39, fat: 13.8 },
-
-      // --- דגני בוקר, חטיפי חלבון וחטיפים ---
       { name: 'קורנפלקס רגיל', category: 'דגני בוקר וחטיפים', unitGrams: 35, unitLabel: 'קערה / מנה (35g)', cal: 378, pro: 7.5, carb: 84, fat: 0.9 },
       { name: 'כריות (נוגט / וניל / שוקולד)', category: 'דגני בוקר וחטיפים', unitGrams: 40, unitLabel: 'מנה (40g)', cal: 465, pro: 7.2, carb: 64, fat: 19.5 },
       { name: 'ברנפלקס', category: 'דגני בוקר וחטיפים', unitGrams: 40, unitLabel: 'מנה (40g)', cal: 332, pro: 10.5, carb: 68, fat: 2.1 },
@@ -819,8 +870,6 @@
       { name: 'שוקולד חלב פרה', category: 'דגני בוקר וחטיפים', unitGrams: 25, unitLabel: 'שורה / 4 קוביות (25g)', cal: 535, pro: 7.5, carb: 58, fat: 30 },
       { name: 'שוקולד מריר 70% מוצקי קקאו', category: 'דגני בוקר וחטיפים', unitGrams: 25, unitLabel: 'שורה / 4 קוביות (25g)', cal: 598, pro: 7.8, carb: 46, fat: 42.6 },
       { name: 'פסק זמן / כיף כף / מקופלת', category: 'דגני בוקר וחטיפים', unitGrams: 45, unitLabel: 'חטיף שלם (45g)', cal: 525, pro: 6.8, carb: 56, fat: 30 },
-
-      // --- דגנים, פסטות וקטניות (לאחר בישול) ---
       { name: 'אורז לבן מבושל (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 130, pro: 2.7, carb: 28, fat: 0.3 },
       { name: 'אורז מלא מבושל (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 123, pro: 2.7, carb: 25.6, fat: 1 },
       { name: 'אורז בסמטי מבושל (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 121, pro: 3.1, carb: 25.2, fat: 0.4 },
@@ -841,8 +890,6 @@
       { name: 'אפונה ירוקה מבושלת (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 160, unitLabel: 'כוס מבושלת (160g)', cal: 84, pro: 5.4, carb: 15.6, fat: 0.2 },
       { name: 'פול מצרי מבושל (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 110, pro: 7.6, carb: 19.7, fat: 0.4 },
       { name: 'מג׳דרה (אורז ועדשים מבושלים)', category: 'דגנים וקטניות', unitGrams: 220, unitLabel: 'כוס גדולה / מנה (220g)', cal: 145, pro: 5.2, carb: 24.5, fat: 2.8 },
-
-      // --- מזון מהצומח, טבעוני וצמחוני ---
       { name: 'טופו צלוי / אפוי (לאחר הכנה)', category: 'מזון מהצומח וטבעוני', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 144, pro: 17.3, carb: 2.8, fat: 8.7 },
       { name: 'טופו משי (רך)', category: 'מזון מהצומח וטבעוני', unitGrams: 150, unitLabel: 'מנה (150g)', cal: 61, pro: 6.9, carb: 2.1, fat: 2.7 },
       { name: 'סייטן צלוי / מוקפץ (חלבון חיטה)', category: 'מזון מהצומח וטבעוני', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 148, pro: 25, carb: 7.5, fat: 1.8 },
@@ -853,8 +900,6 @@
       { name: 'שווארמה טבעונית מן הצומח צלויה', category: 'מזון מהצומח וטבעוני', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 165, pro: 21, carb: 8.5, fat: 5.2 },
       { name: 'שניצל תירס / ירקות אפוי (טבעול)', category: 'מזון מהצומח וטבעוני', unitGrams: 100, unitLabel: 'יחידה שלמה (100g)', cal: 215, pro: 9.5, carb: 24, fat: 8.8 },
       { name: 'כדורי פלאפל אפויים (ללא טיגון)', category: 'מזון מהצומח וטבעוני', unitGrams: 120, unitLabel: '5 כדורים אפויים (120g)', cal: 195, pro: 8.5, carb: 27, fat: 5.8 },
-
-      // --- אגוזים, זרעים, גרעינים ושומנים ---
       { name: 'שמן זית / קנולה / אבוקדו', category: 'אגוזים, זרעים ושומנים', unitGrams: 15, unitLabel: 'כף (15g)', cal: 884, pro: 0, carb: 0, fat: 100 },
       { name: 'חמאה / גהי', category: 'אגוזים, זרעים ושומנים', unitGrams: 15, unitLabel: 'כף / קובייה (15g)', cal: 717, pro: 0.9, carb: 0.1, fat: 81 },
       { name: 'מיונז רגיל', category: 'אגוזים, זרעים ושומנים', unitGrams: 15, unitLabel: 'כף (15g)', cal: 680, pro: 1, carb: 0.6, fat: 75 },
@@ -875,8 +920,6 @@
       { name: 'אגוזי קשיו', category: 'אגוזים, זרעים ושומנים', unitGrams: 30, unitLabel: 'חופן (30g)', cal: 553, pro: 18.2, carb: 30.2, fat: 43.8 },
       { name: 'אגוזי פקאן', category: 'אגוזים, זרעים ושומנים', unitGrams: 30, unitLabel: 'חופן (30g)', cal: 691, pro: 9.2, carb: 13.9, fat: 72 },
       { name: 'בוטנים קלויים', category: 'אגוזים, זרעים ושומנים', unitGrams: 30, unitLabel: 'חופן (30g)', cal: 587, pro: 24.4, carb: 21.3, fat: 49.7 },
-
-      // --- פירות ---
       { name: 'בננה', category: 'פירות', unitGrams: 120, unitLabel: 'יחידה בינונית (120g)', cal: 89, pro: 1.1, carb: 23, fat: 0.3 },
       { name: 'תפוח עץ', category: 'פירות', unitGrams: 150, unitLabel: 'יחידה בינונית (150g)', cal: 52, pro: 0.3, carb: 13.8, fat: 0.2 },
       { name: 'תפוז', category: 'פירות', unitGrams: 160, unitLabel: 'יחידה בינונית (160g)', cal: 47, pro: 0.9, carb: 11.8, fat: 0.1 },
@@ -891,8 +934,6 @@
       { name: 'אפרסק / נקטרינה', category: 'פירות', unitGrams: 140, unitLabel: 'יחידה בינונית (140g)', cal: 39, pro: 0.9, carb: 9.5, fat: 0.3 },
       { name: 'קיווי', category: 'פירות', unitGrams: 75, unitLabel: 'יחידה אחת (75g)', cal: 61, pro: 1.1, carb: 14.7, fat: 0.5 },
       { name: 'תמר מג׳הול (מגולען)', category: 'פירות', unitGrams: 20, unitLabel: 'תמר אחד (20g)', cal: 277, pro: 1.8, carb: 75, fat: 0.2 },
-
-      // --- ירקות ---
       { name: 'מלפפון', category: 'ירקות', unitGrams: 120, unitLabel: 'יחידה בינונית (120g)', cal: 15, pro: 0.7, carb: 3.6, fat: 0.1 },
       { name: 'עגבנייה', category: 'ירקות', unitGrams: 130, unitLabel: 'יחידה בינונית (130g)', cal: 18, pro: 0.9, carb: 3.9, fat: 0.2 },
       { name: 'עגבניות שרי', category: 'ירקות', unitGrams: 150, unitLabel: 'כוס (150g)', cal: 18, pro: 0.9, carb: 3.9, fat: 0.2 },
@@ -908,8 +949,6 @@
       { name: 'שעועית ירוקה מבושלת (לאחר בישול)', category: 'ירקות', unitGrams: 150, unitLabel: 'כוס מבושלת (150g)', cal: 35, pro: 1.9, carb: 7.9, fat: 0.3 },
       { name: 'סלק אדום מבושל', category: 'ירקות', unitGrams: 120, unitLabel: 'יחידה בינונית (120g)', cal: 44, pro: 1.7, carb: 10, fat: 0.2 },
       { name: 'סלט ירקות ישראלי קצוץ (ללא שמן)', category: 'ירקות', unitGrams: 250, unitLabel: 'קערה אישית (250g)', cal: 20, pro: 0.9, carb: 4.2, fat: 0.2 },
-
-      // --- שימורים ---
       { name: 'טונה משומרת במים (קופסה מסוננת 112g)', category: 'שימורים', unitGrams: 112, unitLabel: 'קופסה שלמה (112g)', cal: 116, pro: 26, carb: 0, fat: 1 },
       { name: 'טונה משומרת בשמן (קופסה מסוננת 112g)', category: 'שימורים', unitGrams: 112, unitLabel: 'קופסה שלמה (112g)', cal: 198, pro: 29, carb: 0, fat: 8.2 },
       { name: 'סרדינים בשמן (קופסה מסוננת 90g)', category: 'שימורים', unitGrams: 90, unitLabel: 'קופסה שלמה (90g)', cal: 208, pro: 24.6, carb: 0, fat: 11.5 },
@@ -920,8 +959,6 @@
       { name: 'גרגרי חומוס / שעועית משומרים (מסונן)', category: 'שימורים', unitGrams: 150, unitLabel: 'כוס מסוננת (150g)', cal: 139, pro: 7.2, carb: 22.5, fat: 2.1 },
       { name: 'רסק עגבניות מרוכז (22 BX)', category: 'שימורים', unitGrams: 100, unitLabel: 'קופסה קטנה (100g)', cal: 82, pro: 4.3, carb: 18.9, fat: 0.5 },
       { name: 'לבבות דקל / ארטישוק משומר', category: 'שימורים', unitGrams: 100, unitLabel: 'מנה (100g)', cal: 36, pro: 2.7, carb: 4.6, fat: 0.6 },
-
-      // --- אוכל בחוץ (סושי, המבורגר, שווארמה, מקסיקני) ---
       { name: 'סושי מאקי (אצה בחוץ - סלמון / טונה / אבוקדו)', category: 'אוכל בחוץ', unitGrams: 140, unitLabel: 'רול שלם - 6-8 יח׳ (140g)', cal: 145, pro: 6.5, carb: 24, fat: 2.2 },
       { name: 'סושי אינסייד-אאוט (I/O) סלמון ואבוקדו', category: 'אוכל בחוץ', unitGrams: 220, unitLabel: 'רול שלם - 8 יח׳ (220g)', cal: 175, pro: 7.2, carb: 23.5, fat: 5.8 },
       { name: 'סושי רול מטוגן (פנקו / טמפורה)', category: 'אוכל בחוץ', unitGrams: 260, unitLabel: 'רול שלם - 8 יח׳ (260g)', cal: 245, pro: 7.5, carb: 28, fat: 11.2 },
@@ -936,8 +973,6 @@
       { name: 'טאקו מקסיקני בשרי / עוף (יחידה אחת)', category: 'אוכל בחוץ', unitGrams: 130, unitLabel: 'טאקו שלם (130g)', cal: 215, pro: 12.2, carb: 19.5, fat: 9.8 },
       { name: 'קסדייה גבינה ועוף', category: 'אוכל בחוץ', unitGrams: 240, unitLabel: 'מנה שלמה (240g)', cal: 275, pro: 15.5, carb: 23, fat: 13.5 },
       { name: 'מוקפץ נודלס עוף וירקות (ווק)', category: 'אוכל בחוץ', unitGrams: 400, unitLabel: 'קופסה / מנה שלמה (400g)', cal: 155, pro: 9.2, carb: 19.5, fat: 4.5 },
-
-      // --- קינוחים, גלידות, ארטיקים וטילונים ---
       { name: 'גלידת שמנת (וניל / שוקולד / פקאן)', category: 'קינוחים וגלידות', unitGrams: 100, unitLabel: 'כדור גלידה גדול (100g)', cal: 215, pro: 3.8, carb: 24, fat: 11.5 },
       { name: 'גלידת סורבה פירות (ללא שמנת)', category: 'קינוחים וגלידות', unitGrams: 100, unitLabel: 'כדור גדול (100g)', cal: 115, pro: 0.4, carb: 28, fat: 0.2 },
       { name: 'פרוזן יוגורט טבעי (ללא תוספות)', category: 'קינוחים וגלידות', unitGrams: 150, unitLabel: 'כוס בינונית (150g)', cal: 125, pro: 4.2, carb: 21, fat: 2.6 },
@@ -966,6 +1001,7 @@
               muscle: 'חזה',
               sets: 4,
               reps: '8-10',
+              setReps: ['10', '10', '8', '8'],
               setWeights: ['60', '65', '70', '70'],
               setRirs: ['2', '2', '1', '1'],
               videoUrl: 'https://www.youtube.com/embed/rT7DgCr-3pg',
@@ -983,7 +1019,23 @@
         subscriptionActive: true,
         subscriptionTierName: 'מסלול ליווי מלא (אימונים + תזונה)',
         nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70 },
-        profile: { name: 'יואב כהן', phone: '', birthDate: '', avatarDataUrl: '', weight: 78, height: 178, age: 28 },
+        profile: {
+          name: 'יואב כהן',
+          gender: 'male',
+          phone: '',
+          birthDate: '',
+          avatarDataUrl: '',
+          weight: 78,
+          height: 178,
+          age: 28,
+          circumferences: {
+            chest: '',
+            arm: '',
+            waist: '',
+            hips: '',
+            thighs: ''
+          }
+        },
         bodyWeightHistory: [{ date: todayStr, weight: 78 }],
         weeklyWorkoutsPerWeek: 3,
         workoutSessions: createDefaultSessions(3),
@@ -1004,7 +1056,14 @@
           ...def,
           ...parsed,
           nutritionTargets: { ...def.nutritionTargets, ...(parsed.nutritionTargets || {}) },
-          profile: { ...def.profile, ...(parsed.profile || {}) },
+          profile: {
+            ...def.profile,
+            ...(parsed.profile || {}),
+            circumferences: {
+              ...def.profile.circumferences,
+              ...((parsed.profile && parsed.profile.circumferences) || {})
+            }
+          },
           healthDeclaration: { ...def.healthDeclaration, ...(parsed.healthDeclaration || {}) },
           termsAcceptance: { ...def.termsAcceptance, ...(parsed.termsAcceptance || {}) }
         };
@@ -1047,8 +1106,14 @@
           const decoded = JSON.parse(decodeURIComponent(escape(atob(paramPlan))));
           if (decoded && typeof decoded === 'object') {
             if (decoded.name) state.profile.name = decoded.name;
+            if (decoded.gender) state.profile.gender = decoded.gender;
             if (decoded.phone) state.profile.phone = decoded.phone;
             if (decoded.birthDate) state.profile.birthDate = decoded.birthDate;
+            if (decoded.weight) state.profile.weight = decoded.weight;
+            if (decoded.height) state.profile.height = decoded.height;
+            if (decoded.circumferences) {
+              state.profile.circumferences = { ...state.profile.circumferences, ...decoded.circumferences };
+            }
             if (decoded.tier) state.subscriptionTierName = decoded.tier;
             if (decoded.targets) state.nutritionTargets = { ...state.nutritionTargets, ...decoded.targets };
             if (Array.isArray(decoded.sessions) && decoded.sessions.length > 0) {
@@ -1060,6 +1125,63 @@
         }
       } catch (e) {}
     }
+
+    function buildClientAppShareUrl() {
+      const payloadObj = {
+        name: state.profile.name || '',
+        gender: state.profile.gender || 'male',
+        phone: state.profile.phone || '',
+        birthDate: state.profile.birthDate || '',
+        weight: state.profile.weight || '',
+        height: state.profile.height || '',
+        circumferences: state.profile.circumferences || {},
+        tier: state.subscriptionTierName || '',
+        targets: state.nutritionTargets || {},
+        sessions: state.workoutSessions || []
+      };
+      const encodedPlan = btoa(unescape(encodeURIComponent(JSON.stringify(payloadObj))));
+      const base = window.location.href.split('?')[0];
+      return `${base}?client=${encodeURIComponent(clientId)}&plan=${encodeURIComponent(encodedPlan)}`;
+    }
+
+    function normalizePhoneForWhatsApp(rawPhone) {
+      let digits = (rawPhone || '').replace(/\D/g, '');
+      if (!digits) return '';
+      if (digits.startsWith('0')) {
+        digits = '972' + digits.slice(1);
+      }
+      return digits;
+    }
+
+    window.sendAppLinkViaWhatsApp = function() {
+      const shareUrl = buildClientAppShareUrl();
+      const inputEl = document.getElementById('clientAppShareUrlInput');
+      if (inputEl) inputEl.value = shareUrl;
+
+      const phoneDigits = normalizePhoneForWhatsApp(state.profile.phone);
+      const clientName = state.profile.name || clientId;
+      const msg = [
+        `שלום ${clientName} 👋`,
+        `להלן הקישור האישי שלך לאפליקציית *BodyBalance* למעקב תזונה, אימונים והתקדמות:`,
+        shareUrl
+      ].join('\n');
+
+      const waUrl = phoneDigits
+        ? `https://wa.me/${phoneDigits}?text=${encodeURIComponent(msg)}`
+        : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+    };
+
+    window.copyClientAppLink = function() {
+      const shareUrl = buildClientAppShareUrl();
+      const inputEl = document.getElementById('clientAppShareUrlInput');
+      if (inputEl) inputEl.value = shareUrl;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          alert('הקישור האישי של הלקוח הועתק ללוח!');
+        }).catch(() => {});
+      }
+    };
 
     // --- בניית גרף SVG רספונסיבי ---
     function buildSvgLineChart(points, unitSuffix = 'ק"ג', strokeColor = '#0f766e', fillColor = 'rgba(15, 118, 110, 0.12)') {
@@ -1219,6 +1341,13 @@
       }).join('');
     }
 
+    function getExerciseActiveSetsCount(ex, setLogs = {}) {
+      if (setLogs && setLogs.activeSets !== undefined && setLogs.activeSets !== '') {
+        return Math.max(1, Math.min(12, parseInt(setLogs.activeSets, 10) || 1));
+      }
+      return Math.max(1, Math.min(12, parseInt(ex.sets, 10) || 1));
+    }
+
     function getAllConfiguredExercises() {
       const map = new Map();
       (state.workoutSessions || []).forEach(sess => {
@@ -1229,7 +1358,9 @@
             name: ex.name,
             sessionTitle: sess.title,
             sets: Math.max(1, parseInt(ex.sets, 10) || 1),
-            targetWeights: Array.isArray(ex.setWeights) ? ex.setWeights : []
+            reps: ex.reps || '8-10',
+            targetWeights: Array.isArray(ex.setWeights) ? ex.setWeights : [],
+            targetReps: Array.isArray(ex.setReps) ? ex.setReps : []
           });
         });
       });
@@ -1267,19 +1398,30 @@
         const isCompleted = !!dayObj?.completedExercises?.[chosenEx.exKey];
         if (!setLogs && !isCompleted) return;
 
+        const setsCount = getExerciseActiveSetsCount(chosenEx, setLogs);
         const setDetails = [];
         const numericWeights = [];
-        for (let i = 0; i < chosenEx.sets; i++) {
+        for (let i = 0; i < setsCount; i++) {
           const rawW = setLogs && setLogs[`w_${i}`] !== undefined
             ? setLogs[`w_${i}`]
             : (isCompleted && chosenEx.targetWeights[i] ? chosenEx.targetWeights[i] : '');
+          const rawReps = setLogs && setLogs[`reps_${i}`] !== undefined && setLogs[`reps_${i}`] !== ''
+            ? `${setLogs[`reps_${i}`]} חז׳`
+            : (chosenEx.targetReps[i] ? `${chosenEx.targetReps[i]} חז׳` : '');
           const rawRir = setLogs && setLogs[`rir_${i}`] !== undefined && setLogs[`rir_${i}`] !== ''
-            ? ` (RIR ${setLogs[`rir_${i}`]})`
+            ? `RIR ${setLogs[`rir_${i}`]}`
             : '';
+          const status = getSetCircleStatus(setLogs, i);
+          const mark = status === 'done' ? ' ✓' : status === 'missed' ? ' ✕' : '';
+
           const numW = parseFloat(rawW);
           if (!isNaN(numW) && numW > 0) {
             numericWeights.push(numW);
-            setDetails.push(`סט ${i + 1}: ${numW} ק"ג${rawRir}`);
+            const metaParts = [rawReps, rawRir].filter(Boolean).join(', ');
+            setDetails.push(`סט ${i + 1}${mark}: ${numW} ק"ג${metaParts ? ` (${metaParts})` : ''}`);
+          } else if (rawReps || rawRir || mark) {
+            const metaParts = [rawReps, rawRir].filter(Boolean).join(', ');
+            setDetails.push(`סט ${i + 1}${mark}${metaParts ? `: ${metaParts}` : ''}`);
           }
         }
 
@@ -1381,6 +1523,19 @@
         document.getElementById('birthdayStatusSub').textContent = `תאריך לידה: ${info.formattedFull} · גיל נוכחי: ${info.age}`;
       } else {
         card.classList.add('hidden');
+      }
+    };
+
+    window.onGenderInputChange = function() {
+      const gender = document.getElementById('profGender')?.value || 'male';
+      const chestBox = document.getElementById('circChestBox');
+      const hipsBox = document.getElementById('circHipsBox');
+      if (gender === 'female') {
+        chestBox?.classList.add('hidden');
+        hipsBox?.classList.remove('hidden');
+      } else {
+        chestBox?.classList.remove('hidden');
+        hipsBox?.classList.add('hidden');
       }
     };
 
@@ -1906,10 +2061,26 @@
       renderWorkouts();
     };
 
+    window.updateExerciseSetsCount = function(exKey, newCount) {
+      const count = Math.max(1, Math.min(12, parseInt(newCount, 10) || 1));
+      const log = getDayLog();
+      if (!log.exerciseSetLogs[exKey]) log.exerciseSetLogs[exKey] = {};
+      log.exerciseSetLogs[exKey].activeSets = count;
+      saveState();
+      renderWorkouts();
+    };
+
     window.updateClientSetWeight = function(exKey, setIdx, val) {
       const log = getDayLog();
       if (!log.exerciseSetLogs[exKey]) log.exerciseSetLogs[exKey] = {};
       log.exerciseSetLogs[exKey][`w_${setIdx}`] = val;
+      saveState();
+    };
+
+    window.updateClientSetReps = function(exKey, setIdx, val) {
+      const log = getDayLog();
+      if (!log.exerciseSetLogs[exKey]) log.exerciseSetLogs[exKey] = {};
+      log.exerciseSetLogs[exKey][`reps_${setIdx}`] = val;
       saveState();
     };
 
@@ -1920,7 +2091,6 @@
       saveState();
     };
 
-    // סימון סט מעגלי תלת-מצבי: ריק -> ✓ (בוצע) -> ✕ (לא בוצע) -> ריק
     function getSetCircleStatus(setLogs, setIdx) {
       if (!setLogs) return 'none';
       const val = setLogs[`d_${setIdx}`];
@@ -1996,20 +2166,29 @@
       const bInfo = getBirthdayDetails(birthDateVal);
       const calculatedAge = bInfo ? bInfo.age : (parseInt(document.getElementById('profAge').value, 10) || 28);
       const newWeight = parseFloat(document.getElementById('profWeight').value) || 75;
+      const genderVal = document.getElementById('profGender').value || 'male';
 
       state.profile = {
         name: (document.getElementById('profName').value || '').trim() || 'מתאמן',
+        gender: genderVal,
         phone: (document.getElementById('profPhone').value || '').trim(),
         birthDate: birthDateVal,
         avatarDataUrl: existingAvatar,
         weight: newWeight,
         height: parseInt(document.getElementById('profHeight').value, 10) || 175,
-        age: calculatedAge
+        age: calculatedAge,
+        circumferences: {
+          chest: (document.getElementById('circChest')?.value || '').trim(),
+          arm: (document.getElementById('circArm')?.value || '').trim(),
+          waist: (document.getElementById('circWaist')?.value || '').trim(),
+          hips: (document.getElementById('circHips')?.value || '').trim(),
+          thighs: (document.getElementById('circThighs')?.value || '').trim()
+        }
       };
       upsertBodyWeightRecord(selectedDate, newWeight);
       saveState();
       renderAll();
-      alert('הפרטים האישיים ומשקל הגוף נשמרו ועודכנו בגרף!');
+      alert('הפרטים האישיים, ההיקפים ומשקל הגוף נשמרו בהצלחה!');
     };
 
     window.shareWhatsAppSummary = function() {
@@ -2028,18 +2207,23 @@
         activeSess.exercises.forEach(ex => {
           const exKey = `${activeSess.id}_${ex.id}`;
           const setLogs = log.exerciseSetLogs?.[exKey] || {};
-          const numSets = Math.max(1, parseInt(ex.sets, 10) || 1);
+          const numSets = getExerciseActiveSetsCount(ex, setLogs);
           const setsArr = [];
           for (let i = 0; i < numSets; i++) {
             const actualW = setLogs[`w_${i}`] || (ex.setWeights && ex.setWeights[i]) || '';
+            const actualReps = setLogs[`reps_${i}`] || (ex.setReps && ex.setReps[i]) || ex.reps || '';
             const actualRir = setLogs[`rir_${i}`] !== undefined && setLogs[`rir_${i}`] !== ''
               ? setLogs[`rir_${i}`]
               : (ex.setRirs && ex.setRirs[i] ? ex.setRirs[i] : '');
             const status = getSetCircleStatus(setLogs, i);
             const statusIcon = status === 'done' ? '✓' : status === 'missed' ? '✕' : '';
             if (actualW || status !== 'none') {
-              const rirPart = actualRir !== '' ? `, RIR ${actualRir}` : '';
-              setsArr.push(`סט ${i + 1}${statusIcon ? ` [${statusIcon}]` : ''}: ${actualW ? `${actualW} ק"ג` : ''}${rirPart}`);
+              const infoParts = [
+                actualW ? `${actualW} ק"ג` : '',
+                actualReps ? `${actualReps} חז׳` : '',
+                actualRir !== '' ? `RIR ${actualRir}` : ''
+              ].filter(Boolean).join(', ');
+              setsArr.push(`סט ${i + 1}${statusIcon ? ` [${statusIcon}]` : ''}: ${infoParts}`);
             }
           }
           if (log.completedExercises?.[exKey] || setsArr.length > 0) {
@@ -2049,23 +2233,31 @@
       }
 
       const bInfo = getBirthdayDetails(state.profile.birthDate);
+      const circ = state.profile.circumferences || {};
+      const circParts = [];
+      if (state.profile.gender === 'female') {
+        if (circ.hips) circParts.push(`אגן: ${circ.hips} ס"מ`);
+      } else {
+        if (circ.chest) circParts.push(`חזה: ${circ.chest} ס"מ`);
+      }
+      if (circ.arm) circParts.push(`יד: ${circ.arm} ס"מ`);
+      if (circ.waist) circParts.push(`מותניים: ${circ.waist} ס"מ`);
+      if (circ.thighs) circParts.push(`ירכיים: ${circ.thighs} ס"מ`);
+
       const text = [
-        `📊 *סיכום יומי — BodyBalance*`,
+        '📊 *סיכום יומי — BodyBalance*',
         `👤 *מתאמן:* ${state.profile.name} (${clientId})`,
         state.profile.phone ? `📱 *טלפון:* ${state.profile.phone}` : '',
         bInfo ? `${bInfo.statusText}` : '',
         `📅 *תאריך:* ${selectedDate}`,
         `⚖️ *משקל גוף:* ${state.profile.weight} ק"ג`,
+        circParts.length ? `📏 *היקפים:* ${circParts.join(' · ')}` : '',
         `🔥 *קלוריות:* ${Math.round(totals.cal)} / ${targets.calories} קק"ל`,
         `🥩 *חלבון:* ${totals.pro.toFixed(1)} / ${targets.protein}g`,
         `🌾 *פחמימה:* ${totals.carb.toFixed(1)} / ${targets.carbs}g`,
         `🥑 *שומן:* ${totals.fat.toFixed(1)} / ${targets.fat}g`,
-        workoutSummaryLines.length ? `
-🏋️ *ביצוע אימון (${activeSess.title}):*
-${workoutSummaryLines.join('
-')}` : ''
-      ].filter(Boolean).join('
-');
+        workoutSummaryLines.length ? `\n🏋️ *ביצוע אימון (${activeSess.title}):*\n${workoutSummaryLines.join('\n')}` : ''
+      ].filter(Boolean).join('\n');
 
       window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
     };
@@ -2239,24 +2431,30 @@ ${workoutSummaryLines.join('
         ? '<p class="text-sm text-slate-400">המנהל טרם שייך תרגילים לאימון זה.</p>'
         : plan.map(ex => {
             const exKey = `${activeSess.id}_${ex.id}`;
-            const numSets = Math.max(1, parseInt(ex.sets, 10) || 1);
+            const setLogs = log.exerciseSetLogs?.[exKey] || {};
+            const numSets = getExerciseActiveSetsCount(ex, setLogs);
             const isDone = !!log.completedExercises[exKey];
             const uploadedVideo = log.clientExerciseVideos?.[exKey] || '';
-            const setLogs = log.exerciseSetLogs?.[exKey] || {};
             const targetWeights = Array.isArray(ex.setWeights) ? ex.setWeights : [];
+            const targetReps = Array.isArray(ex.setReps) ? ex.setReps : [];
             const targetRirs = Array.isArray(ex.setRirs) ? ex.setRirs : [];
+
+            let setCountOptionsHtml = '';
+            for (let c = 1; c <= 10; c++) {
+              setCountOptionsHtml += `<option value="${c}" ${c === numSets ? 'selected' : ''}>${c} סטים</option>`;
+            }
 
             let setsRowsHtml = '';
             for (let i = 0; i < numSets; i++) {
-              const targetW = targetWeights[i] !== undefined && targetWeights[i] !== '' ? `${targetWeights[i]} ק"ג` : 'לא הוגדר';
               const actualW = setLogs[`w_${i}`] !== undefined ? setLogs[`w_${i}`] : (targetWeights[i] || '');
+              const actualReps = setLogs[`reps_${i}`] !== undefined ? setLogs[`reps_${i}`] : (targetReps[i] || ex.reps || '');
               const actualRir = setLogs[`rir_${i}`] !== undefined ? setLogs[`rir_${i}`] : (targetRirs[i] !== undefined ? targetRirs[i] : '');
               const setStatus = getSetCircleStatus(setLogs, i);
 
               let rowBgClass = '';
               let circleBtnClass = 'bg-white border-2 border-slate-300 text-transparent hover:border-teal-500';
               let circleIcon = '';
-              let statusTitle = 'לחץ לסימון בוצע (✓) או לא בוצע (✕)';
+              let statusTitle = 'לחץ לסימון בוצע (✓ ירוק) או לא בוצע (✕ אדום)';
 
               if (setStatus === 'done') {
                 rowBgClass = 'bg-emerald-50/70';
@@ -2273,8 +2471,6 @@ ${workoutSummaryLines.join('
               setsRowsHtml += `
                 <tr class="${rowBgClass}">
                   <td class="py-1.5 px-2.5 font-extrabold text-slate-800">סט ${i + 1}</td>
-                  <td class="py-1.5 px-2.5 text-slate-600 font-semibold">${ex.reps} חזרות</td>
-                  <td class="py-1.5 px-2.5 text-teal-800 font-bold">${targetW}</td>
                   <td class="py-1.5 px-2.5">
                     <div class="flex items-center gap-1">
                       <input type="number" step="0.5" min="0" value="${actualW}" placeholder="ק&quot;ג"
@@ -2284,8 +2480,13 @@ ${workoutSummaryLines.join('
                     </div>
                   </td>
                   <td class="py-1.5 px-2.5">
+                    <input type="text" value="${actualReps}" placeholder="חזרות"
+                      oninput="updateClientSetReps('${exKey}', ${i}, this.value)"
+                      class="w-16 sm:w-20 border border-slate-300 rounded-lg px-2 py-1 text-xs font-bold bg-white text-center" />
+                  </td>
+                  <td class="py-1.5 px-2.5">
                     <div class="flex items-center gap-1">
-                      <input type="number" step="0.5" min="0" max="10" value="${actualRir}" placeholder="0-5"
+                      <input type="number" step="0.5" min="0" max="10" value="${actualRir}" placeholder="RIR"
                         oninput="updateClientSetRir('${exKey}', ${i}, this.value)"
                         class="w-14 sm:w-16 border border-indigo-200 rounded-lg px-1.5 py-1 text-xs font-extrabold bg-indigo-50/40 text-indigo-950 text-center" />
                     </div>
@@ -2306,7 +2507,15 @@ ${workoutSummaryLines.join('
                   <div>
                     <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">${ex.muscle}</span>
                     <h3 class="font-extrabold text-slate-900 text-base mt-1">${ex.name}</h3>
-                    <p class="text-xs text-teal-700 font-bold">${numSets} סטים × ${ex.reps} חזרות</p>
+                    <div class="flex flex-wrap items-center gap-2 mt-1">
+                      <label class="text-xs text-teal-800 font-bold flex items-center gap-1.5">
+                        <span>כמות סטים לתרגיל:</span>
+                        <select onchange="updateExerciseSetsCount('${exKey}', this.value)" class="border border-teal-300 bg-teal-50/60 rounded-lg px-2 py-0.5 text-xs font-extrabold text-teal-950 cursor-pointer">
+                          ${setCountOptionsHtml}
+                        </select>
+                      </label>
+                      <span class="text-xs text-slate-500 font-semibold">· יעד חזרות: ${ex.reps}</span>
+                    </div>
                   </div>
                   <button type="button" onclick="toggleExerciseDone('${exKey}', ${numSets})" class="px-4 py-2 rounded-xl text-xs font-extrabold cursor-pointer ${isDone ? 'bg-emerald-600 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-800'}">
                     ${isDone ? '✓ כל הסטים בוצעו' : 'סמן תרגיל כבוצע'}
@@ -2318,11 +2527,10 @@ ${workoutSummaryLines.join('
                     <thead class="bg-slate-100/80 text-slate-600">
                       <tr>
                         <th class="py-1.5 px-2.5 font-bold">סט</th>
+                        <th class="py-1.5 px-2.5 font-bold">משקל עבודה</th>
                         <th class="py-1.5 px-2.5 font-bold">חזרות</th>
-                        <th class="py-1.5 px-2.5 font-bold">יעד מאמן</th>
-                        <th class="py-1.5 px-2.5 font-bold">משקל בפועל</th>
-                        <th class="py-1.5 px-2.5 font-bold text-indigo-800">RIR (רזרבה)</th>
-                        <th class="py-1.5 px-2.5 font-bold text-center">בוצע (✓/✕)</th>
+                        <th class="py-1.5 px-2.5 font-bold text-indigo-800">RIR (חזרות רזרבה)</th>
+                        <th class="py-1.5 px-2.5 font-bold text-center">בוצע (✓ / ✕)</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200/70">
@@ -2364,6 +2572,16 @@ ${workoutSummaryLines.join('
         if (hd.answers.meds) document.getElementById('hdQMeds').value = hd.answers.meds;
       }
       document.getElementById('hdNotesInput').value = hd.notes || '';
+
+      const sigPreviewBox = document.getElementById('savedSignaturePreviewBox');
+      const sigPreviewImg = document.getElementById('savedSignaturePreviewImg');
+      if (hd.signatureDataUrl) {
+        sigPreviewBox.classList.remove('hidden');
+        sigPreviewImg.src = hd.signatureDataUrl;
+      } else {
+        sigPreviewBox.classList.add('hidden');
+        sigPreviewImg.src = '';
+      }
 
       const hBadge = document.getElementById('clientHealthStatusBadge');
       if (hd.signed) {
@@ -2421,9 +2639,11 @@ ${workoutSummaryLines.join('
 
       const bInfo = getBirthdayDetails(state.profile.birthDate);
       const displayAge = bInfo ? bInfo.age : (state.profile.age || '');
+      const genderVal = state.profile.gender || 'male';
 
       document.getElementById('bannerName').textContent = state.profile.name || 'מתאמן';
       document.getElementById('bannerCode').textContent = clientId;
+      document.getElementById('bannerGenderBadge').textContent = genderVal === 'female' ? 'אישה' : 'גבר';
       document.getElementById('bannerPhoneBadge').textContent = state.profile.phone ? `📱 ${state.profile.phone}` : 'לא הוזן טלפון נייד';
       document.getElementById('headerSub').textContent = `${state.profile.name} · ${state.profile.weight} ק"ג`;
 
@@ -2442,12 +2662,24 @@ ${workoutSummaryLines.join('
 
       document.getElementById('profName').value = state.profile.name || '';
       document.getElementById('profCode').value = clientId;
+      document.getElementById('profGender').value = genderVal;
       document.getElementById('profPhone').value = state.profile.phone || '';
       document.getElementById('profBirthDate').value = state.profile.birthDate || '';
       document.getElementById('profWeight').value = state.profile.weight || '';
       document.getElementById('profHeight').value = state.profile.height || '';
       document.getElementById('profAge').value = displayAge;
       document.getElementById('profTierLabel').textContent = state.subscriptionTierName || 'מסלול ליווי אישי';
+
+      const circ = state.profile.circumferences || {};
+      document.getElementById('circChest').value = circ.chest || '';
+      document.getElementById('circArm').value = circ.arm || '';
+      document.getElementById('circWaist').value = circ.waist || '';
+      document.getElementById('circHips').value = circ.hips || '';
+      document.getElementById('circThighs').value = circ.thighs || '';
+      onGenderInputChange();
+
+      const shareUrlEl = document.getElementById('clientAppShareUrlInput');
+      if (shareUrlEl) shareUrlEl.value = buildClientAppShareUrl();
     }
 
     function renderAll() {
