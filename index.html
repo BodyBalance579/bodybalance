@@ -649,52 +649,6 @@
           <strong>מסלול מנוי פעיל:</strong> <span id="profTierLabel" class="text-teal-800 font-bold">-</span>
         </div>
 
-
-        <!-- רישום מספר מדידות היקפים + גרף התקדמות היקפים בממשק הלקוח -->
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h3 class="text-sm font-extrabold text-slate-900">📈 יומן מדידות היקפים מרובות וגרף התקדמות</h3>
-              <p class="text-xs text-slate-500">תעד מספר מדידות היקפים בתאריכים שונים ועקוב אחר מגמת השינוי בגרף</p>
-            </div>
-            <div class="flex flex-wrap items-center gap-2">
-              <label class="text-xs font-bold text-slate-600">תאריך מדידה:</label>
-              <input id="clientMeasDateInput" type="date" class="border border-slate-300 rounded-xl px-2.5 py-1 text-xs font-bold bg-white" />
-              <button type="button" onclick="addClientCircumferenceEntry()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs cursor-pointer">
-                + הוסף מדידת היקפים חדשה
-              </button>
-            </div>
-          </div>
-
-          <div class="bg-white border border-slate-200 rounded-2xl p-3.5 space-y-2.5">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xs sm:text-sm font-extrabold text-slate-900">📉 גרף התקדמות היקפים (ס"מ):</span>
-                <span id="clientCircChartDeltaBadge" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800">-</span>
-              </div>
-              <select id="clientCircChartMetricSelect" onchange="renderClientCircumferencesChart()" class="border border-slate-300 rounded-xl px-3 py-1 text-xs font-extrabold bg-slate-50">
-              </select>
-            </div>
-            <div id="clientCircChartBox"></div>
-          </div>
-
-          <div id="clientCircHistoryBox" class="overflow-x-auto bg-white border border-slate-200 rounded-xl"></div>
-        </div>
-
-        <!-- סנכרון קצב התקדמות למאמן -->
-        <div class="bg-indigo-50/60 border border-indigo-200 rounded-2xl p-4 space-y-2">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h3 class="text-xs sm:text-sm font-extrabold text-indigo-950">🔄 סנכרון ההתקדמות שלי למאמן</h3>
-              <p class="text-[11px] text-indigo-800">הנתונים מסתנכרנים אוטומטית בדפדפן, וניתן גם להעתיק/לשלוח קוד סנכרון למאמן</p>
-            </div>
-            <button type="button" onclick="copyClientProgressSyncCode()" class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs cursor-pointer">
-              📋 העתק קוד סנכרון למאמן
-            </button>
-          </div>
-        </div>
-
-
         <button type="button" onclick="saveProfile()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-6 py-2.5 rounded-xl text-sm cursor-pointer">
           שמור פרטים, היקפים ותמונה
         </button>
@@ -1135,28 +1089,20 @@
       }
     }
 
-    let bbClientChannel = null;
-    try {
-      if ('BroadcastChannel' in window) bbClientChannel = new BroadcastChannel('BodyBalanceSync_v1');
-    } catch (e) {}
-    function saveState() {
-      localStorage.setItem(stateStorageKey(clientId), JSON.stringify(state));
-      try {
-        if (bbClientChannel) bbClientChannel.postMessage({ clientId, updatedAt: Date.now() });
-      } catch (e) {}
-    }
+    function saveState() { localStorage.setItem(stateStorageKey(clientId), JSON.stringify(state)); }
 
     const OWN_CARD_LOCK_KEY = 'BodyBalanceOwnClientCardId_v1';
 
-    function enforceOwnClientCardOnly(requestedId = '', hasExplicitLinkPayload = false) {
+    function enforceOwnClientCardOnly(requestedId = '') {
       const lockedOwner = (localStorage.getItem(OWN_CARD_LOCK_KEY) || '').trim();
       const cleanReq = (requestedId || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
 
-      if (cleanReq && (hasExplicitLinkPayload || !lockedOwner)) {
+      if (lockedOwner) {
+        // לקוח שכבר משויך לכרטיס אישי רואה רק את הכרטיס שלו ולא יכול לעבור לכרטיס לקוח אחר
+        clientId = lockedOwner;
+      } else if (cleanReq) {
         clientId = cleanReq;
         localStorage.setItem(OWN_CARD_LOCK_KEY, clientId);
-      } else if (lockedOwner) {
-        clientId = lockedOwner;
       } else {
         localStorage.setItem(OWN_CARD_LOCK_KEY, clientId);
       }
@@ -1169,7 +1115,7 @@
         const paramClient = (params.get('client') || '').trim().replace(/[^a-zA-Z0-9_-]/g, '');
         const paramPlan = params.get('plan');
 
-        enforceOwnClientCardOnly(paramClient, !!paramPlan);
+        enforceOwnClientCardOnly(paramClient);
         state = loadState();
 
         if (paramPlan) {
@@ -2214,7 +2160,6 @@
         circumferences: circObj
       };
 
-      // סנכרון היקפים לרשומת המדידה של התאריך הנבחר כדי שיופיעו גם בממשק המנהל
       const pNum = (v) => {
         const n = parseFloat(v);
         return !isNaN(n) && n > 0 ? Number(n.toFixed(1)) : null;
@@ -2669,7 +2614,8 @@
       document.getElementById('circHips').value = circ.hips || '';
       document.getElementById('circThighs').value = circ.thighs || '';
       onGenderInputChange();
-      renderClientCircumferencesSection();
+
+
     }
 
     function renderAll() {
@@ -2694,166 +2640,6 @@
       if (countEl) countEl.textContent = FOOD_DB_100G.length;
       renderAll();
     });
-
-    // --- רישום מספר היקפים וגרף התקדמות היקפים בממשק הלקוח ---
-    window.addClientCircumferenceEntry = function() {
-      const dateInput = document.getElementById('clientMeasDateInput');
-      const dateStr = (dateInput && dateInput.value) || selectedDate || new Date().toISOString().slice(0, 10);
-      const genderVal = document.getElementById('profGender')?.value || state.profile.gender || 'male';
-      state.profile.gender = genderVal;
-
-      const parseNum = (id) => {
-        const v = parseFloat(document.getElementById(id)?.value);
-        return !isNaN(v) && v > 0 ? Number(v.toFixed(1)) : null;
-      };
-
-      const chest = genderVal === 'male' ? parseNum('circChest') : null;
-      const hips = genderVal === 'female' ? parseNum('circHips') : null;
-      const arms = parseNum('circArm');
-      const waist = parseNum('circWaist');
-      const thighs = parseNum('circThighs');
-
-      if (![chest, hips, arms, waist, thighs].some(v => v !== null)) {
-        return alert('נא להזין לפחות היקף אחד (בס"מ) לפני הוספת מדידה.');
-      }
-
-      if (!Array.isArray(state.bodyMeasurementsHistory)) state.bodyMeasurementsHistory = [];
-      state.bodyMeasurementsHistory.push({
-        id: `cmeas-${Date.now()}`,
-        date: dateStr,
-        gender: genderVal,
-        chest,
-        hips,
-        arms,
-        waist,
-        thighs
-      });
-
-      state.profile.circumferences = {
-        chest: chest !== null ? String(chest) : (state.profile.circumferences?.chest || ''),
-        hips: hips !== null ? String(hips) : (state.profile.circumferences?.hips || ''),
-        arm: arms !== null ? String(arms) : (state.profile.circumferences?.arm || ''),
-        waist: waist !== null ? String(waist) : (state.profile.circumferences?.waist || ''),
-        thighs: thighs !== null ? String(thighs) : (state.profile.circumferences?.thighs || '')
-      };
-
-      saveState();
-      renderClientCircumferencesSection();
-      alert('מדידת ההיקפים נוספה והגרף עודכן!');
-    };
-
-    window.deleteClientCircumferenceEntry = function(entryId) {
-      state.bodyMeasurementsHistory = (state.bodyMeasurementsHistory || []).filter(m => m.id !== entryId);
-      saveState();
-      renderClientCircumferencesSection();
-    };
-
-    window.renderClientCircumferencesChart = function() {
-      const genderVal = document.getElementById('profGender')?.value || state.profile.gender || 'male';
-      const sel = document.getElementById('clientCircChartMetricSelect');
-      const chartBox = document.getElementById('clientCircChartBox');
-      const badge = document.getElementById('clientCircChartDeltaBadge');
-      if (!sel || !chartBox) return;
-
-      const metricOptions = [
-        { key: 'waist', label: 'היקף מותניים (ס"מ)' },
-        { key: 'arms', label: 'היקף יד (ס"מ)' },
-        ...(genderVal === 'male' ? [{ key: 'chest', label: 'היקף חזה (ס"מ)' }] : [{ key: 'hips', label: 'היקף אגן (ס"מ)' }]),
-        { key: 'thighs', label: 'היקף ירכיים (ס"מ)' }
-      ];
-
-      const prevKey = sel.value;
-      sel.innerHTML = metricOptions.map(o => `<option value="${o.key}">${o.label}</option>`).join('');
-      if (prevKey && metricOptions.some(o => o.key === prevKey)) sel.value = prevKey;
-      const activeMetric = sel.value || 'waist';
-
-      const sorted = [...(state.bodyMeasurementsHistory || [])].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
-      const pts = sorted
-        .filter(m => m[activeMetric] !== null && m[activeMetric] !== undefined && !isNaN(m[activeMetric]))
-        .map(m => ({ label: formatShortDateHeb(m.date), value: Number(m[activeMetric]) }));
-
-      if (badge) {
-        if (pts.length >= 2) {
-          const diff = Number((pts[pts.length - 1].value - pts[0].value).toFixed(1));
-          badge.textContent = `שינוי כולל: ${diff > 0 ? '+' : ''}${diff} ס"מ (${pts.length} מדידות)`;
-        } else if (pts.length === 1) {
-          badge.textContent = `${pts[0].value} ס"מ (מדידה 1)`;
-        } else {
-          badge.textContent = 'אין מדידות בגרף';
-        }
-      }
-
-      chartBox.innerHTML = buildSvgLineChart(pts, 'ס"מ', '#0d9488', 'rgba(13, 148, 136, 0.12)');
-    };
-
-    function renderClientCircumferencesSection() {
-      const dateInput = document.getElementById('clientMeasDateInput');
-      if (dateInput && !dateInput.value) dateInput.value = selectedDate || new Date().toISOString().slice(0, 10);
-
-      renderClientCircumferencesChart();
-
-      const histBox = document.getElementById('clientCircHistoryBox');
-      if (!histBox) return;
-      const genderVal = document.getElementById('profGender')?.value || state.profile.gender || 'male';
-      const rows = [...(state.bodyMeasurementsHistory || [])].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-
-      if (rows.length === 0) {
-        histBox.innerHTML = '<p class="p-3 text-xs text-slate-400">טרם נוספו מדידות היקפים. הזן היקפים ולחץ "+ הוסף מדידת היקפים חדשה".</p>';
-        return;
-      }
-
-      histBox.innerHTML = `
-        <table class="w-full text-right text-xs">
-          <thead class="bg-slate-100 text-slate-700 border-b border-slate-200">
-            <tr>
-              <th class="py-2 px-3 font-bold">תאריך</th>
-              ${genderVal === 'male' ? '<th class="py-2 px-3 font-bold">חזה</th>' : '<th class="py-2 px-3 font-bold">אגן</th>'}
-              <th class="py-2 px-3 font-bold">יד</th>
-              <th class="py-2 px-3 font-bold">מותניים</th>
-              <th class="py-2 px-3 font-bold">ירכיים</th>
-              <th class="py-2 px-2 text-center font-bold">מחק</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            ${rows.map(r => `
-              <tr>
-                <td class="py-2 px-3 font-bold text-slate-800">${r.date || '-'}</td>
-                ${genderVal === 'male'
-                  ? `<td class="py-2 px-3 font-semibold">${r.chest ? `${r.chest} ס"מ` : '-'}</td>`
-                  : `<td class="py-2 px-3 font-semibold">${r.hips ? `${r.hips} ס"מ` : '-'}</td>`
-                }
-                <td class="py-2 px-3 font-semibold">${r.arms ? `${r.arms} ס"מ` : '-'}</td>
-                <td class="py-2 px-3 font-semibold">${r.waist ? `${r.waist} ס"מ` : '-'}</td>
-                <td class="py-2 px-3 font-semibold">${r.thighs ? `${r.thighs} ס"מ` : '-'}</td>
-                <td class="py-2 px-2 text-center">
-                  <button type="button" onclick="deleteClientCircumferenceEntry('${r.id}')" class="text-rose-600 font-bold cursor-pointer">✕</button>
-                </td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      `;
-    }
-
-    window.copyClientProgressSyncCode = async function() {
-      const pkg = {
-        clientId,
-        profile: state.profile,
-        bodyWeightHistory: state.bodyWeightHistory || [],
-        bodyMeasurementsHistory: state.bodyMeasurementsHistory || [],
-        dayLogs: state.dayLogs || {},
-        healthDeclaration: state.healthDeclaration || {},
-        termsAcceptance: state.termsAcceptance || {}
-      };
-      const code = btoa(unescape(encodeURIComponent(JSON.stringify(pkg))));
-      try {
-        await navigator.clipboard.writeText(code);
-        alert('קוד הסנכרון של ההתקדמות שלך הועתק ללוח! שלח אותו למאמן להטענה בממשק המנהל.');
-      } catch (e) {
-        prompt('העתק את קוד הסנכרון ושלח למאמן:', code);
-      }
-    };
-
   </script>
 </body>
 </html>
