@@ -65,6 +65,7 @@
           </div>
           <div class="flex flex-wrap items-center gap-2 mt-0.5">
             <span id="bannerPhoneBadge" class="text-xs text-teal-800 font-semibold"></span>
+            <span id="bannerPlanBadge" class="text-xs font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200"></span>
             <span id="bannerBirthdayBadge" class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-pink-50 text-pink-800 border border-pink-200"></span>
           </div>
         </div>
@@ -1047,26 +1048,147 @@
 
     let state = loadState();
 
+
+    // === BodyBalance Admin <-> Index Client Data Sync Bridge ===
+    const BB_SYNC_CHANNEL_NAME = 'BodyBalanceClientSync_v1';
+    const bbSyncChannel = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel(BB_SYNC_CHANNEL_NAME) : null;
+
+    function bbReadClientsRegistry() {
+      try {
+        const raw = localStorage.getItem('BodyBalanceAdminClients_v1');
+        const list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) && list.length ? list : ['yoav-01'];
+      } catch (e) {
+        return ['yoav-01'];
+      }
+    }
+
+    function bbRegisterClientId(id) {
+      if (!id) return;
+      const list = bbReadClientsRegistry();
+      if (!list.includes(id)) {
+        list.push(id);
+        localStorage.setItem('BodyBalanceAdminClients_v1', JSON.stringify(list));
+      }
+    }
+
+    function bbReadUnifiedState(id) {
+      try {
+        const raw = localStorage.getItem(`BodyBalanceUnifiedState_${id}`);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function bbNormalizeCircumferences(stateObj) {
+      const prof = stateObj?.profile || {};
+      const circ = { ...(prof.circumferences || {}) };
+      const hist = Array.isArray(stateObj?.bodyMeasurementsHistory) ? stateObj.bodyMeasurementsHistory : [];
+      if (hist.length > 0) {
+        const sorted = [...hist].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+        const latest = sorted[0] || {};
+        if (!circ.chest && latest.chest !== null && latest.chest !== undefined) circ.chest = String(latest.chest);
+        if (!circ.hips && latest.hips !== null && latest.hips !== undefined) circ.hips = String(latest.hips);
+        if (!circ.arm && latest.arms !== null && latest.arms !== undefined) circ.arm = String(latest.arms);
+        if (!circ.waist && latest.waist !== null && latest.waist !== undefined) circ.waist = String(latest.waist);
+        if (!circ.thighs && latest.thighs !== null && latest.thighs !== undefined) circ.thighs = String(latest.thighs);
+      }
+      return circ;
+    }
+
+    function bbMergeClientStates(id, adminOrIncoming, existingState) {
+      const base = existingState || {};
+      const inc = adminOrIncoming || {};
+      const baseProf = base.profile || {};
+      const incProf = inc.profile || {};
+
+      const mergedProfile = {
+        ...baseProf,
+        ...incProf,
+        name: incProf.name || baseProf.name || id,
+        gender: incProf.gender || baseProf.gender || 'male',
+        phone: incProf.phone !== undefined ? incProf.phone : (baseProf.phone || ''),
+        birthDate: incProf.birthDate !== undefined ? incProf.birthDate : (baseProf.birthDate || ''),
+        avatarDataUrl: incProf.avatarDataUrl || baseProf.avatarDataUrl || '',
+        weight: incProf.weight !== undefined && incProf.weight !== '' ? incProf.weight : (baseProf.weight || 78),
+        height: incProf.height !== undefined && incProf.height !== '' ? incProf.height : (baseProf.height || 178),
+        age: incProf.age !== undefined && incProf.age !== '' ? incProf.age : (baseProf.age || 28),
+        circumferences: {
+          ...(baseProf.circumferences || {}),
+          ...(incProf.circumferences || {})
+        }
+      };
+
+      const merged = {
+        ...base,
+        ...inc,
+        subscriptionActive: inc.subscriptionActive !== undefined ? inc.subscriptionActive : (base.subscriptionActive !== undefined ? base.subscriptionActive : true),
+        subscriptionPlanId: inc.subscriptionPlanId || base.subscriptionPlanId || 'full-coaching',
+        subscriptionTierName: inc.subscriptionTierName || base.subscriptionTierName || 'מסלול ליווי מלא (אימונים + תזונה)',
+        subscriptionPrice: inc.subscriptionPrice !== undefined ? inc.subscriptionPrice : (base.subscriptionPrice !== undefined ? base.subscriptionPrice : 450),
+        subscriptionRenewalDate: inc.subscriptionRenewalDate !== undefined ? inc.subscriptionRenewalDate : (base.subscriptionRenewalDate || ''),
+        nutritionTargets: {
+          calories: 2200,
+          protein: 160,
+          carbs: 220,
+          fat: 70,
+          ...(base.nutritionTargets || {}),
+          ...(inc.nutritionTargets || {})
+        },
+        profile: mergedProfile,
+        bodyWeightHistory: Array.isArray(inc.bodyWeightHistory) && inc.bodyWeightHistory.length
+          ? inc.bodyWeightHistory
+          : (Array.isArray(base.bodyWeightHistory) ? base.bodyWeightHistory : []),
+        bodyMeasurementsHistory: Array.isArray(inc.bodyMeasurementsHistory) && inc.bodyMeasurementsHistory.length
+          ? inc.bodyMeasurementsHistory
+          : (Array.isArray(base.bodyMeasurementsHistory) ? base.bodyMeasurementsHistory : []),
+        workoutSessions: Array.isArray(inc.workoutSessions) && inc.workoutSessions.length
+          ? inc.workoutSessions
+          : (Array.isArray(base.workoutSessions) ? base.workoutSessions : []),
+        healthDeclaration: {
+          signed: false,
+          ...(base.healthDeclaration || {}),
+          ...(inc.healthDeclaration || {})
+        },
+        termsAcceptance: {
+          accepted: false,
+          ...(base.termsAcceptance || {}),
+          ...(inc.termsAcceptance || {})
+        },
+        dayLogs: {
+          ...(base.dayLogs || {}),
+          ...(inc.dayLogs || {})
+        }
+      };
+
+      merged.profile.circumferences = bbNormalizeCircumferences(merged);
+      merged.weeklyWorkoutsPerWeek = merged.workoutSessions.length || merged.weeklyWorkoutsPerWeek || 3;
+      return merged;
+    }
+
+    function bbBroadcastClientUpdate(id, stateObj, sourceRole) {
+      if (!id || !stateObj) return;
+      bbRegisterClientId(id);
+      const key = `BodyBalanceUnifiedState_${id}`;
+      const serialized = JSON.stringify(stateObj);
+      localStorage.setItem(key, serialized);
+      if (bbSyncChannel) {
+        bbSyncChannel.postMessage({
+          type: 'CLIENT_STATE_SYNC',
+          clientId: id,
+          sourceRole: sourceRole || 'unknown',
+          state: stateObj,
+          timestamp: Date.now()
+        });
+      }
+    }
+
     function loadState() {
       try {
-        const raw = localStorage.getItem(stateStorageKey(clientId));
-        const parsed = raw ? JSON.parse(raw) : {};
         const def = getDefaultClientState();
-        const merged = {
-          ...def,
-          ...parsed,
-          nutritionTargets: { ...def.nutritionTargets, ...(parsed.nutritionTargets || {}) },
-          profile: {
-            ...def.profile,
-            ...(parsed.profile || {}),
-            circumferences: {
-              ...def.profile.circumferences,
-              ...((parsed.profile && parsed.profile.circumferences) || {})
-            }
-          },
-          healthDeclaration: { ...def.healthDeclaration, ...(parsed.healthDeclaration || {}) },
-          termsAcceptance: { ...def.termsAcceptance, ...(parsed.termsAcceptance || {}) }
-        };
+        const parsed = bbReadUnifiedState(clientId) || {};
+        const merged = bbMergeClientStates(clientId, parsed, def);
 
         if (!Array.isArray(merged.bodyWeightHistory)) {
           merged.bodyWeightHistory = merged.profile.weight
@@ -1088,7 +1210,11 @@
       }
     }
 
-    function saveState() { localStorage.setItem(stateStorageKey(clientId), JSON.stringify(state)); }
+    function saveState() {
+      state.profile.circumferences = bbNormalizeCircumferences(state);
+      bbRegisterClientId(clientId);
+      bbBroadcastClientUpdate(clientId, state, 'index');
+    }
 
     function applyIncomingClientLinkParams() {
       try {
@@ -1099,31 +1225,63 @@
         if (paramClient) {
           clientId = paramClient;
           localStorage.setItem(CLIENT_ID_KEY, clientId);
+          bbRegisterClientId(clientId);
           state = loadState();
         }
 
         if (paramPlan) {
           const decoded = JSON.parse(decodeURIComponent(escape(atob(paramPlan))));
           if (decoded && typeof decoded === 'object') {
-            if (decoded.name) state.profile.name = decoded.name;
-            if (decoded.gender) state.profile.gender = decoded.gender;
-            if (decoded.phone) state.profile.phone = decoded.phone;
-            if (decoded.birthDate) state.profile.birthDate = decoded.birthDate;
-            if (decoded.weight) state.profile.weight = decoded.weight;
-            if (decoded.height) state.profile.height = decoded.height;
-            if (decoded.circumferences) {
-              state.profile.circumferences = { ...state.profile.circumferences, ...decoded.circumferences };
-            }
-            if (decoded.tier) state.subscriptionTierName = decoded.tier;
-            if (decoded.targets) state.nutritionTargets = { ...state.nutritionTargets, ...decoded.targets };
-            if (Array.isArray(decoded.sessions) && decoded.sessions.length > 0) {
-              state.workoutSessions = decoded.sessions;
-              state.weeklyWorkoutsPerWeek = decoded.sessions.length;
-            }
+            const incomingPatch = {
+              profile: {
+                ...(decoded.name ? { name: decoded.name } : {}),
+                ...(decoded.gender ? { gender: decoded.gender } : {}),
+                ...(decoded.phone !== undefined ? { phone: decoded.phone } : {}),
+                ...(decoded.birthDate !== undefined ? { birthDate: decoded.birthDate } : {}),
+                ...(decoded.weight ? { weight: decoded.weight } : {}),
+                ...(decoded.height ? { height: decoded.height } : {}),
+                ...(decoded.age ? { age: decoded.age } : {}),
+                ...(decoded.circumferences ? { circumferences: decoded.circumferences } : {})
+              },
+              ...(decoded.subscriptionActive !== undefined ? { subscriptionActive: !!decoded.subscriptionActive } : {}),
+              ...(decoded.tier ? { subscriptionTierName: decoded.tier } : {}),
+              ...(decoded.price !== undefined ? { subscriptionPrice: decoded.price } : {}),
+              ...(decoded.renewalDate !== undefined ? { subscriptionRenewalDate: decoded.renewalDate } : {}),
+              ...(decoded.targets ? { nutritionTargets: decoded.targets } : {}),
+              ...(Array.isArray(decoded.sessions) && decoded.sessions.length > 0 ? {
+                workoutSessions: decoded.sessions,
+                weeklyWorkoutsPerWeek: decoded.sessions.length
+              } : {}),
+              ...(Array.isArray(decoded.measurements) && decoded.measurements.length > 0 ? {
+                bodyMeasurementsHistory: decoded.measurements
+              } : {}),
+              ...(Array.isArray(decoded.bodyWeightHistory) && decoded.bodyWeightHistory.length > 0 ? {
+                bodyWeightHistory: decoded.bodyWeightHistory
+              } : {})
+            };
+            state = bbMergeClientStates(clientId, incomingPatch, state);
             saveState();
           }
         }
       } catch (e) {}
+    }
+
+    function bindIndexLiveSyncListeners() {
+      window.addEventListener('storage', (ev) => {
+        if (!ev.key) return;
+        if (ev.key === stateStorageKey(clientId)) {
+          renderAll();
+        }
+      });
+
+      if (bbSyncChannel) {
+        bbSyncChannel.onmessage = (event) => {
+          const msg = event.data || {};
+          if (msg.type === 'CLIENT_STATE_SYNC' && msg.sourceRole === 'admin' && msg.clientId === clientId) {
+            renderAll();
+          }
+        };
+      }
     }
 
     function buildClientAppShareUrl() {
@@ -2645,6 +2803,11 @@
       document.getElementById('bannerCode').textContent = clientId;
       document.getElementById('bannerGenderBadge').textContent = genderVal === 'female' ? 'אישה' : 'גבר';
       document.getElementById('bannerPhoneBadge').textContent = state.profile.phone ? `📱 ${state.profile.phone}` : 'לא הוזן טלפון נייד';
+      const planBadgeEl = document.getElementById('bannerPlanBadge');
+      if (planBadgeEl) {
+        const subStatusText = state.subscriptionActive === false ? ' · מנוי מושהה' : '';
+        planBadgeEl.textContent = `${state.subscriptionTierName || 'מסלול ליווי אישי'}${subStatusText}`;
+      }
       document.getElementById('headerSub').textContent = `${state.profile.name} · ${state.profile.weight} ק"ג`;
 
       const bBadge = document.getElementById('bannerBirthdayBadge');
@@ -2695,7 +2858,9 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      bbRegisterClientId(clientId);
       applyIncomingClientLinkParams();
+      bindIndexLiveSyncListeners();
       initSignatureCanvas();
       document.getElementById('datePicker').value = selectedDate;
       document.getElementById('newBodyWeightDate').value = selectedDate;
