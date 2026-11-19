@@ -145,7 +145,7 @@
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-xl font-extrabold text-slate-900">יומן ארוחות וסריקת ברקוד</h2>
-            <p class="text-xs text-slate-500">סרוק ברקוד לקבלת ערכי יחידה שלמה של המוצר, או בחר מאכלים מוכנים לאחר בישול/אפייה ממאגר המזונות</p>
+            <p class="text-xs text-slate-500">סרוק ברקוד לקבלת ערכי יחידה שלמה של המוצר, או בחר ממאגר המזונות המלא (<span id="foodsCountBadge">0</span> פריטים מוכנים)</p>
           </div>
           <button type="button" onclick="switchTab('foods')" class="text-xs bg-teal-50 hover:bg-teal-100 text-teal-800 font-bold px-3 py-1.5 rounded-xl cursor-pointer">
             פתח מאגר מזונות מלא →
@@ -292,40 +292,41 @@
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 class="text-xl font-extrabold text-slate-900">מאגר מזונות מלא (לאחר בישול / אפייה)</h2>
-            <p class="text-xs text-slate-500">כל המזונות המצריכים בישול מחושבים <strong>לאחר בישול / צלייה / אפייה</strong>. ערכים מוצגים עבור <strong>100 גרם</strong>, <strong>יחידה שלמה / מנה</strong>, <strong>חצי מנה</strong>, <strong>כף אחת</strong> ו-<strong>כוס אחת</strong></p>
+            <p class="text-xs text-slate-500">כל המזונות המצריכים בישול מחושבים <strong>לאחר בישול / צלייה / אפייה</strong>. ערכים מוצגים עבור <strong>מנה / יחידה שלמה</strong>, <strong>100 גרם</strong>, <strong>חצי מנה</strong>, <strong>כף אחת</strong> ו-<strong>כוס אחת</strong></p>
           </div>
           <div class="flex flex-wrap gap-2">
             <select id="foodCategoryFilter" onchange="renderFoodCatalog()" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold bg-white">
               <option value="all">כל הקטגוריות</option>
-              <option value="דגני בוקר">דגני בוקר</option>
-              <option value="חלב ומשקאות חלבון">חלב ומשקאות חלבון</option>
-              <option value="יוגורטים ומעדני חלבון">יוגורטים ומעדני חלבון</option>
-              <option value="גבינות וביצים">גבינות וביצים</option>
-              <option value="בשרים">בשרים (מבושל / צלוי)</option>
-              <option value="דגים">דגים (צלוי / אפוי)</option>
-              <option value="חלבון מהצומח">חלבון מהצומח (מבושל / צלוי)</option>
-              <option value="לחמים ותצורות">לחמים ותצורות</option>
-              <option value="קמחים ודגנים">דגנים ופסטות (לאחר בישול)</option>
-              <option value="שומנים מן החי והצומח">שומנים מן החי והצומח</option>
+              <option value="בשרים ועופות">בשרים ועופות (מבושל / צלוי)</option>
+              <option value="דגים ופירות ים">דגים ופירות ים (מבושל / אפוי)</option>
+              <option value="ביצים ומנות ביצים">ביצים ומנות ביצים (S/M/L/XL, חביתה, שקשוקה)</option>
+              <option value="מוצרי חלב ותחליפים">מוצרי חלב ותחליפי חלב (יוגורט יווני, פרו, מלבי)</option>
+              <option value="לחמים, מאפים וכריכים">לחמים, מאפים וכריכים (פיתה, לאפה, פיצה, בורקס)</option>
+              <option value="עוגות ועוגיות">עוגות ועוגיות</option>
+              <option value="דגני בוקר וחטיפים">דגני בוקר, חטיפי חלבון וחטיפים</option>
+              <option value="דגנים וקטניות">דגנים, פסטות וקטניות (לאחר בישול)</option>
+              <option value="מזון מהצומח וטבעוני">מזון מהצומח, טבעוני וצמחוני</option>
+              <option value="אגוזים, זרעים ושומנים">אגוזים, זרעים, גרעינים ושומנים</option>
               <option value="פירות">פירות</option>
               <option value="ירקות">ירקות</option>
               <option value="שימורים">שימורים</option>
-              <option value="חטיפים ושוקולדים">חטיפים ושוקולדים</option>
+              <option value="אוכל בחוץ">אוכל בחוץ (סושי, המבורגר, שווארמה, מקסיקני)</option>
+              <option value="קינוחים וגלידות">קינוחים, גלידות, ארטיקים וטילונים</option>
             </select>
-            <input id="foodSearchInput" type="text" oninput="renderFoodCatalog()" placeholder="חיפוש מאכל..." class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs" />
+            <input id="foodSearchInput" type="text" oninput="renderFoodCatalog()" placeholder="חיפוש מאכל (למשל: אנטריקוט, סושי, ביצה L, מלבי)..." class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs min-w-[210px]" />
           </div>
         </div>
         <div id="foodCatalogGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
       </div>
     </section>
 
-    <!-- לשונית 3: תוכנית אימונים שבועית כולל משקלי עבודה לכל סט -->
+    <!-- לשונית 3: תוכנית אימונים שבועית כולל משקלי עבודה, RIR וסימון עגול לכל סט -->
     <section id="tab-workouts" class="tab-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
           <div>
             <h2 class="text-xl font-extrabold text-slate-900">תוכנית האימונים השבועית שלי ומשקלי עבודה</h2>
-            <p class="text-xs text-slate-500">בחר את האימון היומי, הזן את משקל העבודה (בק"ג) שהרמת בכל סט, צפה בהדגמה וסמן ביצוע</p>
+            <p class="text-xs text-slate-500">בחר את האימון היומי, הזן משקל עבודה (ק"ג) ו-RIR (חזרות רזרבה) לכל סט, ולחץ על העיגול לסימון בוצע (✓) או לא בוצע (✕)</p>
           </div>
           <div class="flex items-center gap-2">
             <span id="weeklyFrequencyBadge" class="text-xs font-extrabold px-3 py-1 rounded-full bg-indigo-50 text-indigo-800">3 אימונים בשבוע</span>
@@ -417,7 +418,7 @@
                 <tr>
                   <th class="py-2 px-3 font-bold">תאריך אימון</th>
                   <th class="py-2 px-3 font-bold">משקל שיא (ק"ג)</th>
-                  <th class="py-2 px-3 font-bold">פירוט משקלים לכל סט</th>
+                  <th class="py-2 px-3 font-bold">פירוט משקלים ו-RIR לכל סט</th>
                 </tr>
               </thead>
               <tbody id="exerciseHistoryTbody" class="divide-y divide-slate-100"></tbody>
@@ -692,48 +693,261 @@
       '7290000000065': { name: 'קופסת חומוס (250g)', unitGrams: 250, unitLabel: 'קופסה שלמה (250g)', cal100: 250, pro100: 7.5, carb100: 14, fat100: 18 }
     };
 
+    // מאגר מזונות מקיף — כל הפריטים הדורשים הכנה מחושבים לאחר בישול / צלייה / אפייה
     const FOOD_DB_100G = [
-      { name: 'קורנפלקס רגיל', category: 'דגני בוקר', unitGrams: 35, unitLabel: 'קערה / מנה (35g)', cal: 378, pro: 7.5, carb: 84, fat: 0.9 },
-      { name: 'כריות (נוגט / וניל / שוקולד)', category: 'דגני בוקר', unitGrams: 40, unitLabel: 'מנה (40g)', cal: 465, pro: 7.2, carb: 64, fat: 19.5 },
-      { name: 'ברנפלקס', category: 'דגני בוקר', unitGrams: 40, unitLabel: 'מנה (40g)', cal: 332, pro: 10.5, carb: 68, fat: 2.1 },
-      { name: 'גרנולה', category: 'דגני בוקר', unitGrams: 45, unitLabel: 'מנה (45g)', cal: 435, pro: 9.5, carb: 62, fat: 15.5 },
-      { name: 'חלב 3%', category: 'חלב ומשקאות חלבון', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 61, pro: 3.3, carb: 4.8, fat: 3 },
-      { name: 'חלב 1%', category: 'חלב ומשקאות חלבון', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 42, pro: 3.4, carb: 4.9, fat: 1 },
-      { name: 'משקה חלבון מוכן (330ml)', category: 'חלב ומשקאות חלבון', unitGrams: 330, unitLabel: 'בקבוק שלם (330ml)', cal: 68, pro: 7.6, carb: 4.5, fat: 1.8 },
-      { name: 'אבקת חלבון (מי גבינה / צמחית)', category: 'חלב ומשקאות חלבון', unitGrams: 30, unitLabel: 'סקופ (30g)', cal: 385, pro: 78, carb: 7, fat: 5.5 },
-      { name: 'יוגורט פרו / מעדן חלבון (200g)', category: 'יוגורטים ומעדני חלבון', unitGrams: 200, unitLabel: 'גביע שלם (200g)', cal: 72, pro: 10, carb: 4.5, fat: 1.2 },
-      { name: 'קוטג׳ 5% / 3% (גביע 250g)', category: 'גבינות וביצים', unitGrams: 250, unitLabel: 'גביע שלם (250g)', cal: 95, pro: 10.5, carb: 1.5, fat: 5 },
-      { name: 'גבינה לבנה 5% (גביע 250g)', category: 'גבינות וביצים', unitGrams: 250, unitLabel: 'גביע שלם (250g)', cal: 98, pro: 9.8, carb: 3.5, fat: 5 },
-      { name: 'גבינה צהובה לייט 9%', category: 'גבינות וביצים', unitGrams: 28, unitLabel: 'פרוסה (28g)', cal: 195, pro: 28, carb: 1, fat: 9 },
-      { name: 'ביצה קשה / חביתה (לאחר בישול/הכנה)', category: 'גבינות וביצים', unitGrams: 60, unitLabel: 'ביצה שלמה (60g)', cal: 155, pro: 13, carb: 1.1, fat: 11 },
-      { name: 'חזה עוף מבושל / צלוי / אפוי (לאחר בישול)', category: 'בשרים', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 165, pro: 31, carb: 0, fat: 3.6 },
-      { name: 'פרגית צלויה / אפויה (לאחר בישול)', category: 'בשרים', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 195, pro: 26, carb: 0, fat: 9.5 },
-      { name: 'בקר רזה מבושל / צלוי (לאחר בישול)', category: 'בשרים', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 185, pro: 28, carb: 0, fat: 8 },
-      { name: 'פילה סלמון צלוי / אפוי (לאחר אפייה)', category: 'דגים', unitGrams: 160, unitLabel: 'פילה אפוי (160g)', cal: 208, pro: 20, carb: 0, fat: 13 },
-      { name: 'פילה אמנון / דניס אפוי (לאחר אפייה)', category: 'דגים', unitGrams: 160, unitLabel: 'פילה אפוי (160g)', cal: 128, pro: 26, carb: 0, fat: 2.7 },
-      { name: 'טופו צלוי / אפוי (לאחר הכנה)', category: 'חלבון מהצומח', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 144, pro: 17.3, carb: 2.8, fat: 8.7 },
-      { name: 'עדשים מבושלות (לאחר בישול)', category: 'חלבון מהצומח', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 116, pro: 9, carb: 20, fat: 0.4 },
-      { name: 'חומוס גרגרים מבושל (לאחר בישול)', category: 'חלבון מהצומח', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 164, pro: 8.9, carb: 27.4, fat: 2.6 },
-      { name: 'לחם מלא / כוסמין', category: 'לחמים ותצורות', unitGrams: 35, unitLabel: 'פרוסה (35g)', cal: 250, pro: 9, carb: 45, fat: 3 },
-      { name: 'פיתה מקמח מלא', category: 'לחמים ותצורות', unitGrams: 90, unitLabel: 'פיתה שלמה (90g)', cal: 248, pro: 9.8, carb: 49.5, fat: 1.8 },
-      { name: 'אורז לבן מבושל (לאחר בישול)', category: 'קמחים ודגנים', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 130, pro: 2.7, carb: 28, fat: 0.3 },
-      { name: 'אורז מלא מבושל (לאחר בישול)', category: 'קמחים ודגנים', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 123, pro: 2.7, carb: 25.6, fat: 1 },
-      { name: 'שיבולת שועל מבושלת (דייסה לאחר בישול)', category: 'קמחים ודגנים', unitGrams: 200, unitLabel: 'קערה / כוס מבושלת (200g)', cal: 71, pro: 2.5, carb: 12, fat: 1.5 },
-      { name: 'פסטה מבושלת (לאחר בישול)', category: 'קמחים ודגנים', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 131, pro: 5, carb: 25, fat: 1.1 },
-      { name: 'קינואה מבושלת (לאחר בישול)', category: 'קמחים ודגנים', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 120, pro: 4.4, carb: 21.3, fat: 1.9 },
-      { name: 'בטטה אפויה / מבושלת (לאחר אפייה)', category: 'קמחים ודגנים', unitGrams: 180, unitLabel: 'יחידה בינונית אפויה (180g)', cal: 90, pro: 2, carb: 20.7, fat: 0.1 },
-      { name: 'תפוח אדמה אפוי / מבושל (לאחר אפייה)', category: 'קמחים ודגנים', unitGrams: 180, unitLabel: 'יחידה בינונית אפויה (180g)', cal: 93, pro: 2.5, carb: 21, fat: 0.1 },
-      { name: 'שמן זית', category: 'שומנים מן החי והצומח', unitGrams: 15, unitLabel: 'כף (15g)', cal: 884, pro: 0, carb: 0, fat: 100 },
-      { name: 'אבוקדו', category: 'שומנים מן החי והצומח', unitGrams: 150, unitLabel: 'יחידה שלמה (150g)', cal: 160, pro: 2, carb: 8.5, fat: 14.7 },
-      { name: 'טחינה גולמית', category: 'שומנים מן החי והצומח', unitGrams: 20, unitLabel: 'כף (20g)', cal: 595, pro: 18, carb: 18, fat: 53 },
-      { name: 'חמאת בוטנים טבעית', category: 'שומנים מן החי והצומח', unitGrams: 20, unitLabel: 'כף (20g)', cal: 588, pro: 25, carb: 20, fat: 50 },
-      { name: 'קופסת חומוס מוכן (250g)', category: 'שומנים מן החי והצומח', unitGrams: 250, unitLabel: 'קופסה שלמה (250g)', cal: 250, pro: 7.5, carb: 14, fat: 18 },
-      { name: 'בננה', category: 'פירות', unitGrams: 120, unitLabel: 'יחידה שלמה (120g)', cal: 89, pro: 1.1, carb: 23, fat: 0.3 },
-      { name: 'תפוח עץ', category: 'פירות', unitGrams: 150, unitLabel: 'יחידה שלמה (150g)', cal: 52, pro: 0.3, carb: 13.8, fat: 0.2 },
-      { name: 'מלפפון', category: 'ירקות', unitGrams: 120, unitLabel: 'יחידה שלמה (120g)', cal: 15, pro: 0.7, carb: 3.6, fat: 0.1 },
-      { name: 'עגבנייה', category: 'ירקות', unitGrams: 130, unitLabel: 'יחידה שלמה (130g)', cal: 18, pro: 0.9, carb: 3.9, fat: 0.2 },
+      // --- בשרים ועופות (מבושל / צלוי / אפוי) ---
+      { name: 'חזה עוף מבושל / צלוי / אפוי (לאחר בישול)', category: 'בשרים ועופות', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 165, pro: 31, carb: 0, fat: 3.6 },
+      { name: 'שניצל חזה עוף מטוגן (לאחר טיגון)', category: 'בשרים ועופות', unitGrams: 150, unitLabel: 'יחידה בינונית מוכנה (150g)', cal: 265, pro: 23, carb: 13.5, fat: 13 },
+      { name: 'שניצל חזה עוף אפוי בתנור (לאחר אפייה)', category: 'בשרים ועופות', unitGrams: 150, unitLabel: 'יחידה בינונית אפויה (150g)', cal: 205, pro: 25, carb: 12, fat: 6.2 },
+      { name: 'פרגית עוף צלויה / על האש (לאחר צלייה)', category: 'בשרים ועופות', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 195, pro: 26, carb: 0, fat: 9.5 },
+      { name: 'שוק עוף / פולקע מבושל או אפוי (ללא עור, לאחר בישול)', category: 'בשרים ועופות', unitGrams: 110, unitLabel: 'שוק מוכנה (110g)', cal: 172, pro: 25.5, carb: 0, fat: 7.2 },
+      { name: 'ירך עוף אפויה / צלויה (ללא עור, לאחר בישול)', category: 'בשרים ועופות', unitGrams: 130, unitLabel: 'ירך מוכנה (130g)', cal: 198, pro: 24.8, carb: 0, fat: 10.5 },
+      { name: 'כנפי עוף צלויות / אפויות (לאחר אפייה)', category: 'בשרים ועופות', unitGrams: 150, unitLabel: 'מנה כ-5 כנפיים (150g)', cal: 254, pro: 23.5, carb: 0, fat: 17.5 },
+      { name: 'קציצות עוף מבושלות ברוטב / אפויות (לאחר בישול)', category: 'בשרים ועופות', unitGrams: 160, unitLabel: '3 קציצות מוכנות (160g)', cal: 175, pro: 21.5, carb: 6.5, fat: 6.8 },
+      { name: 'כבד עוף צלוי / מוקפץ (לאחר הכנה)', category: 'בשרים ועופות', unitGrams: 130, unitLabel: 'מנה מוכנה (130g)', cal: 167, pro: 24.5, carb: 0.9, fat: 6.5 },
+      { name: 'לבבות עוף צלויים / על האש (לאחר צלייה)', category: 'בשרים ועופות', unitGrams: 140, unitLabel: 'שיפוד / מנה מוכנה (140g)', cal: 185, pro: 26.4, carb: 0.1, fat: 7.9 },
+      { name: 'חזה הודו מבושל / צלוי (לאחר בישול)', category: 'בשרים ועופות', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 147, pro: 30.1, carb: 0, fat: 2.1 },
+      { name: 'פסטרמה הודו דלת שומן (1%-2% שומן)', category: 'בשרים ועופות', unitGrams: 100, unitLabel: 'חבילה / 4-5 פרוסות (100g)', cal: 105, pro: 19, carb: 2.5, fat: 1.8 },
+      { name: 'סטייק אנטריקוט צלוי (לאחר צלייה)', category: 'בשרים ועופות', unitGrams: 220, unitLabel: 'נתח סטייק מוכן (220g)', cal: 271, pro: 25, carb: 0, fat: 19 },
+      { name: 'סטייק סינטה צלוי (לאחר צלייה)', category: 'בשרים ועופות', unitGrams: 200, unitLabel: 'נתח סטייק מוכן (200g)', cal: 212, pro: 28.5, carb: 0, fat: 10.5 },
+      { name: 'פילה בקר צלוי (לאחר צלייה)', category: 'בשרים ועופות', unitGrams: 180, unitLabel: 'נתח פילה מוכן (180g)', cal: 218, pro: 28, carb: 0, fat: 11.2 },
+      { name: 'בשר כתף בקר (מס׳ 5) מבושל בבישול ארוך (לאחר בישול)', category: 'בשרים ועופות', unitGrams: 160, unitLabel: 'מנה מבושלת (160g)', cal: 205, pro: 27.5, carb: 0, fat: 10 },
+      { name: 'אסאדו / שפונדרה בקר מבושל (לאחר בישול)', category: 'בשרים ועופות', unitGrams: 180, unitLabel: 'מנה מבושלת (180g)', cal: 295, pro: 24, carb: 0, fat: 22 },
+      { name: 'בקר טחון רזה מבושל / מוקפץ (לאחר בישול)', category: 'בשרים ועופות', unitGrams: 150, unitLabel: 'מנה מבושלת (150g)', cal: 215, pro: 26.5, carb: 0, fat: 11.5 },
+      { name: 'קציצות בקר / קבב מזרחי צלוי (לאחר צלייה)', category: 'בשרים ועופות', unitGrams: 160, unitLabel: '3 קציצות / קבבים מוכנים (160g)', cal: 245, pro: 22, carb: 4.5, fat: 15.2 },
+      { name: 'נקניקיות עוף / בקר מבושלות (לאחר בישול)', category: 'בשרים ועופות', unitGrams: 100, unitLabel: '2 נקניקיות מוכנות (100g)', cal: 265, pro: 12.5, carb: 4, fat: 22 },
+
+      // --- דגים ופירות ים (מבושל / צלוי / אפוי) ---
+      { name: 'פילה סלמון צלוי / אפוי בתנור (לאחר אפייה)', category: 'דגים ופירות ים', unitGrams: 160, unitLabel: 'פילה אפוי (160g)', cal: 208, pro: 20.4, carb: 0, fat: 13.4 },
+      { name: 'פילה אמנון (מושט) אפוי / מבושל (לאחר אפייה)', category: 'דגים ופירות ים', unitGrams: 160, unitLabel: 'פילה אפוי (160g)', cal: 128, pro: 26.2, carb: 0, fat: 2.7 },
+      { name: 'פילה דניס אפוי / צלוי (לאחר אפייה)', category: 'דגים ופירות ים', unitGrams: 160, unitLabel: 'פילה אפוי (160g)', cal: 144, pro: 24.5, carb: 0, fat: 4.8 },
+      { name: 'פילה לברק / בורי אפוי (לאחר אפייה)', category: 'דגים ופירות ים', unitGrams: 160, unitLabel: 'פילה אפוי (160g)', cal: 138, pro: 24, carb: 0, fat: 4.2 },
+      { name: 'פילה בקלה / קוד מאודה או אפוי (לאחר בישול)', category: 'דגים ופירות ים', unitGrams: 160, unitLabel: 'פילה מוכן (160g)', cal: 105, pro: 22.8, carb: 0, fat: 0.9 },
+      { name: 'סטייק טונה אדומה צרוב (לאחר צריבה)', category: 'דגים ופירות ים', unitGrams: 160, unitLabel: 'נתח מוכן (160g)', cal: 144, pro: 30, carb: 0, fat: 1.5 },
+      { name: 'פילה מקרל אפוי / מעושן (לאחר הכנה)', category: 'דגים ופירות ים', unitGrams: 140, unitLabel: 'פילה מוכן (140g)', cal: 262, pro: 23.8, carb: 0, fat: 17.8 },
+      { name: 'סלמון מעושן (פרוסות)', category: 'דגים ופירות ים', unitGrams: 100, unitLabel: 'חבילה / מנה (100g)', cal: 117, pro: 18.3, carb: 0, fat: 4.3 },
+      { name: 'קציצות דגים מבושלות ברוטב (לאחר בישול)', category: 'דגים ופירות ים', unitGrams: 170, unitLabel: '3 קציצות מוכנות (170g)', cal: 158, pro: 18.5, carb: 8.2, fat: 5.5 },
+
+      // --- ביצים ומנות ביצים (כולל גדלים S, M, L, XL ומנות מוכנות) ---
+      { name: 'ביצה מבושלת / קשה — מידה S (קטנה, 45g)', category: 'ביצים ומנות ביצים', unitGrams: 45, unitLabel: 'ביצה S שלמה (45g)', cal: 155, pro: 12.6, carb: 1.1, fat: 10.6 },
+      { name: 'ביצה מבושלת / קשה — מידה M (בינונית, 53g)', category: 'ביצים ומנות ביצים', unitGrams: 53, unitLabel: 'ביצה M שלמה (53g)', cal: 155, pro: 12.6, carb: 1.1, fat: 10.6 },
+      { name: 'ביצה מבושלת / קשה — מידה L (גדולה, 63g)', category: 'ביצים ומנות ביצים', unitGrams: 63, unitLabel: 'ביצה L שלמה (63g)', cal: 155, pro: 12.6, carb: 1.1, fat: 10.6 },
+      { name: 'ביצה מבושלת / קשה — מידה XL (ענקית, 73g)', category: 'ביצים ומנות ביצים', unitGrams: 73, unitLabel: 'ביצה XL שלמה (73g)', cal: 155, pro: 12.6, carb: 1.1, fat: 10.6 },
+      { name: 'חלבון ביצה מבושל (החלק הלבן בלבד)', category: 'ביצים ומנות ביצים', unitGrams: 35, unitLabel: 'חלבון של ביצה אחת (35g)', cal: 52, pro: 10.9, carb: 0.7, fat: 0.2 },
+      { name: 'חביתה מ-2 ביצים L (מוכנה במחבת עם מעט שמן)', category: 'ביצים ומנות ביצים', unitGrams: 130, unitLabel: 'חביתה שלמה מ-2 ביצים (130g)', cal: 185, pro: 12.2, carb: 1.2, fat: 14.5 },
+      { name: 'ביצה מקושקשת מ-2 ביצים L (מוכנה)', category: 'ביצים ומנות ביצים', unitGrams: 130, unitLabel: 'מנת מקושקשת (130g)', cal: 178, pro: 11.8, carb: 1.6, fat: 13.8 },
+      { name: 'ביצת עין (מטוגנת במעט שמן, ביצה L)', category: 'ביצים ומנות ביצים', unitGrams: 60, unitLabel: 'ביצת עין אחת (60g)', cal: 196, pro: 13.6, carb: 0.9, fat: 15.3 },
+      { name: 'שקשוקה ביתית (2 ביצים + רוטב עגבניות ופלפלים)', category: 'ביצים ומנות ביצים', unitGrams: 320, unitLabel: 'מחבת / מנת שקשוקה (320g)', cal: 95, pro: 5.5, carb: 5.8, fat: 5.4 },
+
+      // --- מוצרי חלב ותחליפי חלב ---
+      { name: 'חלב תנובה / טרה 3% שומן', category: 'מוצרי חלב ותחליפים', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 61, pro: 3.3, carb: 4.8, fat: 3 },
+      { name: 'חלב 1% שומן', category: 'מוצרי חלב ותחליפים', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 42, pro: 3.4, carb: 4.9, fat: 1 },
+      { name: 'חלב מועשר בחלבון (חלב PRO / יוטבתה)', category: 'מוצרי חלב ותחליפים', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 54, pro: 5, carb: 4.8, fat: 1.5 },
+      { name: 'משקה סויה ללא סוכר (אלפרו / תנובה)', category: 'מוצרי חלב ותחליפים', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 33, pro: 3.3, carb: 0.2, fat: 1.8 },
+      { name: 'משקה שקדים ללא סוכר', category: 'מוצרי חלב ותחליפים', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 15, pro: 0.5, carb: 0.2, fat: 1.2 },
+      { name: 'משקה שיבולת שועל (בריסטה / רגיל)', category: 'מוצרי חלב ותחליפים', unitGrams: 200, unitLabel: 'כוס (200ml)', cal: 46, pro: 0.8, carb: 7.5, fat: 1.5 },
+      { name: 'משקה חלבון מוכן (330ml - 25g חלבון)', category: 'מוצרי חלב ותחליפים', unitGrams: 330, unitLabel: 'בקבוק שלם (330ml)', cal: 68, pro: 7.6, carb: 4.5, fat: 1.8 },
+      { name: 'אבקת חלבון (מי גבינה / צמחית)', category: 'מוצרי חלב ותחליפים', unitGrams: 30, unitLabel: 'סקופ מדידה (30g)', cal: 385, pro: 78, carb: 7, fat: 5.5 },
+      { name: 'יוגורט חלבון PRO / GO (גביע 200g)', category: 'מוצרי חלב ותחליפים', unitGrams: 200, unitLabel: 'גביע שלם (200g)', cal: 72, pro: 10, carb: 4.5, fat: 1.2 },
+      { name: 'יוגורט יווני טבעי 2% / 0% שומן', category: 'מוצרי חלב ותחליפים', unitGrams: 150, unitLabel: 'גביע אישי (150g)', cal: 68, pro: 9.5, carb: 3.8, fat: 1.5 },
+      { name: 'יוגורט יווני עשיר 7%-10% שומן', category: 'מוצרי חלב ותחליפים', unitGrams: 150, unitLabel: 'גביע אישי (150g)', cal: 122, pro: 7.5, carb: 4, fat: 8.5 },
+      { name: 'יוגורט עיזים / כבשים טבעי (4%-5%)', category: 'מוצרי חלב ותחליפים', unitGrams: 150, unitLabel: 'גביע אישי (150g)', cal: 78, pro: 4.5, carb: 4.6, fat: 4.5 },
+      { name: 'יוגורט ביו טבעי 1.5% / 3%', category: 'מוצרי חלב ותחליפים', unitGrams: 200, unitLabel: 'גביע (200g)', cal: 58, pro: 4.2, carb: 4.8, fat: 2.5 },
+      { name: 'מעדן מילקי / שוקולד עם קצפת', category: 'מוצרי חלב ותחליפים', unitGrams: 170, unitLabel: 'גביע שלם (170g)', cal: 145, pro: 3.2, carb: 18.5, fat: 6.5 },
+      { name: 'מעדן דני / קרלו שוקולד או וניל', category: 'מוצרי חלב ותחליפים', unitGrams: 125, unitLabel: 'גביע שלם (125g)', cal: 118, pro: 3, carb: 19.5, fat: 3 },
+      { name: 'מלבי חלבי מוכן (גביע אישי)', category: 'מוצרי חלב ותחליפים', unitGrams: 150, unitLabel: 'גביע שלם (150g)', cal: 138, pro: 2.8, carb: 21, fat: 4.8 },
+      { name: 'קוטג׳ 5% (גביע 250g)', category: 'מוצרי חלב ותחליפים', unitGrams: 250, unitLabel: 'גביע שלם (250g)', cal: 95, pro: 10.5, carb: 1.5, fat: 5 },
+      { name: 'קוטג׳ 3% / 1% (גביע 250g)', category: 'מוצרי חלב ותחליפים', unitGrams: 250, unitLabel: 'גביע שלם (250g)', cal: 79, pro: 11, carb: 1.8, fat: 3 },
+      { name: 'גבינה לבנה 5% (גביע 250g)', category: 'מוצרי חלב ותחליפים', unitGrams: 250, unitLabel: 'גביע שלם (250g)', cal: 98, pro: 9.8, carb: 3.5, fat: 5 },
+      { name: 'גבינת שמנת 5% (סימפוניה / נפוליאון לייט)', category: 'מוצרי חלב ותחליפים', unitGrams: 30, unitLabel: 'כף גדושה (30g)', cal: 102, pro: 8.5, carb: 4.5, fat: 5 },
+      { name: 'גבינת שמנת 25%-30% (נפוליאון / פילדלפיה)', category: 'מוצרי חלב ותחליפים', unitGrams: 30, unitLabel: 'כף גדושה (30g)', cal: 275, pro: 5.5, carb: 3, fat: 26.5 },
+      { name: 'גבינה צהובה עמק 28% שומן', category: 'מוצרי חלב ותחליפים', unitGrams: 28, unitLabel: 'פרוסה אחת (28g)', cal: 345, pro: 24.5, carb: 1, fat: 27.5 },
+      { name: 'גבינה צהובה לייט 9% שומן', category: 'מוצרי חלב ותחליפים', unitGrams: 28, unitLabel: 'פרוסה אחת (28g)', cal: 195, pro: 28, carb: 1, fat: 9 },
+      { name: 'גבינת מוצרלה מגורדת / כדור', category: 'מוצרי חלב ותחליפים', unitGrams: 50, unitLabel: 'חצי כוס / מנה (50g)', cal: 280, pro: 22, carb: 2.2, fat: 20 },
+      { name: 'גבינה בולגרית / פטה 5% שומן', category: 'מוצרי חלב ותחליפים', unitGrams: 50, unitLabel: 'קוביית מנה (50g)', cal: 115, pro: 14.5, carb: 2.5, fat: 5 },
+      { name: 'גבינה בולגרית / פטה 16%-24% שומן', category: 'מוצרי חלב ותחליפים', unitGrams: 50, unitLabel: 'קוביית מנה (50g)', cal: 245, pro: 15, carb: 2, fat: 19.5 },
+      { name: 'גבינת ריקוטה 5% / 9%', category: 'מוצרי חלב ותחליפים', unitGrams: 50, unitLabel: '2 כפות (50g)', cal: 118, pro: 11.5, carb: 3.8, fat: 6 },
+      { name: 'לאבנה 5% / 9% שומן', category: 'מוצרי חלב ותחליפים', unitGrams: 50, unitLabel: '2 כפות (50g)', cal: 125, pro: 7.5, carb: 4.5, fat: 8.5 },
+
+      // --- לחמים, מאפים וכריכים ---
+      { name: 'לחם אחיד / לבן פרוס', category: 'לחמים, מאפים וכריכים', unitGrams: 32, unitLabel: 'פרוסה אחת (32g)', cal: 265, pro: 8.5, carb: 50, fat: 3.2 },
+      { name: 'לחם חיטה מלאה / כוסמין / שיפון', category: 'לחמים, מאפים וכריכים', unitGrams: 35, unitLabel: 'פרוסה אחת (35g)', cal: 245, pro: 9.5, carb: 44, fat: 3 },
+      { name: 'לחם קל (חיטה מלאה / שיפון)', category: 'לחמים, מאפים וכריכים', unitGrams: 25, unitLabel: 'פרוסה אחת (25g)', cal: 185, pro: 9.2, carb: 31, fat: 2.2 },
+      { name: 'חלה מתוקה / חלת שבת', category: 'לחמים, מאפים וכריכים', unitGrams: 45, unitLabel: 'פרוסה עבה (45g)', cal: 295, pro: 8.8, carb: 52, fat: 5.5 },
+      { name: 'פיתה לבנה רגילה', category: 'לחמים, מאפים וכריכים', unitGrams: 95, unitLabel: 'פיתה שלמה (95g)', cal: 262, pro: 9.2, carb: 53, fat: 1.5 },
+      { name: 'פיתה מקמח מלא / כוסמין', category: 'לחמים, מאפים וכריכים', unitGrams: 90, unitLabel: 'פיתה שלמה (90g)', cal: 245, pro: 9.8, carb: 48.5, fat: 1.8 },
+      { name: 'לאפה (אשתנור) גדולה', category: 'לחמים, מאפים וכריכים', unitGrams: 180, unitLabel: 'לאפה שלמה (180g)', cal: 275, pro: 8.8, carb: 55, fat: 2.2 },
+      { name: 'באגט צרפתי טרי', category: 'לחמים, מאפים וכריכים', unitGrams: 240, unitLabel: 'באגט שלם (240g)', cal: 272, pro: 9.5, carb: 54, fat: 1.6 },
+      { name: 'לחמניית המבורגר / אצבע', category: 'לחמים, מאפים וכריכים', unitGrams: 80, unitLabel: 'לחמנייה שלמה (80g)', cal: 280, pro: 8.5, carb: 51, fat: 4.5 },
+      { name: 'טורטייה (חיטה / תירס, קוטר בינוני)', category: 'לחמים, מאפים וכריכים', unitGrams: 60, unitLabel: 'טורטייה אחת (60g)', cal: 290, pro: 7.8, carb: 49, fat: 6.8 },
+      { name: 'פריכיות אורז / תירס / כוסמת', category: 'לחמים, מאפים וכריכים', unitGrams: 9, unitLabel: 'פריכית אחת (9g)', cal: 382, pro: 7.8, carb: 81, fat: 2.5 },
+      { name: 'פתית (קרקר שוודי / שיפון)', category: 'לחמים, מאפים וכריכים', unitGrams: 11, unitLabel: 'יחידה אחת (11g)', cal: 365, pro: 10.5, carb: 72, fat: 3.5 },
+      { name: 'פיצה מרגריטה (משולש רגיל)', category: 'לחמים, מאפים וכריכים', unitGrams: 140, unitLabel: 'משולש פיצה (140g)', cal: 268, pro: 11.2, carb: 32, fat: 10.5 },
+      { name: 'בורקס גבינה / תפוח אדמה (בצק עלים)', category: 'לחמים, מאפים וכריכים', unitGrams: 90, unitLabel: 'יחידה בינונית (90g)', cal: 375, pro: 7.5, carb: 35, fat: 23 },
+      { name: 'ג׳חנון אפוי (ללא ביצה ורסק)', category: 'לחמים, מאפים וכריכים', unitGrams: 130, unitLabel: 'יחידה שלמה (130g)', cal: 365, pro: 5.8, carb: 46, fat: 17.5 },
+      { name: 'מלוואח מטוגן / אפוי', category: 'לחמים, מאפים וכריכים', unitGrams: 140, unitLabel: 'יחידה שלמה (140g)', cal: 360, pro: 6.2, carb: 44, fat: 18 },
+      { name: 'סמבוסק גבינה / חומוס אפוי', category: 'לחמים, מאפים וכריכים', unitGrams: 130, unitLabel: 'יחידה שלמה (130g)', cal: 285, pro: 10.5, carb: 38, fat: 10 },
+      { name: 'טוסט גבינה צהובה בלחם / בייגל', category: 'לחמים, מאפים וכריכים', unitGrams: 160, unitLabel: 'טוסט שלם (160g)', cal: 285, pro: 14.5, carb: 32, fat: 11 },
+      { name: 'כריך טונה / חביתה מוכן (לחם מלא + ממרח וירקות)', category: 'לחמים, מאפים וכריכים', unitGrams: 220, unitLabel: 'כריך שלם (220g)', cal: 195, pro: 11.5, carb: 23, fat: 6.2 },
+
+      // --- עוגות ועוגיות ---
+      { name: 'עוגת שוקולד בחושה', category: 'עוגות ועוגיות', unitGrams: 80, unitLabel: 'פרוסה (80g)', cal: 395, pro: 5.2, carb: 51, fat: 18.8 },
+      { name: 'עוגת גבינה אפויה', category: 'עוגות ועוגיות', unitGrams: 110, unitLabel: 'פרוסה (110g)', cal: 310, pro: 7.5, carb: 27, fat: 19 },
+      { name: 'עוגת שמרים שוקולד / קינמון', category: 'עוגות ועוגיות', unitGrams: 75, unitLabel: 'פרוסה (75g)', cal: 375, pro: 6.8, carb: 49, fat: 16.5 },
+      { name: 'עוגת ביסקוויטים קרה', category: 'עוגות ועוגיות', unitGrams: 110, unitLabel: 'פרוסה (110g)', cal: 330, pro: 5.4, carb: 38, fat: 17.2 },
+      { name: 'רוגלך שוקולד', category: 'עוגות ועוגיות', unitGrams: 35, unitLabel: 'יחידה אחת (35g)', cal: 410, pro: 6.5, carb: 52, fat: 19.5 },
+      { name: 'קרואסון חמאה / שוקולד', category: 'עוגות ועוגיות', unitGrams: 65, unitLabel: 'יחידה שלמה (65g)', cal: 406, pro: 8.2, carb: 45.8, fat: 21 },
+      { name: 'עוגיות שוקולד צ׳יפס', category: 'עוגות ועוגיות', unitGrams: 22, unitLabel: 'עוגייה אחת (22g)', cal: 485, pro: 5.5, carb: 64, fat: 23 },
+      { name: 'עוגיות אוראו (Oreo)', category: 'עוגות ועוגיות', unitGrams: 11, unitLabel: 'עוגייה אחת (11g)', cal: 480, pro: 4.8, carb: 70, fat: 20 },
+      { name: 'ביסקוויט פתי בר', category: 'עוגות ועוגיות', unitGrams: 7, unitLabel: 'יחידה אחת (7g)', cal: 435, pro: 7.5, carb: 74, fat: 11.5 },
+      { name: 'פנקייק ביתי (יחידה בינונית)', category: 'עוגות ועוגיות', unitGrams: 60, unitLabel: 'פנקייק אחד (60g)', cal: 227, pro: 6.4, carb: 28.3, fat: 9.7 },
+      { name: 'וופל בלגי (ללא תוספות)', category: 'עוגות ועוגיות', unitGrams: 110, unitLabel: 'יחידה שלמה (110g)', cal: 310, pro: 7.2, carb: 39, fat: 13.8 },
+
+      // --- דגני בוקר, חטיפי חלבון וחטיפים ---
+      { name: 'קורנפלקס רגיל', category: 'דגני בוקר וחטיפים', unitGrams: 35, unitLabel: 'קערה / מנה (35g)', cal: 378, pro: 7.5, carb: 84, fat: 0.9 },
+      { name: 'כריות (נוגט / וניל / שוקולד)', category: 'דגני בוקר וחטיפים', unitGrams: 40, unitLabel: 'מנה (40g)', cal: 465, pro: 7.2, carb: 64, fat: 19.5 },
+      { name: 'ברנפלקס', category: 'דגני בוקר וחטיפים', unitGrams: 40, unitLabel: 'מנה (40g)', cal: 332, pro: 10.5, carb: 68, fat: 2.1 },
+      { name: 'גרנולה פריכה (עם אגוזים/פירות)', category: 'דגני בוקר וחטיפים', unitGrams: 45, unitLabel: 'מנה / חצי כוס (45g)', cal: 435, pro: 9.5, carb: 62, fat: 15.5 },
+      { name: 'חטיף חלבון 20g (60g ליחידה)', category: 'דגני בוקר וחטיפים', unitGrams: 60, unitLabel: 'חטיף שלם (60g)', cal: 355, pro: 33.5, carb: 32, fat: 11.5 },
+      { name: 'חטיף אנרגיה / דגנים (Nature Valley / פיטנס)', category: 'דגני בוקר וחטיפים', unitGrams: 25, unitLabel: 'חטיף בודד (25g)', cal: 410, pro: 6.5, carb: 66, fat: 12.5 },
+      { name: 'במבה (שקית גדולה 80g)', category: 'דגני בוקר וחטיפים', unitGrams: 80, unitLabel: 'שקית שלמה (80g)', cal: 530, pro: 13.5, carb: 47, fat: 31.5 },
+      { name: 'ביסלי (שקית 70g)', category: 'דגני בוקר וחטיפים', unitGrams: 70, unitLabel: 'שקית שלמה (70g)', cal: 495, pro: 8.5, carb: 61, fat: 24 },
+      { name: 'דוריטוס / נאצ׳וס (שקית 70g)', category: 'דגני בוקר וחטיפים', unitGrams: 70, unitLabel: 'שקית שלמה (70g)', cal: 502, pro: 6.8, carb: 62, fat: 25 },
+      { name: 'תפוצ׳יפס (שקית 50g)', category: 'דגני בוקר וחטיפים', unitGrams: 50, unitLabel: 'שקית שלמה (50g)', cal: 536, pro: 6.2, carb: 53, fat: 33 },
+      { name: 'פופקורן מוכן (שקית מיקרוגל / קולנוע)', category: 'דגני בוקר וחטיפים', unitGrams: 80, unitLabel: 'שקית / דלי קטן (80g)', cal: 445, pro: 9, carb: 58, fat: 20 },
+      { name: 'בייגלה אפוי (שמיניות / שטוחים)', category: 'דגני בוקר וחטיפים', unitGrams: 40, unitLabel: 'חופן / מנה (40g)', cal: 385, pro: 11, carb: 76, fat: 3.8 },
+      { name: 'שוקולד חלב פרה', category: 'דגני בוקר וחטיפים', unitGrams: 25, unitLabel: 'שורה / 4 קוביות (25g)', cal: 535, pro: 7.5, carb: 58, fat: 30 },
+      { name: 'שוקולד מריר 70% מוצקי קקאו', category: 'דגני בוקר וחטיפים', unitGrams: 25, unitLabel: 'שורה / 4 קוביות (25g)', cal: 598, pro: 7.8, carb: 46, fat: 42.6 },
+      { name: 'פסק זמן / כיף כף / מקופלת', category: 'דגני בוקר וחטיפים', unitGrams: 45, unitLabel: 'חטיף שלם (45g)', cal: 525, pro: 6.8, carb: 56, fat: 30 },
+
+      // --- דגנים, פסטות וקטניות (לאחר בישול) ---
+      { name: 'אורז לבן מבושל (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 130, pro: 2.7, carb: 28, fat: 0.3 },
+      { name: 'אורז מלא מבושל (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 123, pro: 2.7, carb: 25.6, fat: 1 },
+      { name: 'אורז בסמטי מבושל (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 121, pro: 3.1, carb: 25.2, fat: 0.4 },
+      { name: 'פסטה / ספגטי מבושל (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 131, pro: 5, carb: 25, fat: 1.1 },
+      { name: 'פסטה מחיטה מלאה מבושלת (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 124, pro: 5.3, carb: 26.5, fat: 0.8 },
+      { name: 'קינואה מבושלת (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 120, pro: 4.4, carb: 21.3, fat: 1.9 },
+      { name: 'כוסמת מבושלת (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 92, pro: 3.4, carb: 19.9, fat: 0.6 },
+      { name: 'בורגול מבושל (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 83, pro: 3.1, carb: 18.6, fat: 0.2 },
+      { name: 'קוסקוס מבושל (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 112, pro: 3.8, carb: 23.2, fat: 0.2 },
+      { name: 'פתיתים אפויים מבושלים (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 135, pro: 4.2, carb: 26.5, fat: 1.1 },
+      { name: 'שיבולת שועל מבושלת (דייסה לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'קערה / כוס מבושלת (200g)', cal: 71, pro: 2.5, carb: 12, fat: 1.5 },
+      { name: 'בטטה אפויה / מבושלת (לאחר אפייה)', category: 'דגנים וקטניות', unitGrams: 180, unitLabel: 'יחידה בינונית אפויה (180g)', cal: 90, pro: 2, carb: 20.7, fat: 0.1 },
+      { name: 'תפוח אדמה אפוי / מבושל (לאחר אפייה)', category: 'דגנים וקטניות', unitGrams: 180, unitLabel: 'יחידה בינונית אפויה (180g)', cal: 93, pro: 2.5, carb: 21, fat: 0.1 },
+      { name: 'פירה תפוחי אדמה מוכן', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס / מנה (200g)', cal: 113, pro: 2, carb: 16.5, fat: 4.2 },
+      { name: 'עדשים מבושלות (ירוקות / שחורות / כתומות)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 116, pro: 9, carb: 20, fat: 0.4 },
+      { name: 'חומוס גרגרים מבושל (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 164, pro: 8.9, carb: 27.4, fat: 2.6 },
+      { name: 'שעועית לבנה / אדומה / שחורה מבושלת', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 127, pro: 8.7, carb: 22.8, fat: 0.5 },
+      { name: 'אפונה ירוקה מבושלת (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 160, unitLabel: 'כוס מבושלת (160g)', cal: 84, pro: 5.4, carb: 15.6, fat: 0.2 },
+      { name: 'פול מצרי מבושל (לאחר בישול)', category: 'דגנים וקטניות', unitGrams: 200, unitLabel: 'כוס מבושלת (200g)', cal: 110, pro: 7.6, carb: 19.7, fat: 0.4 },
+      { name: 'מג׳דרה (אורז ועדשים מבושלים)', category: 'דגנים וקטניות', unitGrams: 220, unitLabel: 'כוס גדולה / מנה (220g)', cal: 145, pro: 5.2, carb: 24.5, fat: 2.8 },
+
+      // --- מזון מהצומח, טבעוני וצמחוני ---
+      { name: 'טופו צלוי / אפוי (לאחר הכנה)', category: 'מזון מהצומח וטבעוני', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 144, pro: 17.3, carb: 2.8, fat: 8.7 },
+      { name: 'טופו משי (רך)', category: 'מזון מהצומח וטבעוני', unitGrams: 150, unitLabel: 'מנה (150g)', cal: 61, pro: 6.9, carb: 2.1, fat: 2.7 },
+      { name: 'סייטן צלוי / מוקפץ (חלבון חיטה)', category: 'מזון מהצומח וטבעוני', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 148, pro: 25, carb: 7.5, fat: 1.8 },
+      { name: 'טמפה מבושל / צלוי (פולי סויה מותססים)', category: 'מזון מהצומח וטבעוני', unitGrams: 120, unitLabel: 'מנה מוכנה (120g)', cal: 192, pro: 20.3, carb: 7.6, fat: 10.8 },
+      { name: 'פולי סויה / אדממה מבושל (מקולף)', category: 'מזון מהצומח וטבעוני', unitGrams: 150, unitLabel: 'כוס מקולפת (150g)', cal: 121, pro: 11.9, carb: 8.9, fat: 5.2 },
+      { name: 'שבבי סויה מבושלים (תחליף בשר טחון)', category: 'מזון מהצומח וטבעוני', unitGrams: 150, unitLabel: 'מנה מבושלת (150g)', cal: 132, pro: 21, carb: 10.5, fat: 0.6 },
+      { name: 'המבורגר טבעוני (Beyond / ביונד / סנסשיונל)', category: 'מזון מהצומח וטבעוני', unitGrams: 113, unitLabel: 'קציצה מוכנה (113g)', cal: 230, pro: 17.5, carb: 4.5, fat: 15.5 },
+      { name: 'שווארמה טבעונית מן הצומח צלויה', category: 'מזון מהצומח וטבעוני', unitGrams: 150, unitLabel: 'מנה מוכנה (150g)', cal: 165, pro: 21, carb: 8.5, fat: 5.2 },
+      { name: 'שניצל תירס / ירקות אפוי (טבעול)', category: 'מזון מהצומח וטבעוני', unitGrams: 100, unitLabel: 'יחידה שלמה (100g)', cal: 215, pro: 9.5, carb: 24, fat: 8.8 },
+      { name: 'כדורי פלאפל אפויים (ללא טיגון)', category: 'מזון מהצומח וטבעוני', unitGrams: 120, unitLabel: '5 כדורים אפויים (120g)', cal: 195, pro: 8.5, carb: 27, fat: 5.8 },
+
+      // --- אגוזים, זרעים, גרעינים ושומנים ---
+      { name: 'שמן זית / קנולה / אבוקדו', category: 'אגוזים, זרעים ושומנים', unitGrams: 15, unitLabel: 'כף (15g)', cal: 884, pro: 0, carb: 0, fat: 100 },
+      { name: 'חמאה / גהי', category: 'אגוזים, זרעים ושומנים', unitGrams: 15, unitLabel: 'כף / קובייה (15g)', cal: 717, pro: 0.9, carb: 0.1, fat: 81 },
+      { name: 'מיונז רגיל', category: 'אגוזים, זרעים ושומנים', unitGrams: 15, unitLabel: 'כף (15g)', cal: 680, pro: 1, carb: 0.6, fat: 75 },
+      { name: 'מיונז קל (לייט 5%)', category: 'אגוזים, זרעים ושומנים', unitGrams: 15, unitLabel: 'כף (15g)', cal: 115, pro: 0.5, carb: 14, fat: 6 },
+      { name: 'אבוקדו', category: 'אגוזים, זרעים ושומנים', unitGrams: 150, unitLabel: 'יחידה שלמה (150g)', cal: 160, pro: 2, carb: 8.5, fat: 14.7 },
+      { name: 'טחינה גולמית', category: 'אגוזים, זרעים ושומנים', unitGrams: 20, unitLabel: 'כף (20g)', cal: 595, pro: 18, carb: 18, fat: 53 },
+      { name: 'טחינה מוכנה מתובלת (סלט)', category: 'אגוזים, זרעים ושומנים', unitGrams: 30, unitLabel: 'כף גדושה (30g)', cal: 280, pro: 8.5, carb: 9, fat: 24 },
+      { name: 'חומוס מוכן (סלט חומוס)', category: 'אגוזים, זרעים ושומנים', unitGrams: 250, unitLabel: 'קופסה שלמה (250g)', cal: 250, pro: 7.5, carb: 14, fat: 18 },
+      { name: 'חמאת בוטנים טבעית', category: 'אגוזים, זרעים ושומנים', unitGrams: 20, unitLabel: 'כף (20g)', cal: 588, pro: 25, carb: 20, fat: 50 },
+      { name: 'ממרח שקדים טבעי (שקדייה)', category: 'אגוזים, זרעים ושומנים', unitGrams: 20, unitLabel: 'כף (20g)', cal: 614, pro: 21, carb: 19, fat: 55.5 },
+      { name: 'גרעיני חמנייה קלופים', category: 'אגוזים, זרעים ושומנים', unitGrams: 30, unitLabel: 'חופן / 2 כפות (30g)', cal: 584, pro: 20.8, carb: 20, fat: 51.5 },
+      { name: 'גרעיני דלעת קלופים', category: 'אגוזים, זרעים ושומנים', unitGrams: 30, unitLabel: 'חופן / 2 כפות (30g)', cal: 559, pro: 30.2, carb: 10.7, fat: 49 },
+      { name: 'זרעי צ׳יה (Chia)', category: 'אגוזים, זרעים ושומנים', unitGrams: 15, unitLabel: 'כף (15g)', cal: 486, pro: 16.5, carb: 42.1, fat: 30.7 },
+      { name: 'זרעי פשתן טחונים', category: 'אגוזים, זרעים ושומנים', unitGrams: 15, unitLabel: 'כף (15g)', cal: 534, pro: 18.3, carb: 28.9, fat: 42.2 },
+      { name: 'זרעי שומשום מלא', category: 'אגוזים, זרעים ושומנים', unitGrams: 15, unitLabel: 'כף (15g)', cal: 573, pro: 17.7, carb: 23.4, fat: 49.7 },
+      { name: 'שקדים טבעיים', category: 'אגוזים, זרעים ושומנים', unitGrams: 30, unitLabel: 'חופן / כ-22 יח׳ (30g)', cal: 579, pro: 21.2, carb: 21.6, fat: 49.9 },
+      { name: 'אגוזי מלך', category: 'אגוזים, זרעים ושומנים', unitGrams: 30, unitLabel: 'חופן / כ-7 חצאים (30g)', cal: 654, pro: 15.2, carb: 13.7, fat: 65.2 },
+      { name: 'אגוזי קשיו', category: 'אגוזים, זרעים ושומנים', unitGrams: 30, unitLabel: 'חופן (30g)', cal: 553, pro: 18.2, carb: 30.2, fat: 43.8 },
+      { name: 'אגוזי פקאן', category: 'אגוזים, זרעים ושומנים', unitGrams: 30, unitLabel: 'חופן (30g)', cal: 691, pro: 9.2, carb: 13.9, fat: 72 },
+      { name: 'בוטנים קלויים', category: 'אגוזים, זרעים ושומנים', unitGrams: 30, unitLabel: 'חופן (30g)', cal: 587, pro: 24.4, carb: 21.3, fat: 49.7 },
+
+      // --- פירות ---
+      { name: 'בננה', category: 'פירות', unitGrams: 120, unitLabel: 'יחידה בינונית (120g)', cal: 89, pro: 1.1, carb: 23, fat: 0.3 },
+      { name: 'תפוח עץ', category: 'פירות', unitGrams: 150, unitLabel: 'יחידה בינונית (150g)', cal: 52, pro: 0.3, carb: 13.8, fat: 0.2 },
+      { name: 'תפוז', category: 'פירות', unitGrams: 160, unitLabel: 'יחידה בינונית (160g)', cal: 47, pro: 0.9, carb: 11.8, fat: 0.1 },
+      { name: 'קלמנטינה / מנדרינה', category: 'פירות', unitGrams: 85, unitLabel: 'יחידה אחת (85g)', cal: 53, pro: 0.8, carb: 13.3, fat: 0.3 },
+      { name: 'אגס', category: 'פירות', unitGrams: 160, unitLabel: 'יחידה בינונית (160g)', cal: 57, pro: 0.4, carb: 15.2, fat: 0.1 },
+      { name: 'ענבים (ירוקים / אדומים)', category: 'פירות', unitGrams: 150, unitLabel: 'כוס / אשכול קטן (150g)', cal: 69, pro: 0.7, carb: 18.1, fat: 0.2 },
+      { name: 'אבטיח', category: 'פירות', unitGrams: 250, unitLabel: 'פלח / כוס וחצי (250g)', cal: 30, pro: 0.6, carb: 7.6, fat: 0.2 },
+      { name: 'מלון', category: 'פירות', unitGrams: 200, unitLabel: 'כוס קוביות (200g)', cal: 34, pro: 0.8, carb: 8.2, fat: 0.2 },
+      { name: 'תות שדה', category: 'פירות', unitGrams: 150, unitLabel: 'כוס שלמה (150g)', cal: 32, pro: 0.7, carb: 7.7, fat: 0.3 },
+      { name: 'אוכמניות טריות', category: 'פירות', unitGrams: 140, unitLabel: 'כוס (140g)', cal: 57, pro: 0.7, carb: 14.5, fat: 0.3 },
+      { name: 'מנגו', category: 'פירות', unitGrams: 180, unitLabel: 'יחידה בינונית מקולפת (180g)', cal: 60, pro: 0.8, carb: 15, fat: 0.4 },
+      { name: 'אפרסק / נקטרינה', category: 'פירות', unitGrams: 140, unitLabel: 'יחידה בינונית (140g)', cal: 39, pro: 0.9, carb: 9.5, fat: 0.3 },
+      { name: 'קיווי', category: 'פירות', unitGrams: 75, unitLabel: 'יחידה אחת (75g)', cal: 61, pro: 1.1, carb: 14.7, fat: 0.5 },
+      { name: 'תמר מג׳הול (מגולען)', category: 'פירות', unitGrams: 20, unitLabel: 'תמר אחד (20g)', cal: 277, pro: 1.8, carb: 75, fat: 0.2 },
+
+      // --- ירקות ---
+      { name: 'מלפפון', category: 'ירקות', unitGrams: 120, unitLabel: 'יחידה בינונית (120g)', cal: 15, pro: 0.7, carb: 3.6, fat: 0.1 },
+      { name: 'עגבנייה', category: 'ירקות', unitGrams: 130, unitLabel: 'יחידה בינונית (130g)', cal: 18, pro: 0.9, carb: 3.9, fat: 0.2 },
+      { name: 'עגבניות שרי', category: 'ירקות', unitGrams: 150, unitLabel: 'כוס (150g)', cal: 18, pro: 0.9, carb: 3.9, fat: 0.2 },
+      { name: 'פלפל אדום / גמבה', category: 'ירקות', unitGrams: 150, unitLabel: 'יחידה שלמה (150g)', cal: 31, pro: 1, carb: 6, fat: 0.3 },
+      { name: 'חסה (ערבית / אייסברג)', category: 'ירקות', unitGrams: 100, unitLabel: 'קערת סלט (100g)', cal: 15, pro: 1.4, carb: 2.9, fat: 0.2 },
+      { name: 'גזר', category: 'ירקות', unitGrams: 80, unitLabel: 'יחידה בינונית (80g)', cal: 41, pro: 0.9, carb: 9.6, fat: 0.2 },
+      { name: 'בצל יבש / סגול', category: 'ירקות', unitGrams: 110, unitLabel: 'יחידה בינונית (110g)', cal: 40, pro: 1.1, carb: 9.3, fat: 0.1 },
+      { name: 'ברוקולי מבושל / מאודה (לאחר בישול)', category: 'ירקות', unitGrams: 150, unitLabel: 'כוס פרחים (150g)', cal: 35, pro: 2.4, carb: 7.2, fat: 0.4 },
+      { name: 'כרובית אפויה / מבושלת (לאחר בישול)', category: 'ירקות', unitGrams: 150, unitLabel: 'כוס פרחים (150g)', cal: 23, pro: 1.8, carb: 4.1, fat: 0.5 },
+      { name: 'קישוא / זוקיני מבושל / צלוי', category: 'ירקות', unitGrams: 150, unitLabel: 'יחידה בינונית (150g)', cal: 17, pro: 1.2, carb: 3.1, fat: 0.3 },
+      { name: 'חציל קלוי / אפוי (לאחר אפייה)', category: 'ירקות', unitGrams: 150, unitLabel: 'מנה (150g)', cal: 35, pro: 0.8, carb: 8.7, fat: 0.2 },
+      { name: 'פטריות טריות / מוקפצות', category: 'ירקות', unitGrams: 100, unitLabel: 'סלסלה קטנה (100g)', cal: 22, pro: 3.1, carb: 3.3, fat: 0.3 },
+      { name: 'שעועית ירוקה מבושלת (לאחר בישול)', category: 'ירקות', unitGrams: 150, unitLabel: 'כוס מבושלת (150g)', cal: 35, pro: 1.9, carb: 7.9, fat: 0.3 },
+      { name: 'סלק אדום מבושל', category: 'ירקות', unitGrams: 120, unitLabel: 'יחידה בינונית (120g)', cal: 44, pro: 1.7, carb: 10, fat: 0.2 },
+      { name: 'סלט ירקות ישראלי קצוץ (ללא שמן)', category: 'ירקות', unitGrams: 250, unitLabel: 'קערה אישית (250g)', cal: 20, pro: 0.9, carb: 4.2, fat: 0.2 },
+
+      // --- שימורים ---
       { name: 'טונה משומרת במים (קופסה מסוננת 112g)', category: 'שימורים', unitGrams: 112, unitLabel: 'קופסה שלמה (112g)', cal: 116, pro: 26, carb: 0, fat: 1 },
-      { name: 'במבה (שקית 80g)', category: 'חטיפים ושוקולדים', unitGrams: 80, unitLabel: 'שקית שלמה (80g)', cal: 530, pro: 13.5, carb: 47, fat: 31.5 }
+      { name: 'טונה משומרת בשמן (קופסה מסוננת 112g)', category: 'שימורים', unitGrams: 112, unitLabel: 'קופסה שלמה (112g)', cal: 198, pro: 29, carb: 0, fat: 8.2 },
+      { name: 'סרדינים בשמן (קופסה מסוננת 90g)', category: 'שימורים', unitGrams: 90, unitLabel: 'קופסה שלמה (90g)', cal: 208, pro: 24.6, carb: 0, fat: 11.5 },
+      { name: 'תירס מתוק משומר (ללא נוזלים)', category: 'שימורים', unitGrams: 150, unitLabel: 'כוס / חצי קופסה (150g)', cal: 86, pro: 3.2, carb: 19, fat: 1.2 },
+      { name: 'תירס גמדי משומר', category: 'שימורים', unitGrams: 100, unitLabel: 'מנה (100g)', cal: 26, pro: 2.2, carb: 4.5, fat: 0.3 },
+      { name: 'מלפפון חמוץ במלח / חומץ', category: 'שימורים', unitGrams: 40, unitLabel: 'יחידה בינונית (40g)', cal: 12, pro: 0.5, carb: 2.3, fat: 0.2 },
+      { name: 'זיתים ירוקים / שחורים מגולענים', category: 'שימורים', unitGrams: 30, unitLabel: 'כ-8 זיתים (30g)', cal: 145, pro: 1, carb: 3.8, fat: 15.3 },
+      { name: 'גרגרי חומוס / שעועית משומרים (מסונן)', category: 'שימורים', unitGrams: 150, unitLabel: 'כוס מסוננת (150g)', cal: 139, pro: 7.2, carb: 22.5, fat: 2.1 },
+      { name: 'רסק עגבניות מרוכז (22 BX)', category: 'שימורים', unitGrams: 100, unitLabel: 'קופסה קטנה (100g)', cal: 82, pro: 4.3, carb: 18.9, fat: 0.5 },
+      { name: 'לבבות דקל / ארטישוק משומר', category: 'שימורים', unitGrams: 100, unitLabel: 'מנה (100g)', cal: 36, pro: 2.7, carb: 4.6, fat: 0.6 },
+
+      // --- אוכל בחוץ (סושי, המבורגר, שווארמה, מקסיקני) ---
+      { name: 'סושי מאקי (אצה בחוץ - סלמון / טונה / אבוקדו)', category: 'אוכל בחוץ', unitGrams: 140, unitLabel: 'רול שלם - 6-8 יח׳ (140g)', cal: 145, pro: 6.5, carb: 24, fat: 2.2 },
+      { name: 'סושי אינסייד-אאוט (I/O) סלמון ואבוקדו', category: 'אוכל בחוץ', unitGrams: 220, unitLabel: 'רול שלם - 8 יח׳ (220g)', cal: 175, pro: 7.2, carb: 23.5, fat: 5.8 },
+      { name: 'סושי רול מטוגן (פנקו / טמפורה)', category: 'אוכל בחוץ', unitGrams: 260, unitLabel: 'רול שלם - 8 יח׳ (260g)', cal: 245, pro: 7.5, carb: 28, fat: 11.2 },
+      { name: 'ניגירי סלמון / טונה', category: 'אוכל בחוץ', unitGrams: 35, unitLabel: 'יחידה אחת (35g)', cal: 148, pro: 8.5, carb: 22, fat: 2.4 },
+      { name: 'סשימי סלמון טרי', category: 'אוכל בחוץ', unitGrams: 25, unitLabel: 'נתח אחד (25g)', cal: 180, pro: 20, carb: 0, fat: 10.8 },
+      { name: 'המבורגר 200g בלחמנייה עם ירקות ורטבים', category: 'אוכל בחוץ', unitGrams: 350, unitLabel: 'מנת המבורגר שלמה (350g)', cal: 245, pro: 14.5, carb: 16.5, fat: 13.5 },
+      { name: 'צ׳יפס מטוגן (מנה במסעדה / מזנון)', category: 'אוכל בחוץ', unitGrams: 180, unitLabel: 'מנה בינונית (180g)', cal: 312, pro: 3.4, carb: 41, fat: 15 },
+      { name: 'שווארמה הודו / פרגית בפיתה (עם חומוס וסלטים)', category: 'אוכל בחוץ', unitGrams: 380, unitLabel: 'מנה בפיתה שלמה (380g)', cal: 215, pro: 14.2, carb: 21, fat: 8.2 },
+      { name: 'שווארמה הודו / פרגית בלאפה (עם חומוס וסלטים)', category: 'אוכל בחוץ', unitGrams: 520, unitLabel: 'לאפה שלמה (520g)', cal: 225, pro: 13.5, carb: 24.5, fat: 8.4 },
+      { name: 'פלאפל בפיתה (5 כדורים + טחינה + סלט)', category: 'אוכל בחוץ', unitGrams: 360, unitLabel: 'מנה בפיתה שלמה (360g)', cal: 235, pro: 7.8, carb: 32, fat: 8.5 },
+      { name: 'בוריטו מקסיקני (עוף/בקר, אורז, שעועית וגוואקמולי)', category: 'אוכל בחוץ', unitGrams: 420, unitLabel: 'בוריטו שלם (420g)', cal: 205, pro: 11.5, carb: 24, fat: 7.2 },
+      { name: 'טאקו מקסיקני בשרי / עוף (יחידה אחת)', category: 'אוכל בחוץ', unitGrams: 130, unitLabel: 'טאקו שלם (130g)', cal: 215, pro: 12.2, carb: 19.5, fat: 9.8 },
+      { name: 'קסדייה גבינה ועוף', category: 'אוכל בחוץ', unitGrams: 240, unitLabel: 'מנה שלמה (240g)', cal: 275, pro: 15.5, carb: 23, fat: 13.5 },
+      { name: 'מוקפץ נודלס עוף וירקות (ווק)', category: 'אוכל בחוץ', unitGrams: 400, unitLabel: 'קופסה / מנה שלמה (400g)', cal: 155, pro: 9.2, carb: 19.5, fat: 4.5 },
+
+      // --- קינוחים, גלידות, ארטיקים וטילונים ---
+      { name: 'גלידת שמנת (וניל / שוקולד / פקאן)', category: 'קינוחים וגלידות', unitGrams: 100, unitLabel: 'כדור גלידה גדול (100g)', cal: 215, pro: 3.8, carb: 24, fat: 11.5 },
+      { name: 'גלידת סורבה פירות (ללא שמנת)', category: 'קינוחים וגלידות', unitGrams: 100, unitLabel: 'כדור גדול (100g)', cal: 115, pro: 0.4, carb: 28, fat: 0.2 },
+      { name: 'פרוזן יוגורט טבעי (ללא תוספות)', category: 'קינוחים וגלידות', unitGrams: 150, unitLabel: 'כוס בינונית (150g)', cal: 125, pro: 4.2, carb: 21, fat: 2.6 },
+      { name: 'ארטיק קרח (קרחון פירות)', category: 'קינוחים וגלידות', unitGrams: 65, unitLabel: 'יחידה שלמה (65g)', cal: 78, pro: 0, carb: 19.5, fat: 0 },
+      { name: 'ארטיק שוקו-שוקו / שוקו-בננה', category: 'קינוחים וגלידות', unitGrams: 55, unitLabel: 'יחידה שלמה (55g)', cal: 185, pro: 2.5, carb: 24, fat: 8.8 },
+      { name: 'שלגון מגנום (שמנת בציפוי שוקולד)', category: 'קינוחים וגלידות', unitGrams: 85, unitLabel: 'שלגון שלם (85g)', cal: 315, pro: 3.8, carb: 31, fat: 19.5 },
+      { name: 'טילון שוקולד / וניל (קורנטו / אקסטרים)', category: 'קינוחים וגלידות', unitGrams: 110, unitLabel: 'טילון שלם (110g)', cal: 285, pro: 4.1, carb: 36, fat: 13.8 },
+      { name: 'סופלה שוקולד חם (פונדנט)', category: 'קינוחים וגלידות', unitGrams: 130, unitLabel: 'יחידה אישית (130g)', cal: 385, pro: 5.8, carb: 42, fat: 21.5 },
+      { name: 'כנאפה גבינה חמה', category: 'קינוחים וגלידות', unitGrams: 150, unitLabel: 'מנה אישית (150g)', cal: 355, pro: 7.5, carb: 43, fat: 17 },
+      { name: 'קרם ברולה / פנקוטה', category: 'קינוחים וגלידות', unitGrams: 130, unitLabel: 'מנה אישית (130g)', cal: 295, pro: 4.2, carb: 25, fat: 19.8 }
     ];
 
     function stateStorageKey(id = clientId) { return `BodyBalanceUnifiedState_${id}`; }
@@ -753,6 +967,7 @@
               sets: 4,
               reps: '8-10',
               setWeights: ['60', '65', '70', '70'],
+              setRirs: ['2', '2', '1', '1'],
               videoUrl: 'https://www.youtube.com/embed/rT7DgCr-3pg',
               coachNotes: 'לשמור על שכמות צמודות לספסל, הורדה מבוקרת של 2 שניות.'
             }
@@ -1058,10 +1273,13 @@
           const rawW = setLogs && setLogs[`w_${i}`] !== undefined
             ? setLogs[`w_${i}`]
             : (isCompleted && chosenEx.targetWeights[i] ? chosenEx.targetWeights[i] : '');
+          const rawRir = setLogs && setLogs[`rir_${i}`] !== undefined && setLogs[`rir_${i}`] !== ''
+            ? ` (RIR ${setLogs[`rir_${i}`]})`
+            : '';
           const numW = parseFloat(rawW);
           if (!isNaN(numW) && numW > 0) {
             numericWeights.push(numW);
-            setDetails.push(`סט ${i + 1}: ${numW} ק"ג`);
+            setDetails.push(`סט ${i + 1}: ${numW} ק"ג${rawRir}`);
           }
         }
 
@@ -1695,14 +1913,32 @@
       saveState();
     };
 
-    window.toggleClientSetDone = function(exKey, setIdx, totalSets) {
+    window.updateClientSetRir = function(exKey, setIdx, val) {
       const log = getDayLog();
       if (!log.exerciseSetLogs[exKey]) log.exerciseSetLogs[exKey] = {};
-      log.exerciseSetLogs[exKey][`d_${setIdx}`] = !log.exerciseSetLogs[exKey][`d_${setIdx}`];
+      log.exerciseSetLogs[exKey][`rir_${setIdx}`] = val;
+      saveState();
+    };
+
+    // סימון סט מעגלי תלת-מצבי: ריק -> ✓ (בוצע) -> ✕ (לא בוצע) -> ריק
+    function getSetCircleStatus(setLogs, setIdx) {
+      if (!setLogs) return 'none';
+      const val = setLogs[`d_${setIdx}`];
+      if (val === true || val === 'done') return 'done';
+      if (val === 'missed') return 'missed';
+      return 'none';
+    }
+
+    window.cycleClientSetStatus = function(exKey, setIdx, totalSets) {
+      const log = getDayLog();
+      if (!log.exerciseSetLogs[exKey]) log.exerciseSetLogs[exKey] = {};
+      const curr = getSetCircleStatus(log.exerciseSetLogs[exKey], setIdx);
+      const next = curr === 'none' ? 'done' : curr === 'done' ? 'missed' : 'none';
+      log.exerciseSetLogs[exKey][`d_${setIdx}`] = next === 'none' ? false : next;
 
       let allDone = true;
       for (let i = 0; i < totalSets; i++) {
-        if (!log.exerciseSetLogs[exKey][`d_${i}`]) {
+        if (getSetCircleStatus(log.exerciseSetLogs[exKey], i) !== 'done') {
           allDone = false;
           break;
         }
@@ -1719,7 +1955,7 @@
       if (totalSets > 0) {
         if (!log.exerciseSetLogs[exKey]) log.exerciseSetLogs[exKey] = {};
         for (let i = 0; i < totalSets; i++) {
-          log.exerciseSetLogs[exKey][`d_${i}`] = nextState;
+          log.exerciseSetLogs[exKey][`d_${i}`] = nextState ? 'done' : false;
         }
       }
       saveState();
@@ -1793,13 +2029,21 @@
           const exKey = `${activeSess.id}_${ex.id}`;
           const setLogs = log.exerciseSetLogs?.[exKey] || {};
           const numSets = Math.max(1, parseInt(ex.sets, 10) || 1);
-          const weightsArr = [];
+          const setsArr = [];
           for (let i = 0; i < numSets; i++) {
             const actualW = setLogs[`w_${i}`] || (ex.setWeights && ex.setWeights[i]) || '';
-            if (actualW) weightsArr.push(`סט ${i + 1}: ${actualW} ק"ג`);
+            const actualRir = setLogs[`rir_${i}`] !== undefined && setLogs[`rir_${i}`] !== ''
+              ? setLogs[`rir_${i}`]
+              : (ex.setRirs && ex.setRirs[i] ? ex.setRirs[i] : '');
+            const status = getSetCircleStatus(setLogs, i);
+            const statusIcon = status === 'done' ? '✓' : status === 'missed' ? '✕' : '';
+            if (actualW || status !== 'none') {
+              const rirPart = actualRir !== '' ? `, RIR ${actualRir}` : '';
+              setsArr.push(`סט ${i + 1}${statusIcon ? ` [${statusIcon}]` : ''}: ${actualW ? `${actualW} ק"ג` : ''}${rirPart}`);
+            }
           }
-          if (log.completedExercises?.[exKey] || weightsArr.length > 0) {
-            workoutSummaryLines.push(`• ${ex.name}${weightsArr.length ? ` (${weightsArr.join(', ')})` : ''}`);
+          if (log.completedExercises?.[exKey] || setsArr.length > 0) {
+            workoutSummaryLines.push(`• ${ex.name}${setsArr.length ? ` (${setsArr.join(' | ')})` : ''}`);
           }
         });
       }
@@ -1816,8 +2060,12 @@
         `🥩 *חלבון:* ${totals.pro.toFixed(1)} / ${targets.protein}g`,
         `🌾 *פחמימה:* ${totals.carb.toFixed(1)} / ${targets.carbs}g`,
         `🥑 *שומן:* ${totals.fat.toFixed(1)} / ${targets.fat}g`,
-        workoutSummaryLines.length ? `\n🏋️ *ביצוע אימון (${activeSess.title}):*\n${workoutSummaryLines.join('\n')}` : ''
-      ].filter(Boolean).join('\n');
+        workoutSummaryLines.length ? `
+🏋️ *ביצוע אימון (${activeSess.title}):*
+${workoutSummaryLines.join('
+')}` : ''
+      ].filter(Boolean).join('
+');
 
       window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
     };
@@ -1877,7 +2125,7 @@
 
       const filtered = FOOD_DB_100G.filter(f => {
         const matchCat = cat === 'all' || f.category === cat;
-        const matchText = !query || f.name.toLowerCase().includes(query) || f.category.includes(query);
+        const matchText = !query || f.name.toLowerCase().includes(query) || f.category.toLowerCase().includes(query);
         return matchCat && matchText;
       });
 
@@ -1895,7 +2143,7 @@
               <div class="border border-slate-200 rounded-2xl p-4 bg-white space-y-3">
                 <div class="flex items-center justify-between gap-2">
                   <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">${f.category}</span>
-                  <span class="text-[11px] font-semibold text-slate-500">יחידה / מנה: ${f.unitLabel}</span>
+                  <span class="text-[11px] font-semibold text-slate-500">מנה: ${f.unitLabel}</span>
                 </div>
                 <h4 class="font-extrabold text-slate-900 text-base">${f.name}</h4>
                 <div class="overflow-x-auto border border-slate-100 rounded-xl">
@@ -1911,6 +2159,14 @@
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
+                      <tr class="bg-teal-50/40">
+                        <td class="py-1.5 px-2 font-bold text-teal-950">מנה / יחידה שלמה (${nFull.grams}g)</td>
+                        <td class="py-1.5 px-2 font-extrabold">${nFull.cal}</td>
+                        <td class="py-1.5 px-2 font-bold">${nFull.pro}g</td>
+                        <td class="py-1.5 px-2">${nFull.carb}g</td>
+                        <td class="py-1.5 px-2">${nFull.fat}g</td>
+                        <td class="py-1.5 px-2"><button type="button" onclick="selectFoodMeasureToDiary('${safeName}', 'full', 1)" class="text-[11px] bg-teal-700 hover:bg-teal-800 text-white font-bold px-2 py-0.5 rounded cursor-pointer">הוסף</button></td>
+                      </tr>
                       <tr>
                         <td class="py-1.5 px-2 font-semibold">100 גרם</td>
                         <td class="py-1.5 px-2 font-bold">${n100.cal}</td>
@@ -1918,14 +2174,6 @@
                         <td class="py-1.5 px-2">${n100.carb}g</td>
                         <td class="py-1.5 px-2">${n100.fat}g</td>
                         <td class="py-1.5 px-2"><button type="button" onclick="selectFoodMeasureToDiary('${safeName}', '100g', 1)" class="text-[11px] bg-teal-50 hover:bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded cursor-pointer">הוסף</button></td>
-                      </tr>
-                      <tr>
-                        <td class="py-1.5 px-2 font-semibold">יחידה שלמה / מנה (${nFull.grams}g)</td>
-                        <td class="py-1.5 px-2 font-bold">${nFull.cal}</td>
-                        <td class="py-1.5 px-2">${nFull.pro}g</td>
-                        <td class="py-1.5 px-2">${nFull.carb}g</td>
-                        <td class="py-1.5 px-2">${nFull.fat}g</td>
-                        <td class="py-1.5 px-2"><button type="button" onclick="selectFoodMeasureToDiary('${safeName}', 'full', 1)" class="text-[11px] bg-teal-50 hover:bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded cursor-pointer">הוסף</button></td>
                       </tr>
                       <tr>
                         <td class="py-1.5 px-2 font-semibold">חצי מנה (${nHalf.grams}g)</td>
@@ -1996,14 +2244,34 @@
             const uploadedVideo = log.clientExerciseVideos?.[exKey] || '';
             const setLogs = log.exerciseSetLogs?.[exKey] || {};
             const targetWeights = Array.isArray(ex.setWeights) ? ex.setWeights : [];
+            const targetRirs = Array.isArray(ex.setRirs) ? ex.setRirs : [];
 
             let setsRowsHtml = '';
             for (let i = 0; i < numSets; i++) {
               const targetW = targetWeights[i] !== undefined && targetWeights[i] !== '' ? `${targetWeights[i]} ק"ג` : 'לא הוגדר';
               const actualW = setLogs[`w_${i}`] !== undefined ? setLogs[`w_${i}`] : (targetWeights[i] || '');
-              const setDone = !!setLogs[`d_${i}`];
+              const actualRir = setLogs[`rir_${i}`] !== undefined ? setLogs[`rir_${i}`] : (targetRirs[i] !== undefined ? targetRirs[i] : '');
+              const setStatus = getSetCircleStatus(setLogs, i);
+
+              let rowBgClass = '';
+              let circleBtnClass = 'bg-white border-2 border-slate-300 text-transparent hover:border-teal-500';
+              let circleIcon = '';
+              let statusTitle = 'לחץ לסימון בוצע (✓) או לא בוצע (✕)';
+
+              if (setStatus === 'done') {
+                rowBgClass = 'bg-emerald-50/70';
+                circleBtnClass = 'bg-emerald-600 border-2 border-emerald-600 text-white shadow-2xs';
+                circleIcon = '✓';
+                statusTitle = 'בוצע (✓) — לחץ לשינוי ללא בוצע (✕)';
+              } else if (setStatus === 'missed') {
+                rowBgClass = 'bg-rose-50/70';
+                circleBtnClass = 'bg-rose-600 border-2 border-rose-600 text-white shadow-2xs';
+                circleIcon = '✕';
+                statusTitle = 'לא בוצע (✕) — לחץ לאיפוס';
+              }
+
               setsRowsHtml += `
-                <tr class="${setDone ? 'bg-emerald-50/70' : ''}">
+                <tr class="${rowBgClass}">
                   <td class="py-1.5 px-2.5 font-extrabold text-slate-800">סט ${i + 1}</td>
                   <td class="py-1.5 px-2.5 text-slate-600 font-semibold">${ex.reps} חזרות</td>
                   <td class="py-1.5 px-2.5 text-teal-800 font-bold">${targetW}</td>
@@ -2011,14 +2279,22 @@
                     <div class="flex items-center gap-1">
                       <input type="number" step="0.5" min="0" value="${actualW}" placeholder="ק&quot;ג"
                         oninput="updateClientSetWeight('${exKey}', ${i}, this.value)"
-                        class="w-20 border border-slate-300 rounded-lg px-2 py-1 text-xs font-extrabold bg-white text-center" />
+                        class="w-16 sm:w-20 border border-slate-300 rounded-lg px-2 py-1 text-xs font-extrabold bg-white text-center" />
                       <span class="text-[11px] text-slate-500 font-bold">ק"ג</span>
                     </div>
                   </td>
+                  <td class="py-1.5 px-2.5">
+                    <div class="flex items-center gap-1">
+                      <input type="number" step="0.5" min="0" max="10" value="${actualRir}" placeholder="0-5"
+                        oninput="updateClientSetRir('${exKey}', ${i}, this.value)"
+                        class="w-14 sm:w-16 border border-indigo-200 rounded-lg px-1.5 py-1 text-xs font-extrabold bg-indigo-50/40 text-indigo-950 text-center" />
+                    </div>
+                  </td>
                   <td class="py-1.5 px-2.5 text-center">
-                    <input type="checkbox" ${setDone ? 'checked' : ''}
-                      onchange="toggleClientSetDone('${exKey}', ${i}, ${numSets})"
-                      class="w-4 h-4 accent-emerald-600 cursor-pointer" />
+                    <button type="button" onclick="cycleClientSetStatus('${exKey}', ${i}, ${numSets})" title="${statusTitle}"
+                      class="w-7 h-7 rounded-full inline-flex items-center justify-center text-xs font-extrabold transition cursor-pointer ${circleBtnClass}">
+                      ${circleIcon}
+                    </button>
                   </td>
                 </tr>
               `;
@@ -2044,8 +2320,9 @@
                         <th class="py-1.5 px-2.5 font-bold">סט</th>
                         <th class="py-1.5 px-2.5 font-bold">חזרות</th>
                         <th class="py-1.5 px-2.5 font-bold">יעד מאמן</th>
-                        <th class="py-1.5 px-2.5 font-bold">משקל עבודה בפועל</th>
-                        <th class="py-1.5 px-2.5 font-bold text-center">בוצע</th>
+                        <th class="py-1.5 px-2.5 font-bold">משקל בפועל</th>
+                        <th class="py-1.5 px-2.5 font-bold text-indigo-800">RIR (רזרבה)</th>
+                        <th class="py-1.5 px-2.5 font-bold text-center">בוצע (✓/✕)</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200/70">
@@ -2191,6 +2468,8 @@
       document.getElementById('datePicker').value = selectedDate;
       document.getElementById('newBodyWeightDate').value = selectedDate;
       document.getElementById('foodDbList').innerHTML = FOOD_DB_100G.map(f => `<option value="${f.name}"></option>`).join('');
+      const countEl = document.getElementById('foodsCountBadge');
+      if (countEl) countEl.textContent = FOOD_DB_100G.length;
       renderAll();
     });
   </script>
