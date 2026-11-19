@@ -361,56 +361,76 @@
 
           <div class="pt-2 border-t border-teal-200/70 flex flex-wrap items-end gap-2">
             <div class="flex-1 min-w-[180px]">
-              <label class="block text-[11px] font-bold text-slate-600 mb-1">שם מסלול חדש למחירון</label>
-              <input id="newPlanNameInput" type="text" placeholder="למשל: ליווי היברידי / תוכנית אימונים בלבד" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white" />
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">שם מסלול חדש</label>
+              <input id="newPlanNameInput" type="text" placeholder="לדוגמה: ליווי VIP אישי" class="w-full border border-slate-300 rounded-xl px-3 py-1.5 text-xs bg-white" />
             </div>
-            <div class="w-28">
-              <label class="block text-[11px] font-bold text-slate-600 mb-1">מחיר (₪)</label>
-              <input id="newPlanPriceInput" type="number" placeholder="350" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold bg-white" />
+            <div class="w-32">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">מחיר חודשי (₪)</label>
+              <input id="newPlanPriceInput" type="number" placeholder="790" class="w-full border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold bg-white" />
             </div>
-            <button type="button" onclick="addNewSubscriptionPlan()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs cursor-pointer">
+            <button type="button" onclick="addNewSubscriptionPlan()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-4 py-1.5 rounded-xl text-xs cursor-pointer">
               + הוסף מסלול למחירון
             </button>
           </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t border-teal-200/70">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">סטטוס מנוי פעיל</label>
+              <select id="admSubActive" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-extrabold bg-white">
+                <option value="true">מנוי פעיל ✓</option>
+                <option value="false">מנוי מוקפא / לא פעיל ✕</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">תאריך חידוש מנוי</label>
+              <input id="admSubRenewalDate" type="date" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold bg-white" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">תדירות חיוב</label>
+              <select id="admSubBillingCycle" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold bg-white">
+                <option value="חודשי">חודשי</option>
+                <option value="רבעוני">רבעוני</option>
+                <option value="שנתי">שנתי</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">אמצעי תשלום</label>
+              <select id="admSubPaymentMethod" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold bg-white">
+                <option value="כרטיס אשראי">כרטיס אשראי</option>
+                <option value="העברה בנקאית">העברה בנקאית</option>
+                <option value="ביט / פייבוקס">ביט / פייבוקס</option>
+                <option value="מזומן">מזומן</option>
+              </select>
+            </div>
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">שם מלא של המתאמן</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1">שם מלא *</label>
             <input id="admProfName" type="text" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">מין המתאמן (להתאמת מדדי היקפים)</label>
-            <select id="admProfGender" onchange="onChangeAdminClientGender(this.value)" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white font-bold">
-              <option value="male">גבר ♂️ (כולל היקף חזה)</option>
-              <option value="female">אישה ♀️ (כולל היקף אגן)</option>
+            <label class="block text-xs font-bold text-slate-600 mb-1">מגדר</label>
+            <select id="admProfGender" onchange="onChangeAdminClientGender(this.value)" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white font-semibold">
+              <option value="male">גבר</option>
+              <option value="female">אישה</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">מספר טלפון נייד (וואטסאפ)</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1">מספר טלפון נייד (לוואטסאפ)</label>
             <input id="admProfPhone" type="tel" placeholder="050-0000000" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">תאריך לידה 🎂</label>
-            <input id="admProfBirthDate" type="date" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
+            <input id="admProfBirthDate" type="date" onchange="onAdminBirthDateChange()" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">כותרת מסלול מותאמת (אופציונלי)</label>
-            <input id="admSubTier" type="text" placeholder="מסלול ליווי מלא (אימונים + תזונה)" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
+            <label class="block text-xs font-bold text-slate-600 mb-1">גיל</label>
+            <input id="admProfAge" type="number" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">תאריך חידוש מנוי הבא</label>
-            <input id="admSubRenewal" type="date" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">סטטוס מנוי</label>
-            <select id="admSubActive" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white font-bold">
-              <option value="true">פעיל ✓</option>
-              <option value="false">לא פעיל / ממתין לחידוש</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">משקל גוף נוכחי (ק"ג)</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1">משקל (ק"ג)</label>
             <input id="admProfWeight" type="number" step="0.1" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm" />
           </div>
           <div>
@@ -419,69 +439,31 @@
           </div>
         </div>
 
-        <div class="bg-indigo-50/60 border border-indigo-200 rounded-2xl p-4 space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h3 class="text-sm font-extrabold text-indigo-950">🔒 הרשאות כרטיס לקוח בממשק הלקוחות</h3>
-              <p class="text-xs text-indigo-800">כל לקוח רואה כברירת מחדל רק את הכרטיס האישי שלו (ללא חשיפה לכרטיסים של לקוחות אחרים)</p>
-            </div>
-            <span class="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-900">כרטיס אישי מבודד ✓</span>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div>
-              <label class="block font-bold text-slate-700 mb-1">מצב צפייה בכרטיס לקוח</label>
-              <select id="admCardVisibilityMode" class="w-full border border-indigo-200 rounded-xl px-3 py-2 font-bold bg-white">
-                <option value="own_only">כרטיס אישי בלבד (מומלץ — ללא לקוחות אחרים)</option>
-                <option value="own_locked">כרטיס אישי נעול לעריכת קוד לקוח</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-bold text-slate-700 mb-1">הצגת כרטיס מנוי והיקפים ללקוח</label>
-              <select id="admCardShowSubAndCirc" class="w-full border border-indigo-200 rounded-xl px-3 py-2 font-bold bg-white">
-                <option value="true">מוצג בכרטיס האישי של הלקוח</option>
-                <option value="false">מוסתר (מוצג למנהל בלבד)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-bold text-slate-700 mb-1">מזהה כרטיס לקוח משויך</label>
-              <input id="admCardBoundId" type="text" readonly class="w-full border border-slate-200 rounded-xl px-3 py-2 font-mono bg-slate-100 text-slate-700" />
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs">
-          <div class="space-y-2">
-            <div>
-              <strong>1. הצהרת בריאות:</strong>
-              <span id="admHealthStatus" class="font-bold text-amber-700 mr-1">טרם נחתמה</span>
-            </div>
-            <div id="admHealthDetailsBox" class="text-slate-600 space-y-1"></div>
-          </div>
-          <div class="space-y-2">
-            <div>
-              <strong>2. תקנון ומדיניות שירות:</strong>
-              <span id="admTermsStatus" class="font-bold text-amber-700 mr-1">טרם אושר</span>
-            </div>
-          </div>
-        </div>
-
-        <button type="button" onclick="saveAdminClientProfile()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-6 py-2.5 rounded-xl text-xs sm:text-sm cursor-pointer">
-          שמור פרטי מתאמן ומסלול מנוי
+        <button type="button" onclick="saveAdminClientDetails()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-6 py-2.5 rounded-xl text-xs sm:text-sm cursor-pointer">
+          שמור פרטי מנוי ומתאמן
         </button>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+        <h3 class="text-base font-extrabold text-slate-900">סטטוס הצהרת בריאות, חתימה ותקנון של המתאמן</h3>
+        <div id="admSignedFormsSummary" class="text-xs text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2"></div>
       </div>
     </section>
 
-    <!-- לשונית 5: ספריית תרגילים לשימוש מהיר -->
+    <!-- לשונית 5: ספריית תרגילים -->
     <section id="atab-library" class="admin-section hidden space-y-6">
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-        <div>
-          <h2 class="text-lg font-extrabold text-slate-900">ספריית תרגילים מובנית והוספת תרגילים לספרייה</h2>
-          <p class="text-xs text-slate-500">הוסף תרגילים קבועים לספרייה כדי לשבץ אותם במהירות לתוכניות של מתאמנים</p>
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">ספריית תרגילים והדגמות</h2>
+            <p class="text-xs text-slate-500">בחר תרגיל לשיבוץ מהיר בתוכנית האימונים של המתאמן או הוסף תרגיל חדש לספרייה</p>
+          </div>
+          <span id="libraryCountBadge" class="text-xs font-extrabold px-3 py-1 rounded-full bg-indigo-50 text-indigo-800">0 תרגילים</span>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <input id="libExName" type="text" placeholder="שם התרגיל..." class="border border-slate-300 rounded-xl px-3 py-2 text-xs bg-white" />
-          <select id="libExMuscle" class="border border-slate-300 rounded-xl px-3 py-2 text-xs bg-white">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <input id="libExName" type="text" placeholder="שם תרגיל חדש..." class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white" />
+          <select id="libExMuscle" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white font-semibold">
             <option value="חזה">חזה</option>
             <option value="גב">גב</option>
             <option value="רגליים">רגליים</option>
@@ -490,57 +472,96 @@
             <option value="יד אחורית">יד אחורית</option>
             <option value="בטן וליבה">בטן וליבה</option>
           </select>
-          <input id="libExVideo" type="text" placeholder="קישור סרטון YouTube Embed..." class="border border-slate-300 rounded-xl px-3 py-2 text-xs bg-white font-mono" />
-          <button type="button" onclick="addExerciseToLibrary()" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-4 py-2 rounded-xl text-xs cursor-pointer">
+          <input id="libExSetsReps" type="text" placeholder="4x8-10" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white" />
+          <input id="libExVideo" type="text" placeholder="קישור Embed..." class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs bg-white font-mono" />
+          <button type="button" onclick="addExerciseToLibrary()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer">
             + הוסף לספרייה
           </button>
         </div>
 
-        <div id="adminExerciseLibraryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+        <div id="exerciseLibraryGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
     </section>
 
   </main>
 
   <script>
-    const CLIENTS_LIST_KEY = 'BodyBalanceAdminClients_v1';
-    const EXERCISE_LIBRARY_KEY = 'BodyBalanceExerciseLibrary_v1';
-    const SUBSCRIPTION_PLANS_KEY = 'BodyBalanceSubscriptionPlans_v1';
-
-    const DEFAULT_SUBSCRIPTION_PLANS = [
-      { id: 'full-coaching', name: 'מסלול ליווי מלא (אימונים + תזונה)', price: 450 },
-      { id: 'training-only', name: 'מסלול תוכנית אימונים ומשקלי עבודה בלבד', price: 280 },
-      { id: 'nutrition-only', name: 'מסלול מעקב ותפריט תזונה בלבד', price: 250 },
-      { id: 'vip-1on1', name: 'מסלול VIP אישי צמוד', price: 750 }
+    const ADMIN_CLIENTS_INDEX_KEY = 'BodyBalanceAdminClientsIndex_v1';
+    const ADMIN_PLANS_CATALOG_KEY = 'BodyBalanceAdminPlansCatalog_v1';
+    const DEFAULT_PLANS = [
+      { id: 'plan-full-monthly', name: 'מסלול ליווי מלא (אימונים + תזונה)', price: 550, billingCycle: 'חודשי' },
+      { id: 'plan-training-only', name: 'מסלול אימונים בלבד', price: 380, billingCycle: 'חודשי' },
+      { id: 'plan-nutrition-only', name: 'מסלול תזונה בלבד', price: 320, billingCycle: 'חודשי' }
     ];
 
-    const DEFAULT_LIBRARY = [
-      { name: 'לחיצת חזה עם מוט (Bench Press)', muscle: 'חזה', videoUrl: 'https://www.youtube.com/embed/rT7DgCr-3pg' },
-      { name: 'לחיצת חזה בשיפוע חיובי עם משקולות', muscle: 'חזה', videoUrl: 'https://www.youtube.com/embed/8iPEnn-ltC8' },
-      { name: 'סקוואט חופשי (Barbell Squat)', muscle: 'רגליים', videoUrl: 'https://www.youtube.com/embed/ultWZbUMPL8' },
-      { name: 'לחיצת רגליים במכונה (Leg Press)', muscle: 'רגליים', videoUrl: 'https://www.youtube.com/embed/IZxyjW7MPJQ' },
-      { name: 'משיכת פולי עליון באחיזה רחבה', muscle: 'גב', videoUrl: 'https://www.youtube.com/embed/CAwf7n6Luuc' },
-      { name: 'חתירה בהטיה עם מוט (Barbell Row)', muscle: 'גב', videoUrl: 'https://www.youtube.com/embed/FWJR5Ve8bnQ' },
-      { name: 'לחיצת כתפיים בישיבה עם משקולות', muscle: 'כתפיים', videoUrl: 'https://www.youtube.com/embed/qEwKCR5JCog' },
-      { name: 'כפיפת מרפקים בעמידה עם מוט W', muscle: 'יד קדמית', videoUrl: 'https://www.youtube.com/embed/kwG2ipFRgfo' },
-      { name: 'פשיטת מרפקים בפולי עליון עם חבל', muscle: 'יד אחורית', videoUrl: 'https://www.youtube.com/embed/vB5OHsJ3EME' }
+    const DEFAULT_EXERCISE_LIBRARY = [
+      { id: 'lib-bench', name: 'לחיצת חזה עם מוט (Bench Press)', muscle: 'חזה', sets: 4, reps: '8-10', defaultWeight: '65', videoUrl: 'https://www.youtube.com/embed/rT7DgCr-3pg', coachNotes: 'שכמות צמודות לספסל, הורדה מבוקרת.' },
+      { id: 'lib-incline-db', name: 'לחיצת חזה בשיפוע חיובי עם משקולות יד', muscle: 'חזה', sets: 3, reps: '10-12', defaultWeight: '24', videoUrl: 'https://www.youtube.com/embed/8iPEnn-ltC8', coachNotes: 'שיפוע 30 מעלות, טווח תנועה מלא.' },
+      { name: 'חתירה בפולי תחתון / כבל (Seated Row)', id: 'lib-row', muscle: 'גב', sets: 4, reps: '10-12', defaultWeight: '55', videoUrl: 'https://www.youtube.com/embed/GZbfZ033f74', coachNotes: 'חזה זקוף, כיווץ שכמות בסוף המשיכה.' },
+      { name: 'משיכה בפולי עליון רחב (Lat Pulldown)', id: 'lib-lat', muscle: 'גב', sets: 3, reps: '10-12', defaultWeight: '50', videoUrl: 'https://www.youtube.com/embed/CAwf7n6Luuc', coachNotes: 'למשוך מרפקים מטה ולצדדים.' },
+      { id: 'lib-squat', name: 'סקוואט עם מוט (Barbell Squat)', muscle: 'רגליים', sets: 4, reps: '6-10', defaultWeight: '80', videoUrl: 'https://www.youtube.com/embed/ultWZbUMPL8', coachNotes: 'ברכיים עוקבות אחרי כפות הרגליים, ליבה מתוחה.' },
+      { id: 'lib-rdl', name: 'דדליפט רומני (RDL)', muscle: 'רגליים', sets: 3, reps: '8-12', defaultWeight: '70', videoUrl: 'https://www.youtube.com/embed/JCXUYuzwNrM', coachNotes: 'דחיפת אגן לאחור ושמירה על גב ניטרלי.' },
+      { id: 'lib-ohp', name: 'לחיצת כתפיים בעמידה / ישיבה (OHP)', muscle: 'כתפיים', sets: 3, reps: '8-12', defaultWeight: '40', videoUrl: 'https://www.youtube.com/embed/2yjwXTZQDDI', coachNotes: 'לא לנעול מרפקים בחדות בראש התנועה.' },
+      { id: 'lib-lat-raise', name: 'הרחקת כתפיים לצדדים עם משקולות יד', muscle: 'כתפיים', sets: 4, reps: '12-15', defaultWeight: '10', videoUrl: 'https://www.youtube.com/embed/3VcKaXpzqRo', coachNotes: 'ללא תנופה מהגוף, לעצור בגובה הכתף.' }
     ];
 
-    let subscriptionPlans = JSON.parse(localStorage.getItem(SUBSCRIPTION_PLANS_KEY) || 'null') || DEFAULT_SUBSCRIPTION_PLANS;
-    let exerciseLibrary = JSON.parse(localStorage.getItem(EXERCISE_LIBRARY_KEY) || 'null') || DEFAULT_LIBRARY;
-    let clientIds = JSON.parse(localStorage.getItem(CLIENTS_LIST_KEY) || '["yoav-01"]');
-    if (!Array.isArray(clientIds) || clientIds.length === 0) clientIds = ['yoav-01'];
-
-    let activeClientId = clientIds[0];
+    let plansCatalog = loadPlansCatalog();
+    let exerciseLibrary = loadExerciseLibrary();
+    let clientsIndex = loadClientsIndex();
+    let activeClientId = clientsIndex[0]?.id || 'yoav-01';
     let activeSessionIdx = 0;
 
-    function stateStorageKey(id = activeClientId) { return `BodyBalanceUnifiedState_${id}`; }
+    function loadPlansCatalog() {
+      try {
+        const raw = localStorage.getItem(ADMIN_PLANS_CATALOG_KEY);
+        const parsed = raw ? JSON.parse(raw) : null;
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {}
+      return [...DEFAULT_PLANS];
+    }
 
-    function createDefaultSessions(count = 3) {
-      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-      const sessions = [];
+    function savePlansCatalog() {
+      localStorage.setItem(ADMIN_PLANS_CATALOG_KEY, JSON.stringify(plansCatalog));
+    }
+
+    function loadExerciseLibrary() {
+      try {
+        const raw = localStorage.getItem('BodyBalanceExerciseLibrary_v1');
+        const parsed = raw ? JSON.parse(raw) : null;
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {}
+      return [...DEFAULT_EXERCISE_LIBRARY];
+    }
+
+    function saveExerciseLibrary() {
+      localStorage.setItem('BodyBalanceExerciseLibrary_v1', JSON.stringify(exerciseLibrary));
+    }
+
+    function loadClientsIndex() {
+      try {
+        const raw = localStorage.getItem(ADMIN_CLIENTS_INDEX_KEY);
+        const parsed = raw ? JSON.parse(raw) : null;
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {}
+      return [
+        { id: 'yoav-01', name: 'יואב כהן' },
+        { id: 'dana-02', name: 'דנה לוי' }
+      ];
+    }
+
+    function saveClientsIndex() {
+      localStorage.setItem(ADMIN_CLIENTS_INDEX_KEY, JSON.stringify(clientsIndex));
+    }
+
+    function stateKeyFor(id) {
+      return `BodyBalanceUnifiedState_${id}`;
+    }
+
+    function createDefaultSessionsForAdmin(count = 3) {
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+      const arr = [];
       for (let i = 0; i < count; i++) {
-        sessions.push({
+        arr.push({
           id: `sess-${i + 1}`,
           title: `אימון ${i + 1} (${letters[i] || i + 1})`,
           exercises: i === 0 ? [
@@ -550,305 +571,657 @@
               muscle: 'חזה',
               sets: 4,
               reps: '8-10',
+              setReps: ['10', '10', '8', '8'],
               setWeights: ['60', '65', '70', '70'],
+              setRirs: ['2', '2', '1', '1'],
               videoUrl: 'https://www.youtube.com/embed/rT7DgCr-3pg',
-              coachNotes: 'לשמור על שכמות צמודות לספסל, הורדה מבוקרת של 2 שניות.'
+              coachNotes: 'שכמות צמודות לספסל, הורדה מבוקרת.'
             }
           ] : []
         });
       }
-      return sessions;
+      return arr;
     }
 
-    function loadClientState(id = activeClientId) {
-      try {
-        const raw = localStorage.getItem(stateStorageKey(id));
-        const parsed = raw ? JSON.parse(raw) : {};
-        return {
-          subscriptionActive: parsed.subscriptionActive !== undefined ? parsed.subscriptionActive : true,
-          subscriptionPlanId: parsed.subscriptionPlanId || 'full-coaching',
-          subscriptionTierName: parsed.subscriptionTierName || 'מסלול ליווי מלא (אימונים + תזונה)',
-          subscriptionPrice: parsed.subscriptionPrice !== undefined ? parsed.subscriptionPrice : 450,
-          subscriptionRenewalDate: parsed.subscriptionRenewalDate || '',
-          nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70, ...(parsed.nutritionTargets || {}) },
-          profile: { name: id === 'yoav-01' ? 'יואב כהן' : id, gender: 'male', phone: '', birthDate: '', avatarDataUrl: '', weight: 78, height: 178, age: 28, circumferences: {}, ...(parsed.profile || {}) },
-          bodyWeightHistory: Array.isArray(parsed.bodyWeightHistory) ? parsed.bodyWeightHistory : [],
-          bodyMeasurementsHistory: Array.isArray(parsed.bodyMeasurementsHistory) ? parsed.bodyMeasurementsHistory : [],
-          weeklyWorkoutsPerWeek: (parsed.workoutSessions && parsed.workoutSessions.length) || 3,
-          workoutSessions: Array.isArray(parsed.workoutSessions) && parsed.workoutSessions.length ? parsed.workoutSessions : createDefaultSessions(3),
-          healthDeclaration: parsed.healthDeclaration || { signed: false },
-          termsAcceptance: parsed.termsAcceptance || { accepted: false },
-          clientCardSettings: {
-            visibilityMode: 'own_only',
-            showSubAndCirc: true,
-            ...((parsed.clientCardSettings) || {})
-          },
-          dayLogs: parsed.dayLogs || {}
-        };
-      } catch (e) {
-        return {
-          subscriptionActive: true,
-          subscriptionPlanId: 'full-coaching',
-          subscriptionTierName: 'מסלול ליווי מלא',
-          subscriptionPrice: 450,
-          subscriptionRenewalDate: '',
-          nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70 },
-          profile: { name: id, gender: 'male', phone: '', birthDate: '', weight: 75, height: 175, age: 28, circumferences: {} },
-          bodyWeightHistory: [],
-          bodyMeasurementsHistory: [],
-          weeklyWorkoutsPerWeek: 3,
-          workoutSessions: createDefaultSessions(3),
-          healthDeclaration: { signed: false },
-          termsAcceptance: { accepted: false },
-          clientCardSettings: { visibilityMode: 'own_only', showSubAndCirc: true },
-          dayLogs: {}
-        };
-      }
-    }
-
-    let clientState = loadClientState(activeClientId);
-
-    function saveClientState() {
-      localStorage.setItem(stateStorageKey(activeClientId), JSON.stringify(clientState));
-      localStorage.setItem(CLIENTS_LIST_KEY, JSON.stringify(clientIds));
-      localStorage.setItem(SUBSCRIPTION_PLANS_KEY, JSON.stringify(subscriptionPlans));
-      localStorage.setItem(EXERCISE_LIBRARY_KEY, JSON.stringify(exerciseLibrary));
-    }
-
-    function normalizeIntlPhone(rawPhone) {
-      const digits = (rawPhone || '').replace(/\D/g, '');
-      if (!digits) return '';
-      if (digits.startsWith('0')) return `972${digits.slice(1)}`;
-      return digits;
-    }
-
-    function buildMeasurementsWhatsAppText() {
-      const name = clientState.profile.name || 'מתאמן/ת';
-      const gender = clientState.profile.gender === 'female' ? 'female' : 'male';
-      const sorted = [...(clientState.bodyMeasurementsHistory || [])].sort((a, b) => b.date.localeCompare(a.date));
-      const latest = sorted[0];
-      const previous = sorted[1];
-
-      const lines = [`היי ${name}! 📏 להלן עדכון המדדים וההיקפים שלך מ-BodyBalance:`];
-
-      if (clientState.profile.weight) {
-        lines.push(`⚖️ משקל גוף נוכחי: ${clientState.profile.weight} ק"ג`);
-      }
-
-      if (!latest) {
-        lines.push('טרם הוזנו מדידות היקפים.');
-        return lines.join('\n');
-      }
-
-      lines.push(`📅 תאריך מדידה: ${latest.date}`);
-
-      const appendMetric = (label, key) => {
-        const val = latest[key];
-        if (val === null || val === undefined || isNaN(val)) return;
-        const prevVal = previous?.[key];
-        let diffStr = '';
-        if (prevVal !== null && prevVal !== undefined && !isNaN(prevVal)) {
-          const diff = Number((val - prevVal).toFixed(1));
-          if (diff !== 0) diffStr = ` (${diff > 0 ? '+' : ''}${diff} ס"מ)`;
-        }
-        lines.push(`• ${label}: ${val} ס"מ${diffStr}`);
+    function loadClientState(id) {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const fallbackMeta = clientsIndex.find(c => c.id === id);
+      const def = {
+        subscriptionActive: true,
+        subscriptionTierName: plansCatalog[0]?.name || 'מסלול ליווי מלא (אימונים + תזונה)',
+        subscriptionPrice: plansCatalog[0]?.price || 550,
+        subscriptionBillingCycle: plansCatalog[0]?.billingCycle || 'חודשי',
+        subscriptionPaymentMethod: 'כרטיס אשראי',
+        subscriptionRenewalDate: '',
+        nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70 },
+        profile: {
+          name: fallbackMeta?.name || 'מתאמן חדש',
+          gender: 'male',
+          phone: '',
+          birthDate: '',
+          weight: 78,
+          height: 178,
+          age: 28,
+          circumferences: { chest: '', arm: '', waist: '', hips: '', thighs: '' }
+        },
+        bodyWeightHistory: [{ date: todayStr, weight: 78 }],
+        bodyMeasurementsHistory: [],
+        weeklyWorkoutsPerWeek: 3,
+        workoutSessions: createDefaultSessionsForAdmin(3),
+        healthDeclaration: { signed: false },
+        termsAcceptance: { accepted: false },
+        dayLogs: {}
       };
-
-      if (gender === 'female') {
-        appendMetric('היקף אגן (נשים)', 'hips');
-      } else {
-        appendMetric('היקף חזה (גברים)', 'chest');
+      try {
+        const raw = localStorage.getItem(stateKeyFor(id));
+        if (!raw) return def;
+        const parsed = JSON.parse(raw);
+        const merged = {
+          ...def,
+          ...parsed,
+          nutritionTargets: { ...def.nutritionTargets, ...(parsed.nutritionTargets || {}) },
+          profile: {
+            ...def.profile,
+            ...(parsed.profile || {}),
+            circumferences: { ...def.profile.circumferences, ...((parsed.profile && parsed.profile.circumferences) || {}) }
+          }
+        };
+        if (!Array.isArray(merged.workoutSessions) || merged.workoutSessions.length === 0) {
+          merged.workoutSessions = createDefaultSessionsForAdmin(merged.weeklyWorkoutsPerWeek || 3);
+        }
+        if (!Array.isArray(merged.bodyWeightHistory)) merged.bodyWeightHistory = [];
+        if (!Array.isArray(merged.bodyMeasurementsHistory)) merged.bodyMeasurementsHistory = [];
+        return merged;
+      } catch (e) {
+        return def;
       }
-      appendMetric('היקף ידיים', 'arms');
-      appendMetric('היקף מותניים (מתחת לטבור)', 'waist');
-      appendMetric('היקף ירכיים', 'thighs');
-
-      lines.push('\nעבודה מצוינת, נמשיך להתקדם יחד! 💪');
-      return lines.join('\n');
     }
 
-    window.refreshMeasurementsWhatsAppText = function() {
-      const ta = document.getElementById('admMeasurementsWhatsAppText');
-      if (ta) ta.value = buildMeasurementsWhatsAppText();
+    function saveClientState(id, st) {
+      localStorage.setItem(stateKeyFor(id), JSON.stringify(st));
+      const idx = clientsIndex.findIndex(c => c.id === id);
+      if (idx >= 0 && st.profile?.name) {
+        clientsIndex[idx].name = st.profile.name;
+        saveClientsIndex();
+      }
+    }
+
+    window.switchAdminTab = function(tabName) {
+      document.querySelectorAll('.admin-section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById(`atab-${tabName}`)?.classList.remove('hidden');
+      document.querySelectorAll('.admin-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.atab === tabName);
+      });
+      renderActiveAdminClient();
     };
 
-    window.sendMeasurementsWhatsApp = function() {
-      const ta = document.getElementById('admMeasurementsWhatsAppText');
-      const msg = (ta && ta.value.trim()) || buildMeasurementsWhatsAppText();
-      const intlPhone = normalizeIntlPhone(clientState.profile.phone);
-      const waUrl = intlPhone
-        ? `https://wa.me/${intlPhone}?text=${encodeURIComponent(msg)}`
-        : `https://wa.me/?text=${encodeURIComponent(msg)}`;
-      window.open(waUrl, '_blank', 'noopener,noreferrer');
-      const statusEl = document.getElementById('admMeasWaStatus');
-      if (statusEl) {
-        statusEl.textContent = intlPhone
-          ? `נפתח וואטסאפ עבור ${clientState.profile.name} (${intlPhone}) ✓`
-          : 'נפתח וואטסאפ (לא הוזן מספר טלפון — ניתן לבחור נמען בוואטסאפ)';
+    window.onSelectAdminClient = function(newId) {
+      activeClientId = newId;
+      activeSessionIdx = 0;
+      renderActiveAdminClient();
+    };
+
+    window.promptAddNewClient = function() {
+      const name = prompt('הזן שם מלא של המתאמן החדש:');
+      if (!name || !name.trim()) return;
+      const cleanName = name.trim();
+      const baseSlug = cleanName.toLowerCase().replace(/[^a-z0-9]/g, '') || 'client';
+      const uniqueId = `${baseSlug}-${Math.floor(100 + Math.random() * 900)}`;
+
+      clientsIndex.push({ id: uniqueId, name: cleanName });
+      saveClientsIndex();
+
+      const newState = loadClientState(uniqueId);
+      newState.profile.name = cleanName;
+      saveClientState(uniqueId, newState);
+
+      activeClientId = uniqueId;
+      activeSessionIdx = 0;
+      renderActiveAdminClient();
+    };
+
+    window.deleteCurrentClient = function() {
+      if (clientsIndex.length <= 1) return alert('חייב להישאר לפחות מתאמן אחד במערכת.');
+      const st = loadClientState(activeClientId);
+      if (!confirm(`למחוק את המתאמן "${st.profile.name}"?`)) return;
+      localStorage.removeItem(stateKeyFor(activeClientId));
+      clientsIndex = clientsIndex.filter(c => c.id !== activeClientId);
+      saveClientsIndex();
+      activeClientId = clientsIndex[0].id;
+      activeSessionIdx = 0;
+      renderActiveAdminClient();
+    };
+
+    function getBirthdayInfoAdmin(birthDateStr) {
+      if (!birthDateStr) return null;
+      const parts = birthDateStr.split('-').map(Number);
+      if (parts.length !== 3 || !parts[0] || !parts[1] || !parts[2]) return null;
+      const [bYear, bMonth, bDay] = parts;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      let age = today.getFullYear() - bYear;
+      const hadBday = today.getMonth() + 1 > bMonth || (today.getMonth() + 1 === bMonth && today.getDate() >= bDay);
+      if (!hadBday) age -= 1;
+      let nextBday = new Date(today.getFullYear(), bMonth - 1, bDay);
+      nextBday.setHours(0, 0, 0, 0);
+      if (nextBday < today) {
+        nextBday = new Date(today.getFullYear() + 1, bMonth - 1, bDay);
+        nextBday.setHours(0, 0, 0, 0);
+      }
+      const diffDays = Math.round((nextBday - today) / (1000 * 60 * 60 * 24));
+      const dd = String(bDay).padStart(2, '0');
+      const mm = String(bMonth).padStart(2, '0');
+      const shortDate = `${dd}/${mm}`;
+      const label = diffDays === 0 ? `🎉 היום יום הולדת! (${shortDate})` : diffDays === 1 ? `🎂 יום הולדת מחר! (${shortDate})` : `🎂 יום הולדת ב-${shortDate} (עוד ${diffDays} ימים)`;
+      return { age: Math.max(0, age), shortDate, label };
+    }
+
+    window.onAdminBirthDateChange = function() {
+      const val = document.getElementById('admProfBirthDate').value;
+      const info = getBirthdayInfoAdmin(val);
+      if (info) document.getElementById('admProfAge').value = info.age;
+    };
+
+    // --- ניהול מסלולי מנוי מרובים ---
+    function renderSubscriptionPlansUI(st) {
+      const presetSelect = document.getElementById('admSubPlanPresetSelect');
+      const currentName = st.subscriptionTierName || '';
+      const hasCurrentInCatalog = plansCatalog.some(p => p.name === currentName);
+
+      presetSelect.innerHTML =
+        (currentName && !hasCurrentInCatalog
+          ? `<option value="${currentName}" selected>${currentName} (מסלול נוכחי של הלקוח)</option>`
+          : '') +
+        plansCatalog.map((p, idx) =>
+          `<option value="${idx}" ${p.name === currentName ? 'selected' : ''}>${p.name} — ${p.price} ₪ / ${p.billingCycle || 'חודשי'}</option>`
+        ).join('');
+
+      const listEl = document.getElementById('admSubscriptionPlansManagerList');
+      listEl.innerHTML = plansCatalog.map((p, idx) => `
+        <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+          <div class="flex flex-wrap items-center gap-2 flex-1 min-w-[200px]">
+            <input type="text" value="${p.name}" onchange="updatePlanCatalogItem(${idx}, 'name', this.value)"
+              class="flex-1 min-w-[160px] border border-slate-300 rounded-lg px-2.5 py-1 text-xs font-bold bg-white" />
+            <div class="flex items-center gap-1">
+              <input type="number" value="${p.price}" onchange="updatePlanCatalogItem(${idx}, 'price', this.value)"
+                class="w-20 border border-slate-300 rounded-lg px-2 py-1 text-xs font-extrabold bg-white text-center" />
+              <span class="font-bold text-slate-600">₪</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="applyPlanFromCatalogToCurrentClient(${idx})"
+              class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-2.5 py-1 rounded-lg text-[11px] cursor-pointer">
+              שייך ללקוח
+            </button>
+            <button type="button" onclick="deletePlanFromCatalog(${idx})"
+              class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold px-2 py-1 rounded-lg text-[11px] cursor-pointer">
+              מחק
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.onSelectSubscriptionPlanPreset = function(val) {
+      const idx = parseInt(val, 10);
+      if (!isNaN(idx) && plansCatalog[idx]) {
+        const p = plansCatalog[idx];
+        document.getElementById('admSubPrice').value = p.price;
+        if (p.billingCycle) document.getElementById('admSubBillingCycle').value = p.billingCycle;
       }
     };
 
-    window.onChangeAdminClientGender = function(gender) {
-      clientState.profile.gender = gender === 'female' ? 'female' : 'male';
-      saveClientState();
-      renderAdminMeasurements();
-      const profG = document.getElementById('admProfGender');
-      if (profG) profG.value = clientState.profile.gender;
-      const measG = document.getElementById('admMeasGenderSelect');
-      if (measG) measG.value = clientState.profile.gender;
+    window.applyPlanFromCatalogToCurrentClient = function(idx) {
+      const p = plansCatalog[idx];
+      if (!p) return;
+      const st = loadClientState(activeClientId);
+      st.subscriptionTierName = p.name;
+      st.subscriptionPrice = Number(p.price) || 0;
+      if (p.billingCycle) st.subscriptionBillingCycle = p.billingCycle;
+      saveClientState(activeClientId, st);
+      renderActiveAdminClient();
+    };
+
+    window.updatePlanCatalogItem = function(idx, field, val) {
+      if (!plansCatalog[idx]) return;
+      if (field === 'price') plansCatalog[idx].price = Number(val) || 0;
+      else plansCatalog[idx][field] = String(val || '').trim();
+      savePlansCatalog();
+      const st = loadClientState(activeClientId);
+      renderSubscriptionPlansUI(st);
+    };
+
+    window.addNewSubscriptionPlan = function() {
+      const name = (document.getElementById('newPlanNameInput').value || '').trim();
+      const price = Number(document.getElementById('newPlanPriceInput').value) || 0;
+      if (!name) return alert('נא להזין שם למסלול המנוי.');
+      plansCatalog.push({
+        id: `plan-${Date.now()}`,
+        name,
+        price,
+        billingCycle: 'חודשי'
+      });
+      savePlansCatalog();
+      document.getElementById('newPlanNameInput').value = '';
+      document.getElementById('newPlanPriceInput').value = '';
+      const st = loadClientState(activeClientId);
+      renderSubscriptionPlansUI(st);
+    };
+
+    window.deletePlanFromCatalog = function(idx) {
+      if (plansCatalog.length <= 1) return alert('חייב להישאר לפחות מסלול מנוי אחד במחירון.');
+      plansCatalog.splice(idx, 1);
+      savePlansCatalog();
+      const st = loadClientState(activeClientId);
+      renderSubscriptionPlansUI(st);
+    };
+
+    // --- אימונים ומשקלי עבודה לכל סט ---
+    window.changeWeeklySessionsCount = function(newCountStr) {
+      const count = Math.max(1, Math.min(7, parseInt(newCountStr, 10) || 3));
+      const st = loadClientState(activeClientId);
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+      const current = [...(st.workoutSessions || [])];
+
+      if (current.length < count) {
+        for (let i = current.length; i < count; i++) {
+          current.push({
+            id: `sess-${i + 1}`,
+            title: `אימון ${i + 1} (${letters[i] || i + 1})`,
+            exercises: []
+          });
+        }
+      } else if (current.length > count) {
+        current.length = count;
+      }
+
+      st.workoutSessions = current;
+      st.weeklyWorkoutsPerWeek = count;
+      if (activeSessionIdx >= count) activeSessionIdx = 0;
+      saveClientState(activeClientId, st);
+      renderActiveAdminClient();
+    };
+
+    window.selectAdminSession = function(idx) {
+      activeSessionIdx = idx;
+      renderActiveAdminClient();
+    };
+
+    window.renderNewExSetWeightsInputs = function(prefillWeights = []) {
+      const setsCount = Math.max(1, Math.min(12, parseInt(document.getElementById('newExSets').value, 10) || 4));
+      const container = document.getElementById('newExSetWeightsContainer');
+      const existingVals = Array.from(container.querySelectorAll('input')).map(inp => inp.value);
+
+      let html = '';
+      for (let i = 0; i < setsCount; i++) {
+        const val = prefillWeights[i] !== undefined ? prefillWeights[i] : (existingVals[i] || '');
+        html += `
+          <div class="bg-slate-50 border border-slate-200 rounded-lg p-2">
+            <label class="block text-[10px] font-extrabold text-slate-600 mb-1">סט ${i + 1} (ק"ג)</label>
+            <input type="number" step="0.5" min="0" value="${val}" placeholder="ק&quot;ג"
+              class="new-set-weight-input w-full border border-slate-300 rounded-md px-2 py-1 text-xs font-extrabold bg-white text-center" />
+          </div>
+        `;
+      }
+      container.innerHTML = html;
+    };
+
+    window.applyBulkWeightToNewSets = function() {
+      const bulkVal = document.getElementById('bulkSetWeightInput').value;
+      if (bulkVal === '') return;
+      document.querySelectorAll('.new-set-weight-input').forEach(inp => {
+        inp.value = bulkVal;
+      });
+    };
+
+    window.fillExerciseFromLibrary = function(libId) {
+      if (!libId) return;
+      const item = exerciseLibrary.find(e => e.id === libId);
+      if (!item) return;
+      document.getElementById('newExName').value = item.name;
+      document.getElementById('newExMuscle').value = item.muscle || 'חזה';
+      const setsNum = parseInt(item.sets, 10) || 4;
+      document.getElementById('newExSets').value = setsNum;
+      document.getElementById('newExReps').value = item.reps || '8-10';
+      document.getElementById('newExVideo').value = item.videoUrl || '';
+      document.getElementById('newExNotes').value = item.coachNotes || '';
+      const defaultArr = Array.from({ length: setsNum }, () => item.defaultWeight || '');
+      renderNewExSetWeightsInputs(defaultArr);
+    };
+
+    window.addExerciseToActiveSession = function() {
+      const name = (document.getElementById('newExName').value || '').trim();
+      if (!name) return alert('נא להזין שם תרגיל.');
+
+      const muscle = document.getElementById('newExMuscle').value;
+      const sets = Math.max(1, Math.min(12, parseInt(document.getElementById('newExSets').value, 10) || 4));
+      const reps = (document.getElementById('newExReps').value || '8-10').trim();
+      const videoUrl = (document.getElementById('newExVideo').value || '').trim();
+      const coachNotes = (document.getElementById('newExNotes').value || '').trim();
+      const setWeights = Array.from(document.querySelectorAll('.new-set-weight-input')).map(inp => inp.value.trim());
+
+      const st = loadClientState(activeClientId);
+      const sess = st.workoutSessions[activeSessionIdx];
+      if (!sess) return;
+      if (!Array.isArray(sess.exercises)) sess.exercises = [];
+
+      sess.exercises.push({
+        id: `ex-${Date.now()}-${Math.floor(Math.random() * 100)}`,
+        name,
+        muscle,
+        sets,
+        reps,
+        setWeights,
+        videoUrl,
+        coachNotes
+      });
+
+      saveClientState(activeClientId, st);
+      document.getElementById('newExName').value = '';
+      document.getElementById('newExNotes').value = '';
+      renderActiveAdminClient();
+    };
+
+    window.updateSavedExerciseSetWeight = function(exId, setIdx, newVal) {
+      const st = loadClientState(activeClientId);
+      const sess = st.workoutSessions[activeSessionIdx];
+      const ex = sess?.exercises?.find(e => e.id === exId);
+      if (!ex) return;
+      if (!Array.isArray(ex.setWeights)) ex.setWeights = [];
+      ex.setWeights[setIdx] = newVal;
+      saveClientState(activeClientId, st);
+    };
+
+    window.removeExerciseFromSession = function(exId) {
+      const st = loadClientState(activeClientId);
+      const sess = st.workoutSessions[activeSessionIdx];
+      if (!sess) return;
+      sess.exercises = (sess.exercises || []).filter(e => e.id !== exId);
+      saveClientState(activeClientId, st);
+      renderActiveAdminClient();
+    };
+
+    // --- תזונה ויומן מתאמן ---
+    window.saveAdminNutritionTargets = function() {
+      const st = loadClientState(activeClientId);
+      st.nutritionTargets = {
+        calories: parseInt(document.getElementById('admTargetCal').value, 10) || 2200,
+        protein: parseInt(document.getElementById('admTargetPro').value, 10) || 160,
+        carbs: parseInt(document.getElementById('admTargetCarb').value, 10) || 220,
+        fat: parseInt(document.getElementById('admTargetFat').value, 10) || 70
+      };
+      saveClientState(activeClientId, st);
+      renderActiveAdminClient();
+      alert('יעדי התזונה נשמרו בהצלחה!');
+    };
+
+    function renderAdminDailyLogs() {
+      const st = loadClientState(activeClientId);
+      const datePicker = document.getElementById('admLogDatePicker');
+      if (!datePicker.value) datePicker.value = new Date().toISOString().slice(0, 10);
+      const dayLog = st.dayLogs?.[datePicker.value] || { meals: [], completedExercises: {}, exerciseSetLogs: {} };
+      const meals = dayLog.meals || [];
+
+      const totals = meals.reduce((acc, m) => ({
+        cal: acc.cal + (m.calories || 0),
+        pro: acc.pro + (m.protein || 0),
+        carb: acc.carb + (m.carbs || 0),
+        fat: acc.fat + (m.fat || 0)
+      }), { cal: 0, pro: 0, carb: 0, fat: 0 });
+
+      const mealsHtml = meals.length === 0
+        ? '<p class="text-xs text-slate-400">לא תועדו ארוחות בתאריך זה.</p>'
+        : meals.map(m => `
+            <div class="border border-slate-200 rounded-xl p-3 bg-slate-50 text-xs">
+              <strong>${m.category} (${m.time || ''}):</strong> ${m.foodName} —
+              <span class="text-teal-800 font-bold">${Math.round(m.calories)} קק"ל | חלבון ${m.protein}g | פחמימה ${m.carbs}g | שומן ${m.fat}g</span>
+            </div>
+          `).join('');
+
+      const setLogsEntries = Object.entries(dayLog.exerciseSetLogs || {});
+      const setsHtml = setLogsEntries.length === 0
+        ? '<p class="text-xs text-slate-400">טרם הוזנו משקלי עבודה בפועל ליום זה.</p>'
+        : setLogsEntries.map(([key, logObj]) => {
+            const weightsList = Object.entries(logObj)
+              .filter(([k, v]) => k.startsWith('w_') && v !== '')
+              .map(([k, v]) => {
+                const idx = parseInt(k.replace('w_', ''), 10) + 1;
+                const rirVal = logObj[`rir_${idx - 1}`];
+                const rirTxt = rirVal !== undefined && rirVal !== '' ? ` (RIR ${rirVal})` : '';
+                return `סט ${idx}: ${v} ק"ג${rirTxt}`;
+              });
+            if (weightsList.length === 0) return '';
+            return `<div class="border border-indigo-100 bg-indigo-50/40 rounded-xl p-2.5 text-xs"><strong>${key}:</strong> ${weightsList.join(' · ')}</div>`;
+          }).filter(Boolean).join('');
+
+      document.getElementById('admDailySummaryBox').innerHTML = `
+        <div class="bg-teal-50/70 border border-teal-200 rounded-xl p-3 text-xs font-extrabold text-teal-950">
+          סיכום יומי לתאריך ${datePicker.value}: ${Math.round(totals.cal)} קק"ל · חלבון: ${totals.pro.toFixed(1)}g · פחמימה: ${totals.carb.toFixed(1)}g · שומן: ${totals.fat.toFixed(1)}g
+        </div>
+        <div class="space-y-2">
+          <h4 class="text-xs font-extrabold text-slate-800">ארוחות שנרשמו:</h4>
+          ${mealsHtml}
+        </div>
+        <div class="space-y-2">
+          <h4 class="text-xs font-extrabold text-slate-800">משקלי עבודה שהוזנו בסטים:</h4>
+          ${setsHtml || '<p class="text-xs text-slate-400">אין משקלים שהוזנו ליום זה.</p>'}
+        </div>
+      `;
+    }
+
+    // --- גרפי התקדמות מנהל ---
+    function buildAdminSvgChart(points, strokeColor = '#0f766e', fillColor = 'rgba(15,118,110,0.12)') {
+      if (!points || points.length === 0) {
+        return '<div class="py-10 text-center text-xs text-slate-400">אין עדיין נתונים להצגת גרף.</div>';
+      }
+      const w = 520, h = 180, padL = 42, padR = 20, padT = 20, padB = 30;
+      const plotW = w - padL - padR, plotH = h - padT - padB;
+      const vals = points.map(p => Number(p.value) || 0);
+      let minV = Math.min(...vals), maxV = Math.max(...vals);
+      if (minV === maxV) { minV = Math.max(0, minV - 2); maxV = maxV + 2; }
+      else { const pad = (maxV - minV) * 0.15; minV = Math.max(0, minV - pad); maxV = maxV + pad; }
+
+      const coords = points.map((p, idx) => ({
+        x: Number((points.length === 1 ? padL + plotW / 2 : padL + (idx / (points.length - 1)) * plotW).toFixed(1)),
+        y: Number((padT + plotH - ((p.value - minV) / (maxV - minV)) * plotH).toFixed(1)),
+        label: p.label,
+        value: p.value
+      }));
+      const linePath = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x} ${c.y}`).join(' ');
+      const areaPath = coords.length > 1 ? `${linePath} L ${coords[coords.length - 1].x} ${padT + plotH} L ${coords[0].x} ${padT + plotH} Z` : '';
+
+      return `
+        <svg viewBox="0 0 ${w} ${h}" class="w-full h-44 overflow-visible" dir="ltr">
+          <line x1="${padL}" y1="${padT}" x2="${w - padR}" y2="${padT}" stroke="#e2e8f0" stroke-dasharray="3 3" />
+          <line x1="${padL}" y1="${padT + plotH}" x2="${w - padR}" y2="${padT + plotH}" stroke="#e2e8f0" stroke-dasharray="3 3" />
+          <text x="${padL - 6}" y="${padT + 3}" text-anchor="end" fill="#64748b" font-size="10" font-weight="600">${maxV.toFixed(1)}</text>
+          <text x="${padL - 6}" y="${padT + plotH + 3}" text-anchor="end" fill="#64748b" font-size="10" font-weight="600">${minV.toFixed(1)}</text>
+          ${areaPath ? `<path d="${areaPath}" fill="${fillColor}" />` : ''}
+          ${coords.length > 1 ? `<path d="${linePath}" fill="none" stroke="${strokeColor}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />` : ''}
+          ${coords.map((c, idx) => {
+            const showLbl = coords.length <= 7 || idx === 0 || idx === coords.length - 1 || idx % Math.ceil(coords.length / 5) === 0;
+            return `
+              <circle cx="${c.x}" cy="${c.y}" r="4.5" fill="#ffffff" stroke="${strokeColor}" stroke-width="2.5" />
+              <text x="${c.x}" y="${c.y - 8}" text-anchor="middle" fill="#0f172a" font-size="10" font-weight="800">${c.value}</text>
+              ${showLbl ? `<text x="${c.x}" y="${h - 9}" text-anchor="middle" fill="#64748b" font-size="9.5" font-weight="600">${c.label}</text>` : ''}
+            `;
+          }).join('')}
+        </svg>
+      `;
+    }
+
+    function getAdminMeasurementMetrics(gender) {
+      const base = [
+        { key: 'arms', label: 'היקף ידיים (ס"מ)', short: 'ידיים' },
+        { key: 'waist', label: 'מותניים - מתחת לטבור (ס"מ)', short: 'מותניים' },
+        { key: 'thighs', label: 'היקף ירכיים (ס"מ)', short: 'ירכיים' }
+      ];
+      if (gender === 'female') {
+        return [{ key: 'hips', label: 'היקף אגן (ס"מ) · נשים', short: 'אגן' }, ...base];
+      }
+      return [{ key: 'chest', label: 'היקף חזה (ס"מ) · גברים', short: 'חזה' }, ...base];
+    }
+
+    window.onChangeAdminClientGender = function(newGender) {
+      const gender = newGender === 'female' ? 'female' : 'male';
+      const st = loadClientState(activeClientId);
+      st.profile.gender = gender;
+      saveClientState(activeClientId, st);
+
+      const selProf = document.getElementById('admProfGender');
+      if (selProf) selProf.value = gender;
+      const selMeas = document.getElementById('admMeasGenderSelect');
+      if (selMeas) selMeas.value = gender;
+
+      document.getElementById('admMeasChestWrap')?.classList.toggle('hidden', gender === 'female');
+      document.getElementById('admMeasHipsWrap')?.classList.toggle('hidden', gender !== 'female');
+
+      const metricSel = document.getElementById('admMeasChartMetricSelect');
+      const prevMetric = metricSel.value;
+      const metrics = getAdminMeasurementMetrics(gender);
+      metricSel.innerHTML = metrics.map(m => `<option value="${m.key}">${m.label}</option>`).join('');
+      if (prevMetric && metrics.some(m => m.key === prevMetric)) {
+        metricSel.value = prevMetric;
+      }
+
+      renderAdminMeasurementChart();
+      renderAdminMeasurementsHistory();
+      refreshMeasurementsWhatsAppText();
     };
 
     window.saveAdminBodyMeasurement = function() {
-      const dateInput = document.getElementById('admMeasDateInput');
-      const dateStr = (dateInput && dateInput.value) || new Date().toISOString().slice(0, 10);
-      const gender = clientState.profile.gender === 'female' ? 'female' : 'male';
+      const st = loadClientState(activeClientId);
+      const gender = st.profile?.gender === 'female' ? 'female' : 'male';
+      const dateVal = document.getElementById('admMeasDateInput').value || new Date().toISOString().slice(0, 10);
 
-      const chest = gender === 'male' ? parseFloat(document.getElementById('admMeasChest').value) : null;
-      const hips = gender === 'female' ? parseFloat(document.getElementById('admMeasHips').value) : null;
-      const arms = parseFloat(document.getElementById('admMeasArms').value);
-      const waist = parseFloat(document.getElementById('admMeasWaist').value);
-      const thighs = parseFloat(document.getElementById('admMeasThighs').value);
+      const parseCirc = (id) => {
+        const raw = document.getElementById(id)?.value;
+        if (raw === '' || raw === undefined || raw === null) return null;
+        const num = parseFloat(raw);
+        return !isNaN(num) && num > 0 ? Number(num.toFixed(1)) : null;
+      };
 
-      const hasAny = [chest, hips, arms, waist, thighs].some(v => v !== null && !isNaN(v) && v > 0);
-      if (!hasAny) return alert('נא להזין לפחות מדד היקף אחד (בס"מ).');
+      const chest = gender === 'male' ? parseCirc('admMeasChest') : null;
+      const hips = gender === 'female' ? parseCirc('admMeasHips') : null;
+      const arms = parseCirc('admMeasArms');
+      const waist = parseCirc('admMeasWaist');
+      const thighs = parseCirc('admMeasThighs');
 
-      if (!Array.isArray(clientState.bodyMeasurementsHistory)) clientState.bodyMeasurementsHistory = [];
-      clientState.bodyMeasurementsHistory.push({
-        id: `meas-${Date.now()}`,
-        date: dateStr,
-        gender,
-        chest: !isNaN(chest) && chest > 0 ? Number(chest.toFixed(1)) : null,
-        hips: !isNaN(hips) && hips > 0 ? Number(hips.toFixed(1)) : null,
-        arms: !isNaN(arms) && arms > 0 ? Number(arms.toFixed(1)) : null,
-        waist: !isNaN(waist) && waist > 0 ? Number(waist.toFixed(1)) : null,
-        thighs: !isNaN(thighs) && thighs > 0 ? Number(thighs.toFixed(1)) : null
-      });
-
-      const latestSaved = [...clientState.bodyMeasurementsHistory].sort((a, b) => b.date.localeCompare(a.date))[0];
-      if (latestSaved) {
-        clientState.profile.circumferences = {
-          chest: latestSaved.chest !== null && latestSaved.chest !== undefined ? String(latestSaved.chest) : (clientState.profile.circumferences?.chest || ''),
-          hips: latestSaved.hips !== null && latestSaved.hips !== undefined ? String(latestSaved.hips) : (clientState.profile.circumferences?.hips || ''),
-          arm: latestSaved.arms !== null && latestSaved.arms !== undefined ? String(latestSaved.arms) : (clientState.profile.circumferences?.arm || ''),
-          waist: latestSaved.waist !== null && latestSaved.waist !== undefined ? String(latestSaved.waist) : (clientState.profile.circumferences?.waist || ''),
-          thighs: latestSaved.thighs !== null && latestSaved.thighs !== undefined ? String(latestSaved.thighs) : (clientState.profile.circumferences?.thighs || '')
-        };
+      if ([chest, hips, arms, waist, thighs].every(v => v === null)) {
+        return alert('נא להזין לפחות מדד היקף אחד תקין בס"מ.');
       }
 
+      if (!Array.isArray(st.bodyMeasurementsHistory)) st.bodyMeasurementsHistory = [];
+      const existingIdx = st.bodyMeasurementsHistory.findIndex(m => m.date === dateVal);
+      const record = {
+        id: existingIdx >= 0 ? st.bodyMeasurementsHistory[existingIdx].id : `meas-${Date.now()}`,
+        date: dateVal,
+        gender,
+        chest,
+        hips,
+        arms,
+        waist,
+        thighs
+      };
+
+      if (existingIdx >= 0) st.bodyMeasurementsHistory[existingIdx] = record;
+      else st.bodyMeasurementsHistory.push(record);
+
+      st.bodyMeasurementsHistory.sort((a, b) => a.date.localeCompare(b.date));
+      st.profile.circumferences = {
+        chest: chest !== null ? String(chest) : (st.profile.circumferences?.chest || ''),
+        hips: hips !== null ? String(hips) : (st.profile.circumferences?.hips || ''),
+        arm: arms !== null ? String(arms) : (st.profile.circumferences?.arm || ''),
+        waist: waist !== null ? String(waist) : (st.profile.circumferences?.waist || ''),
+        thighs: thighs !== null ? String(thighs) : (st.profile.circumferences?.thighs || '')
+      };
+
+      saveClientState(activeClientId, st);
       ['admMeasChest', 'admMeasHips', 'admMeasArms', 'admMeasWaist', 'admMeasThighs'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
       });
 
-      saveClientState();
-      renderAdminMeasurements();
+      renderAdminMeasurementChart();
+      renderAdminMeasurementsHistory();
+      refreshMeasurementsWhatsAppText();
+      alert('מדידת ההיקפים נשמרה בהצלחה!');
     };
 
-    window.deleteAdminBodyMeasurement = function(measId) {
-      clientState.bodyMeasurementsHistory = (clientState.bodyMeasurementsHistory || []).filter(m => m.id !== measId);
-      saveClientState();
-      renderAdminMeasurements();
+    window.deleteAdminBodyMeasurement = function(id) {
+      const st = loadClientState(activeClientId);
+      st.bodyMeasurementsHistory = (st.bodyMeasurementsHistory || []).filter(m => m.id !== id);
+      saveClientState(activeClientId, st);
+      renderAdminMeasurementChart();
+      renderAdminMeasurementsHistory();
+      refreshMeasurementsWhatsAppText();
     };
 
     window.renderAdminMeasurementChart = function() {
-      const gender = clientState.profile.gender === 'female' ? 'female' : 'male';
-      const metricSel = document.getElementById('admMeasChartMetricSelect');
-      if (!metricSel) return;
-      const options = [
-        { key: 'waist', label: 'מותניים (מתחת לטבור)' },
-        { key: 'arms', label: 'ידיים' },
-        ...(gender === 'male' ? [{ key: 'chest', label: 'חזה (גברים)' }] : [{ key: 'hips', label: 'אגן (נשים)' }]),
-        { key: 'thighs', label: 'ירכיים' }
-      ];
+      const st = loadClientState(activeClientId);
+      const gender = st.profile?.gender === 'female' ? 'female' : 'male';
+      const metricKey = document.getElementById('admMeasChartMetricSelect')?.value || (gender === 'female' ? 'hips' : 'chest');
+      const history = [...(st.bodyMeasurementsHistory || [])].sort((a, b) => a.date.localeCompare(b.date));
 
-      const prev = metricSel.value;
-      metricSel.innerHTML = options.map(o => `<option value="${o.key}">${o.label}</option>`).join('');
-      if (prev && options.some(o => o.key === prev)) metricSel.value = prev;
-      const chosenKey = metricSel.value || 'waist';
-
-      const sorted = [...(clientState.bodyMeasurementsHistory || [])].sort((a, b) => a.date.localeCompare(b.date));
-      const pts = sorted
-        .filter(m => m[chosenKey] !== null && m[chosenKey] !== undefined && !isNaN(m[chosenKey]))
-        .map(m => ({ label: m.date.slice(5), value: Number(m[chosenKey]) }));
+      const pts = history
+        .filter(m => m[metricKey] !== null && m[metricKey] !== undefined && !isNaN(Number(m[metricKey])))
+        .map(m => {
+          const [, mo, d] = (m.date || '').split('-');
+          return { label: mo && d ? `${d}/${mo}` : m.date, value: Number(m[metricKey]) };
+        });
 
       const badge = document.getElementById('admMeasDeltaBadge');
-      if (badge) {
-        if (pts.length >= 2) {
-          const diff = Number((pts[pts.length - 1].value - pts[0].value).toFixed(1));
-          badge.textContent = `שינוי: ${diff > 0 ? '+' : ''}${diff} ס"מ`;
-        } else if (pts.length === 1) {
-          badge.textContent = `${pts[0].value} ס"מ`;
-        } else {
-          badge.textContent = 'אין נתונים';
-        }
+      if (pts.length >= 2) {
+        const first = pts[0].value;
+        const last = pts[pts.length - 1].value;
+        const diff = Number((last - first).toFixed(1));
+        badge.textContent = `שינוי כולל: ${diff > 0 ? '+' : ''}${diff} ס"מ (${first} ← ${last})`;
+      } else if (pts.length === 1) {
+        badge.textContent = `מדידה אחרונה: ${pts[0].value} ס"מ`;
+      } else {
+        badge.textContent = 'טרם הוזנו מדידות';
       }
 
-      const chartBox = document.getElementById('admMeasChartBox');
-      if (chartBox) {
-        chartBox.innerHTML = buildSvgLineChart(pts, '#0d9488', 'rgba(13, 148, 136, 0.12)');
-      }
+      document.getElementById('admMeasChartBox').innerHTML =
+        buildAdminSvgChart(pts, '#0284c7', 'rgba(2, 132, 199, 0.12)');
     };
 
-    function renderAdminMeasurements() {
-      const gender = clientState.profile.gender === 'female' ? 'female' : 'male';
-      const measG = document.getElementById('admMeasGenderSelect');
-      if (measG) measG.value = gender;
-
-      const dateInput = document.getElementById('admMeasDateInput');
-      if (dateInput && !dateInput.value) dateInput.value = new Date().toISOString().slice(0, 10);
-
-      document.getElementById('admMeasChestWrap')?.classList.toggle('hidden', gender !== 'male');
-      document.getElementById('admMeasHipsWrap')?.classList.toggle('hidden', gender !== 'female');
-
-      renderAdminMeasurementChart();
-      refreshMeasurementsWhatsAppText();
-
+    function renderAdminMeasurementsHistory() {
+      const st = loadClientState(activeClientId);
+      const gender = st.profile?.gender === 'female' ? 'female' : 'male';
+      const history = [...(st.bodyMeasurementsHistory || [])].sort((a, b) => b.date.localeCompare(a.date));
       const box = document.getElementById('admMeasurementsHistoryBox');
-      if (!box) return;
-      const list = [...(clientState.bodyMeasurementsHistory || [])].sort((a, b) => b.date.localeCompare(a.date));
 
-      if (list.length === 0) {
-        box.innerHTML = '<p class="text-xs text-slate-400">טרם תועדו מדידות היקפים למתאמן זה. הזן מדדים למעלה בכל מועד שתבחר.</p>';
+      if (history.length === 0) {
+        box.innerHTML = '<p class="text-xs text-slate-400">טרם נרשמו מדידות היקפים למתאמן זה.</p>';
         return;
       }
 
-      const oldest = list[list.length - 1];
-      const formatValWithDelta = (curVal, oldVal) => {
-        if (curVal === null || curVal === undefined) return '<span class="text-slate-300">-</span>';
-        if (oldVal === null || oldVal === undefined || list.length < 2) return `<span class="font-extrabold text-slate-900">${curVal} ס"מ</span>`;
-        const diff = Number((curVal - oldVal).toFixed(1));
-        if (diff === 0) return `<span class="font-extrabold text-slate-900">${curVal} ס"מ</span>`;
-        const color = diff < 0 ? 'text-emerald-700' : 'text-indigo-700';
-        return `<span class="font-extrabold text-slate-900">${curVal} ס"מ</span> <span class="text-[10px] font-bold ${color}">(${diff > 0 ? '+' : ''}${diff})</span>`;
-      };
-
+      const primaryHeader = gender === 'female' ? 'אגן (ס"מ)' : 'חזה (ס"מ)';
       box.innerHTML = `
-        <table class="w-full text-right border-collapse text-xs">
-          <thead>
-            <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
-              <th class="py-2.5 px-3 font-extrabold">תאריך מדידה</th>
-              ${gender === 'male' ? '<th class="py-2.5 px-3 font-extrabold">חזה (גברים)</th>' : '<th class="py-2.5 px-3 font-extrabold">אגן (נשים)</th>'}
-              <th class="py-2.5 px-3 font-extrabold">ידיים</th>
-              <th class="py-2.5 px-3 font-extrabold">מותניים (מתחת לטבור)</th>
-              <th class="py-2.5 px-3 font-extrabold">ירכיים</th>
-              <th class="py-2.5 px-2 text-center font-extrabold">פעולות</th>
+        <table class="w-full text-right text-xs border border-slate-200 rounded-xl overflow-hidden">
+          <thead class="bg-slate-100 text-slate-700">
+            <tr>
+              <th class="py-2 px-3 font-bold">תאריך</th>
+              <th class="py-2 px-3 font-bold">${primaryHeader}</th>
+              <th class="py-2 px-3 font-bold">ידיים (ס"מ)</th>
+              <th class="py-2 px-3 font-bold">מותניים - מתחת לטבור (ס"מ)</th>
+              <th class="py-2 px-3 font-bold">ירכיים (ס"מ)</th>
+              <th class="py-2 px-3 font-bold text-center">מחיקה</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-100">
-            ${list.map((m, idx) => {
-              const isLatest = idx === 0;
+          <tbody class="divide-y divide-slate-100 bg-white">
+            ${history.map(m => {
+              const primaryVal = gender === 'female' ? (m.hips ?? '-') : (m.chest ?? '-');
               return `
-                <tr class="${isLatest ? 'bg-teal-50/30' : 'hover:bg-slate-50'}">
-                  <td class="py-2.5 px-3 font-bold text-slate-800">${m.date} ${isLatest ? '<span class="text-[10px] bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded-full mr-1">אחרון</span>' : ''}</td>
-                  ${gender === 'male'
-                    ? `<td class="py-2.5 px-3">${isLatest ? formatValWithDelta(m.chest, oldest.chest) : (m.chest ? `${m.chest} ס"מ` : '-')}</td>`
-                    : `<td class="py-2.5 px-3">${isLatest ? formatValWithDelta(m.hips, oldest.hips) : (m.hips ? `${m.hips} ס"מ` : '-')}</td>`
-                  }
-                  <td class="py-2.5 px-3">${isLatest ? formatValWithDelta(m.arms, oldest.arms) : (m.arms ? `${m.arms} ס"מ` : '-')}</td>
-                  <td class="py-2.5 px-3">${isLatest ? formatValWithDelta(m.waist, oldest.waist) : (m.waist ? `${m.waist} ס"מ` : '-')}</td>
-                  <td class="py-2.5 px-3">${isLatest ? formatValWithDelta(m.thighs, oldest.thighs) : (m.thighs ? `${m.thighs} ס"מ` : '-')}</td>
-                  <td class="py-2.5 px-2 text-center">
-                    <button type="button" onclick="deleteAdminBodyMeasurement('${m.id}')" class="text-rose-600 hover:bg-rose-50 px-2 py-1 rounded-lg font-bold cursor-pointer">🗑️</button>
+                <tr>
+                  <td class="py-2 px-3 font-bold text-slate-800">${m.date}</td>
+                  <td class="py-2 px-3 font-extrabold text-teal-800">${primaryVal}</td>
+                  <td class="py-2 px-3 font-bold">${m.arms ?? '-'}</td>
+                  <td class="py-2 px-3 font-bold">${m.waist ?? '-'}</td>
+                  <td class="py-2 px-3 font-bold">${m.thighs ?? '-'}</td>
+                  <td class="py-2 px-3 text-center">
+                    <button type="button" onclick="deleteAdminBodyMeasurement('${m.id}')" class="text-rose-600 hover:bg-rose-50 px-2 py-0.5 rounded font-bold cursor-pointer">✕</button>
                   </td>
                 </tr>
               `;
@@ -858,763 +1231,450 @@
       `;
     }
 
-    window.onSelectSubscriptionPlanPreset = function(planId) {
-      const plan = subscriptionPlans.find(p => p.id === planId);
-      if (!plan) return;
-      clientState.subscriptionPlanId = plan.id;
-      clientState.subscriptionTierName = plan.name;
-      clientState.subscriptionPrice = plan.price;
-      document.getElementById('admSubTier').value = plan.name;
-      document.getElementById('admSubPrice').value = plan.price;
-      saveClientState();
-      renderAdminAll();
-    };
+    function buildMeasurementsWhatsAppMessage(st) {
+      const gender = st.profile?.gender === 'female' ? 'female' : 'male';
+      const sorted = [...(st.bodyMeasurementsHistory || [])].sort((a, b) => a.date.localeCompare(b.date));
+      const latest = sorted[sorted.length - 1];
+      const prev = sorted.length >= 2 ? sorted[sorted.length - 2] : null;
+      const clientName = st.profile?.name || 'מתאמן/ת';
 
-    window.addNewSubscriptionPlan = function() {
-      const name = (document.getElementById('newPlanNameInput').value || '').trim();
-      const price = parseFloat(document.getElementById('newPlanPriceInput').value);
-      if (!name) return alert('נא להזין שם מסלול חדש.');
-      const newPlan = {
-        id: `plan-${Date.now()}`,
-        name,
-        price: isNaN(price) ? 0 : price
+      const fmtDiff = (curr, previous) => {
+        if (curr === null || curr === undefined || previous === null || previous === undefined) return '';
+        const diff = Number((Number(curr) - Number(previous)).toFixed(1));
+        if (diff === 0) return ' (ללא שינוי)';
+        return ` (${diff > 0 ? '+' : ''}${diff} ס"מ)`;
       };
-      subscriptionPlans.push(newPlan);
-      clientState.subscriptionPlanId = newPlan.id;
-      clientState.subscriptionTierName = newPlan.name;
-      clientState.subscriptionPrice = newPlan.price;
-      saveClientState();
-      document.getElementById('newPlanNameInput').value = '';
-      document.getElementById('newPlanPriceInput').value = '';
-      renderAdminAll();
-    };
 
-    window.updateSubscriptionPlanField = function(planIdx, field, value) {
-      const plan = subscriptionPlans[planIdx];
-      if (!plan) return;
-      if (field === 'name') {
-        plan.name = value.trim() || plan.name;
-      } else if (field === 'price') {
-        const num = parseFloat(value);
-        plan.price = isNaN(num) ? 0 : num;
+      if (!latest) {
+        return `היי ${clientName}, סיכום מדידות ההיקפים שלך ב-BodyBalance:\nטרם הוזנו מדידות היקפים במערכת.`;
       }
 
-      clientIds.forEach(cId => {
-        const st = cId === activeClientId ? clientState : loadClientState(cId);
-        if (st.subscriptionPlanId === plan.id) {
-          st.subscriptionTierName = plan.name;
-          st.subscriptionPrice = plan.price;
-          localStorage.setItem(stateStorageKey(cId), JSON.stringify(st));
-        }
-      });
+      const lines = [
+        `היי ${clientName} 💪`,
+        `סיכום מדידות היקפים ומדדים (תאריך: ${latest.date}):`
+      ];
 
-      saveClientState();
-      renderAdminAll();
-    };
-
-    window.deleteSubscriptionPlan = function(planIdx) {
-      if (subscriptionPlans.length <= 1) {
-        return alert('חייב להישאר לפחות מסלול מנוי אחד במערכת.');
+      if (gender === 'female') {
+        lines.push(`• היקף אגן: ${latest.hips ?? '-'} ס"מ${fmtDiff(latest.hips, prev?.hips)}`);
+      } else {
+        lines.push(`• היקף חזה: ${latest.chest ?? '-'} ס"מ${fmtDiff(latest.chest, prev?.chest)}`);
       }
-      const planToRemove = subscriptionPlans[planIdx];
-      if (!planToRemove) return;
-      if (!confirm(`האם למחוק את המסלול "${planToRemove.name}"?`)) return;
+      lines.push(`• היקף ידיים: ${latest.arms ?? '-'} ס"מ${fmtDiff(latest.arms, prev?.arms)}`);
+      lines.push(`• היקף מותניים (מתחת לטבור): ${latest.waist ?? '-'} ס"מ${fmtDiff(latest.waist, prev?.waist)}`);
+      lines.push(`• היקף ירכיים: ${latest.thighs ?? '-'} ס"מ${fmtDiff(latest.thighs, prev?.thighs)}`);
 
-      subscriptionPlans.splice(planIdx, 1);
-      const fallbackPlan = subscriptionPlans[0];
+      if (st.profile?.weight) {
+        lines.push(`• משקל גוף נוכחי: ${st.profile.weight} ק"ג`);
+      }
 
-      clientIds.forEach(cId => {
-        const st = cId === activeClientId ? clientState : loadClientState(cId);
-        if (st.subscriptionPlanId === planToRemove.id) {
-          st.subscriptionPlanId = fallbackPlan.id;
-          st.subscriptionTierName = fallbackPlan.name;
-          st.subscriptionPrice = fallbackPlan.price;
-          localStorage.setItem(stateStorageKey(cId), JSON.stringify(st));
-        }
-      });
-
-      saveClientState();
-      renderAdminAll();
-    };
-
-    function getBirthdayDetails(birthDateStr) {
-      if (!birthDateStr) return null;
-      const parts = birthDateStr.split('-').map(Number);
-      if (parts.length !== 3 || !parts[0] || !parts[1] || !parts[2]) return null;
-      const [, bMonth, bDay] = parts;
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      let nextBday = new Date(today.getFullYear(), bMonth - 1, bDay);
-      nextBday.setHours(0, 0, 0, 0);
-      if (nextBday < today) nextBday = new Date(today.getFullYear() + 1, bMonth - 1, bDay);
-      const diffDays = Math.round((nextBday - today) / (1000 * 60 * 60 * 24));
-      const formattedShort = `${String(bDay).padStart(2, '0')}/${String(bMonth).padStart(2, '0')}`;
-      if (diffDays === 0) return `🎉 היום יום הולדת! (${formattedShort})`;
-      if (diffDays === 1) return `🎂 יום הולדת מחר! (${formattedShort})`;
-      if (diffDays <= 7) return `🎂 יום הולדת בעוד ${diffDays} ימים (${formattedShort})`;
-      return `🎂 יום הולדת: ${formattedShort}`;
+      lines.push('', 'אלוף/ה! ממשיכים לעקוב ולהתקדם צעד אחרי צעד 🚀');
+      return lines.join('\n');
     }
 
-    window.switchAdminTab = function(tab) {
-      document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
-      document.getElementById(`atab-${tab}`)?.classList.remove('hidden');
-      document.querySelectorAll('.admin-tab').forEach(b => b.classList.toggle('active', b.dataset.atab === tab));
-      renderAdminAll();
-    };
-
-    window.onSelectAdminClient = function(id) {
-      activeClientId = id;
-      activeSessionIdx = 0;
-      clientState = loadClientState(activeClientId);
-      renderAdminAll();
-    };
-
-    window.promptAddNewClient = function() {
-      const name = prompt('הזן שם מלא של המתאמן החדש:');
-      if (!name || !name.trim()) return;
-      const rawCode = prompt('הזן קוד מזהה באנגלית עבור המתאמן (לדוגמה: dan-02):', `client-${clientIds.length + 1}`);
-      if (!rawCode) return;
-      const cleanCode = rawCode.trim().replace(/[^a-zA-Z0-9_-]/g, '');
-      if (!cleanCode) return alert('קוד לא תקין.');
-
-      if (!clientIds.includes(cleanCode)) clientIds.push(cleanCode);
-      activeClientId = cleanCode;
-      clientState = loadClientState(activeClientId);
-      clientState.profile.name = name.trim();
-      saveClientState();
-      renderAdminAll();
-    };
-
-    window.deleteCurrentClient = function() {
-      if (clientIds.length <= 1) return alert('חייב להישאר לפחות מתאמן אחד במערכת.');
-      if (!confirm(`האם למחוק את המתאמן "${clientState.profile.name}"?`)) return;
-      localStorage.removeItem(stateStorageKey(activeClientId));
-      clientIds = clientIds.filter(id => id !== activeClientId);
-      activeClientId = clientIds[0];
-      clientState = loadClientState(activeClientId);
-      saveClientState();
-      renderAdminAll();
-    };
-
-    window.renderNewExSetWeightsInputs = function() {
-      const setsCount = Math.min(12, Math.max(1, parseInt(document.getElementById('newExSets').value, 10) || 1));
-      const container = document.getElementById('newExSetWeightsContainer');
-      const existingVals = Array.from(container.querySelectorAll('input')).map(inp => inp.value);
-
-      let html = '';
-      for (let i = 0; i < setsCount; i++) {
-        const val = existingVals[i] !== undefined ? existingVals[i] : '';
-        html += `
-          <div class="bg-slate-50 border border-slate-200 rounded-lg p-2">
-            <label class="block text-[11px] font-bold text-slate-600 mb-1">סט ${i + 1} (ק"ג)</label>
-            <input type="number" step="0.5" min="0" data-set-idx="${i}" value="${val}" placeholder="ק&quot;ג"
-              class="new-set-weight-input w-full border border-slate-300 rounded-md px-2 py-1 text-xs font-extrabold bg-white text-center" />
-          </div>
-        `;
+    window.refreshMeasurementsWhatsAppText = function() {
+      const st = loadClientState(activeClientId);
+      const ta = document.getElementById('admMeasurementsWhatsAppText');
+      if (ta) ta.value = buildMeasurementsWhatsAppMessage(st);
+      const statusEl = document.getElementById('admMeasWaStatus');
+      if (statusEl) {
+        statusEl.textContent = st.profile?.phone
+          ? `יעד וואטסאפ: ${st.profile.phone}`
+          : 'שים לב: לא הוזן מספר טלפון נייד למתאמן (ניתן לעדכן בלשונית "מנויים, פרטים וטפסים")';
       }
-      container.innerHTML = html;
     };
 
-    window.applyBulkWeightToNewSets = function() {
-      const w = document.getElementById('bulkSetWeightInput').value;
-      document.querySelectorAll('.new-set-weight-input').forEach(inp => { inp.value = w; });
+    window.sendMeasurementsWhatsApp = function() {
+      const st = loadClientState(activeClientId);
+      const ta = document.getElementById('admMeasurementsWhatsAppText');
+      const msgText = (ta && ta.value.trim()) ? ta.value.trim() : buildMeasurementsWhatsAppMessage(st);
+      const cleanPhone = (st.profile?.phone || '').replace(/\D/g, '');
+      let intlPhone = '';
+      if (cleanPhone.startsWith('972')) intlPhone = cleanPhone;
+      else if (cleanPhone.startsWith('0')) intlPhone = '972' + cleanPhone.slice(1);
+      else if (cleanPhone) intlPhone = '972' + cleanPhone;
+
+      const url = intlPhone
+        ? `https://wa.me/${intlPhone}?text=${encodeURIComponent(msgText)}`
+        : `https://wa.me/?text=${encodeURIComponent(msgText)}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
     };
 
-    window.fillExerciseFromLibrary = function(idxStr) {
-      if (idxStr === '') return;
-      const item = exerciseLibrary[Number(idxStr)];
-      if (!item) return;
-      document.getElementById('newExName').value = item.name;
-      document.getElementById('newExMuscle').value = item.muscle;
-      document.getElementById('newExVideo').value = item.videoUrl || '';
-    };
-
-    window.changeWeeklySessionsCount = function(newCountStr) {
-      const count = Math.min(7, Math.max(1, parseInt(newCountStr, 10) || 3));
-      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-      const current = clientState.workoutSessions || [];
-      const next = [];
-      for (let i = 0; i < count; i++) {
-        if (current[i]) {
-          next.push(current[i]);
-        } else {
-          next.push({ id: `sess-${i + 1}`, title: `אימון ${i + 1} (${letters[i] || i + 1})`, exercises: [] });
-        }
-      }
-      clientState.workoutSessions = next;
-      clientState.weeklyWorkoutsPerWeek = count;
-      if (activeSessionIdx >= next.length) activeSessionIdx = 0;
-      saveClientState();
-      renderAdminWorkouts();
-    };
-
-    window.selectAdminSession = function(idx) {
-      activeSessionIdx = idx;
-      renderAdminWorkouts();
-    };
-
-    window.addExerciseToActiveSession = function() {
-      const name = (document.getElementById('newExName').value || '').trim();
-      if (!name) return alert('נא להזין שם תרגיל.');
-
-      const muscle = document.getElementById('newExMuscle').value;
-      const sets = Math.min(12, Math.max(1, parseInt(document.getElementById('newExSets').value, 10) || 3));
-      const reps = (document.getElementById('newExReps').value || '8-12').trim();
-      const videoUrl = (document.getElementById('newExVideo').value || '').trim();
-      const coachNotes = (document.getElementById('newExNotes').value || '').trim();
-      const setWeights = Array.from(document.querySelectorAll('.new-set-weight-input')).map(inp => (inp.value || '').trim());
-
-      const sess = clientState.workoutSessions[activeSessionIdx];
-      sess.exercises.push({
-        id: `ex-${Date.now()}`,
-        name,
-        muscle,
-        sets,
-        reps,
-        setWeights,
-        videoUrl: videoUrl || 'https://www.youtube.com/embed/rT7DgCr-3pg',
-        coachNotes
-      });
-
-      saveClientState();
-      document.getElementById('newExName').value = '';
-      document.getElementById('newExNotes').value = '';
-      renderAdminWorkouts();
-    };
-
-    window.updateExistingExerciseSetWeight = function(exIdx, setIdx, val) {
-      const sess = clientState.workoutSessions[activeSessionIdx];
-      const ex = sess.exercises[exIdx];
-      if (!Array.isArray(ex.setWeights)) ex.setWeights = [];
-      ex.setWeights[setIdx] = val;
-      saveClientState();
-    };
-
-    window.addSetToExistingExercise = function(exIdx) {
-      const sess = clientState.workoutSessions[activeSessionIdx];
-      const ex = sess.exercises[exIdx];
-      ex.sets = (parseInt(ex.sets, 10) || 1) + 1;
-      if (!Array.isArray(ex.setWeights)) ex.setWeights = [];
-      const lastW = ex.setWeights.length ? ex.setWeights[ex.setWeights.length - 1] : '';
-      ex.setWeights.push(lastW);
-      saveClientState();
-      renderAdminWorkouts();
-    };
-
-    window.removeSetFromExistingExercise = function(exIdx) {
-      const sess = clientState.workoutSessions[activeSessionIdx];
-      const ex = sess.exercises[exIdx];
-      const cur = parseInt(ex.sets, 10) || 1;
-      if (cur <= 1) return;
-      ex.sets = cur - 1;
-      if (Array.isArray(ex.setWeights)) ex.setWeights.pop();
-      saveClientState();
-      renderAdminWorkouts();
-    };
-
-    window.deleteExerciseFromSession = function(exIdx) {
-      const sess = clientState.workoutSessions[activeSessionIdx];
-      sess.exercises.splice(exIdx, 1);
-      saveClientState();
-      renderAdminWorkouts();
-    };
-
-    window.saveAdminNutritionTargets = function() {
-      clientState.nutritionTargets = {
-        calories: parseInt(document.getElementById('admTargetCal').value, 10) || 2200,
-        protein: parseInt(document.getElementById('admTargetPro').value, 10) || 160,
-        carbs: parseInt(document.getElementById('admTargetCarb').value, 10) || 220,
-        fat: parseInt(document.getElementById('admTargetFat').value, 10) || 70
-      };
-      saveClientState();
-      alert('יעדי התזונה נשמרו בהצלחה!');
-    };
-
-    window.saveAdminClientProfile = function() {
-      clientState.profile.name = (document.getElementById('admProfName').value || '').trim() || activeClientId;
-      clientState.profile.gender = document.getElementById('admProfGender').value === 'female' ? 'female' : 'male';
-      clientState.profile.phone = (document.getElementById('admProfPhone').value || '').trim();
-      clientState.profile.birthDate = (document.getElementById('admProfBirthDate').value || '').trim();
-      clientState.profile.weight = parseFloat(document.getElementById('admProfWeight').value) || 75;
-      clientState.profile.height = parseInt(document.getElementById('admProfHeight').value, 10) || 175;
-      clientState.subscriptionPlanId = document.getElementById('admSubPlanPresetSelect').value;
-      clientState.subscriptionTierName = (document.getElementById('admSubTier').value || '').trim();
-      clientState.subscriptionPrice = parseFloat(document.getElementById('admSubPrice').value) || 0;
-      clientState.subscriptionRenewalDate = (document.getElementById('admSubRenewal').value || '').trim();
-      clientState.subscriptionActive = document.getElementById('admSubActive').value === 'true';
-      clientState.clientCardSettings = {
-        visibilityMode: document.getElementById('admCardVisibilityMode')?.value || 'own_only',
-        showSubAndCirc: (document.getElementById('admCardShowSubAndCirc')?.value || 'true') === 'true',
-        ownerClientId: activeClientId
-      };
-      saveClientState();
-      renderAdminAll();
-      alert('פרטי המתאמן ומסלול המנוי נשמרו בהצלחה!');
-    };
-
-    function buildClientPersonalUrl() {
-      const payload = {
-        clientId: activeClientId,
-        name: clientState.profile.name,
-        gender: clientState.profile.gender || 'male',
-        phone: clientState.profile.phone,
-        birthDate: clientState.profile.birthDate,
-        weight: clientState.profile.weight,
-        height: clientState.profile.height,
-        circumferences: clientState.profile.circumferences || {},
-        subscriptionActive: clientState.subscriptionActive,
-        subscriptionRenewalDate: clientState.subscriptionRenewalDate || '',
-        tier: clientState.subscriptionTierName,
-        targets: clientState.nutritionTargets,
-        sessions: clientState.workoutSessions,
-        measurements: clientState.bodyMeasurementsHistory || [],
-        bodyWeightHistory: clientState.bodyWeightHistory || [],
-        clientCardSettings: {
-          visibilityMode: 'own_only',
-          showSubAndCirc: true,
-          ...(clientState.clientCardSettings || {}),
-          ownerClientId: activeClientId
-        }
-      };
-      const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-      const baseUrl = window.location.href.replace(/admin\.html.*$/, 'index.html');
-      return `${baseUrl}?client=${encodeURIComponent(activeClientId)}&plan=${encodeURIComponent(encoded)}`;
+    function normalizePhoneForWhatsApp(rawPhone) {
+      const digits = String(rawPhone || '').replace(/\D/g, '');
+      if (!digits) return '';
+      if (digits.startsWith('972')) return digits;
+      if (digits.startsWith('0')) return '972' + digits.slice(1);
+      return '972' + digits;
     }
 
-    window.copyClientMagicLink = async function() {
-      const url = buildClientPersonalUrl();
-      try {
-        await navigator.clipboard.writeText(url);
-        alert('הקישור האישי המעודכן (כולל מסלול המנוי, תוכנית האימונים ומשקלי העבודה) הועתק ללוח!');
-      } catch (e) {
-        prompt('העתק את הקישור האישי של המתאמן:', url);
+    function buildClientMagicLink(st) {
+      const payloadObj = {
+        name: st.profile?.name || '',
+        gender: st.profile?.gender || 'male',
+        phone: st.profile?.phone || '',
+        birthDate: st.profile?.birthDate || '',
+        weight: st.profile?.weight || '',
+        height: st.profile?.height || '',
+        circumferences: st.profile?.circumferences || {},
+        measurements: st.bodyMeasurementsHistory || [],
+        bodyWeightHistory: st.bodyWeightHistory || [],
+        subscriptionActive: st.subscriptionActive !== false,
+        subscriptionRenewalDate: st.subscriptionRenewalDate || '',
+        tier: st.subscriptionTierName || '',
+        targets: st.nutritionTargets || {},
+        sessions: st.workoutSessions || []
+      };
+      const encodedPlan = btoa(unescape(encodeURIComponent(JSON.stringify(payloadObj))));
+      const baseHref = window.location.href.split('?')[0];
+      const clientPageHref = baseHref.toLowerCase().includes('admin')
+        ? baseHref.replace(/admin[^/]*\.html$/i, 'index.html')
+        : baseHref;
+      return `${clientPageHref}?client=${encodeURIComponent(activeClientId)}&plan=${encodeURIComponent(encodedPlan)}`;
+    }
+
+    window.copyClientMagicLink = function() {
+      const st = loadClientState(activeClientId);
+      const link = buildClientMagicLink(st);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(link).then(() => {
+          alert('הקישור האישי למתאמן הועתק ללוח!');
+        }).catch(() => prompt('העתק את הקישור האישי למתאמן:', link));
+      } else {
+        prompt('העתק את הקישור האישי למתאמן:', link);
       }
     };
 
     window.sendClientLinkWhatsApp = function() {
-      const url = buildClientPersonalUrl();
-      const intlPhone = normalizeIntlPhone(clientState.profile.phone);
-      const msg = `היי ${clientState.profile.name}! 💪\nעדכנתי עבורך את מסלול המנוי (${clientState.subscriptionTierName}), תוכנית האימונים (כולל משקלי עבודה לכל סט) ואת יעדי התזונה באפליקציית BodyBalance:\n${url}`;
-      const waUrl = intlPhone
+      const st = loadClientState(activeClientId);
+      const link = buildClientMagicLink(st);
+      const name = st.profile?.name || 'מתאמן/ת';
+      const msg = `היי ${name} 💪\nתוכנית האימונים והמעקב האישית שלך ב-BodyBalance מוכנה!\nכניסה לכרטיס האישי שלך:\n${link}`;
+      const intlPhone = normalizePhoneForWhatsApp(st.profile?.phone || '');
+      const url = intlPhone
         ? `https://wa.me/${intlPhone}?text=${encodeURIComponent(msg)}`
         : `https://wa.me/?text=${encodeURIComponent(msg)}`;
-      window.open(waUrl, '_blank', 'noopener,noreferrer');
+      window.open(url, '_blank', 'noopener,noreferrer');
     };
 
-    function buildSvgLineChart(points, strokeColor = '#0f766e', fillColor = 'rgba(15, 118, 110, 0.12)') {
-      if (!points || points.length === 0) {
-        return '<div class="py-10 text-center text-xs text-slate-400">אין עדיין מספיק נתונים מתועדים להצגת גרף.</div>';
-      }
-      const w = 520, h = 190, padLeft = 44, padRight = 22, padTop = 22, padBottom = 32;
-      const plotW = w - padLeft - padRight, plotH = h - padTop - padBottom;
-      const vals = points.map(p => Number(p.value) || 0);
-      let minVal = Math.min(...vals), maxVal = Math.max(...vals);
-      if (minVal === maxVal) { minVal = Math.max(0, minVal - 2); maxVal += 2; }
-      else { const m = (maxVal - minVal) * 0.15; minVal = Math.max(0, minVal - m); maxVal += m; }
-
-      const coords = points.map((p, idx) => {
-        const x = points.length === 1 ? padLeft + plotW / 2 : padLeft + (idx / (points.length - 1)) * plotW;
-        const y = padTop + plotH - ((p.value - minVal) / (maxVal - minVal)) * plotH;
-        return { x: Number(x.toFixed(1)), y: Number(y.toFixed(1)), label: p.label, value: p.value };
-      });
-
-      const linePath = coords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x} ${c.y}`).join(' ');
-      const areaPath = coords.length > 1 ? `${linePath} L ${coords[coords.length - 1].x} ${padTop + plotH} L ${coords[0].x} ${padTop + plotH} Z` : '';
-
-      return `
-        <svg viewBox="0 0 ${w} ${h}" class="w-full h-44 overflow-visible" dir="ltr">
-          <line x1="${padLeft}" y1="${padTop}" x2="${w - padRight}" y2="${padTop}" stroke="#e2e8f0" stroke-dasharray="3 3" />
-          <text x="${padLeft - 6}" y="${padTop + 3}" text-anchor="end" fill="#64748b" font-size="10" font-weight="600">${maxVal.toFixed(1)}</text>
-          <line x1="${padLeft}" y1="${padTop + plotH}" x2="${w - padRight}" y2="${padTop + plotH}" stroke="#e2e8f0" stroke-dasharray="3 3" />
-          <text x="${padLeft - 6}" y="${padTop + plotH + 3}" text-anchor="end" fill="#64748b" font-size="10" font-weight="600">${minVal.toFixed(1)}</text>
-          ${areaPath ? `<path d="${areaPath}" fill="${fillColor}" />` : ''}
-          ${coords.length > 1 ? `<path d="${linePath}" fill="none" stroke="${strokeColor}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />` : ''}
-          ${coords.map(c => `
-            <circle cx="${c.x}" cy="${c.y}" r="4.5" fill="#ffffff" stroke="${strokeColor}" stroke-width="2.5" />
-            <text x="${c.x}" y="${c.y - 9}" text-anchor="middle" fill="#0f172a" font-size="10" font-weight="800">${c.value}</text>
-            <text x="${c.x}" y="${h - 10}" text-anchor="middle" fill="#64748b" font-size="9.5" font-weight="600">${c.label}</text>
-          `).join('')}
-        </svg>
-      `;
-    }
-
     window.renderAdminProgressCharts = function() {
-      const bwHist = [...(clientState.bodyWeightHistory || [])].sort((a, b) => a.date.localeCompare(b.date));
-      const badge = document.getElementById('admBwDeltaBadge');
+      const st = loadClientState(activeClientId);
+      const bwHist = [...(st.bodyWeightHistory || [])].sort((a, b) => a.date.localeCompare(b.date));
+      const bwBadge = document.getElementById('admBwDeltaBadge');
       if (bwHist.length >= 2) {
         const diff = Number((bwHist[bwHist.length - 1].weight - bwHist[0].weight).toFixed(1));
-        badge.textContent = `שינוי כולל: ${diff > 0 ? '+' : ''}${diff} ק"ג`;
+        bwBadge.textContent = `שינוי: ${diff > 0 ? '+' : ''}${diff} ק"ג (${bwHist[0].weight} ← ${bwHist[bwHist.length - 1].weight})`;
+      } else if (bwHist.length === 1) {
+        bwBadge.textContent = `משקל נוכחי: ${bwHist[0].weight} ק"ג`;
       } else {
-        badge.textContent = bwHist.length === 1 ? `${bwHist[0].weight} ק"ג` : 'אין שקילות';
+        bwBadge.textContent = 'אין שקילות';
       }
 
-      document.getElementById('admBwChartBox').innerHTML = buildSvgLineChart(
-        bwHist.map(h => ({ label: h.date.slice(5), value: h.weight })), '#0f766e', 'rgba(15, 118, 110, 0.12)'
+      document.getElementById('admBwChartBox').innerHTML = buildAdminSvgChart(
+        bwHist.map(h => {
+          const [, m, d] = h.date.split('-');
+          return { label: m && d ? `${d}/${m}` : h.date, value: h.weight };
+        }),
+        '#0f766e',
+        'rgba(15,118,110,0.12)'
       );
 
       const allEx = [];
-      (clientState.workoutSessions || []).forEach(sess => {
+      (st.workoutSessions || []).forEach(sess => {
         (sess.exercises || []).forEach(ex => {
-          allEx.push({ key: `${sess.id}_${ex.id}`, name: `${ex.name} (${sess.title})`, sets: ex.sets || 1, targetWeights: ex.setWeights || [] });
+          allEx.push({ key: `${sess.id}_${ex.id}`, label: `${ex.name} (${sess.title})` });
         });
       });
 
-      const sel = document.getElementById('admProgressExSelect');
-      if (allEx.length === 0) {
-        sel.innerHTML = '<option>אין תרגילים</option>';
-        document.getElementById('admExChartBox').innerHTML = '<div class="py-10 text-center text-xs text-slate-400">אין תרגילים מוגדרים.</div>';
-        return;
-      }
-      const prev = sel.value;
-      sel.innerHTML = allEx.map(e => `<option value="${e.key}">${e.name}</option>`).join('');
-      if (prev && allEx.some(e => e.key === prev)) sel.value = prev;
+      const exSel = document.getElementById('admProgressExSelect');
+      const prevVal = exSel.value;
+      exSel.innerHTML = allEx.length
+        ? allEx.map(e => `<option value="${e.key}">${e.label}</option>`).join('')
+        : '<option value="">אין תרגילים</option>';
+      if (prevVal && allEx.some(e => e.key === prevVal)) exSel.value = prevVal;
 
-      const chosen = allEx.find(e => e.key === sel.value) || allEx[0];
+      const chosenKey = exSel.value;
       const pts = [];
-      Object.keys(clientState.dayLogs || {}).sort().forEach(d => {
-        const setLogs = clientState.dayLogs[d]?.exerciseSetLogs?.[chosen.key];
+      Object.keys(st.dayLogs || {}).sort().forEach(dateStr => {
+        const setLogs = st.dayLogs[dateStr]?.exerciseSetLogs?.[chosenKey];
         if (!setLogs) return;
-        const maxSets = setLogs.activeSets ? parseInt(setLogs.activeSets, 10) : chosen.sets;
-        const weights = [];
-        for (let i = 0; i < maxSets; i++) {
-          const w = parseFloat(setLogs[`w_${i}`]);
-          if (!isNaN(w) && w > 0) weights.push(w);
+        const vals = Object.entries(setLogs)
+          .filter(([k, v]) => k.startsWith('w_') && !isNaN(parseFloat(v)) && parseFloat(v) > 0)
+          .map(([, v]) => parseFloat(v));
+        if (vals.length > 0) {
+          const [, m, d] = dateStr.split('-');
+          pts.push({ label: m && d ? `${d}/${m}` : dateStr, value: Math.max(...vals) });
         }
-        if (weights.length > 0) pts.push({ label: d.slice(5), value: Math.max(...weights) });
       });
 
-      document.getElementById('admExChartBox').innerHTML = buildSvgLineChart(pts, '#4f46e5', 'rgba(79, 70, 229, 0.12)');
+      document.getElementById('admExChartBox').innerHTML = buildAdminSvgChart(
+        pts,
+        '#4f46e5',
+        'rgba(79,70,229,0.12)'
+      );
     };
 
-    window.renderAdminDailyLogs = function() {
-      const dateInput = document.getElementById('admLogDatePicker');
-      if (!dateInput.value) dateInput.value = new Date().toISOString().slice(0, 10);
-      const dayLog = clientState.dayLogs?.[dateInput.value];
-      const box = document.getElementById('admDailySummaryBox');
+    // --- שמירת פרטי מנוי ומתאמן ---
+    window.saveAdminClientDetails = function() {
+      const st = loadClientState(activeClientId);
+      const presetVal = document.getElementById('admSubPlanPresetSelect').value;
+      const presetIdx = parseInt(presetVal, 10);
+      const tierName = (!isNaN(presetIdx) && plansCatalog[presetIdx])
+        ? plansCatalog[presetIdx].name
+        : (presetVal || st.subscriptionTierName || 'מסלול ליווי מלא (אימונים + תזונה)');
 
-      if (!dayLog) {
-        box.innerHTML = '<p class="text-xs text-slate-400">אין נתונים מתועדים לתאריך זה.</p>';
-        return;
-      }
+      st.subscriptionTierName = tierName;
+      st.subscriptionPrice = Number(document.getElementById('admSubPrice').value) || 0;
+      st.subscriptionActive = document.getElementById('admSubActive').value === 'true';
+      st.subscriptionRenewalDate = document.getElementById('admSubRenewalDate').value || '';
+      st.subscriptionBillingCycle = document.getElementById('admSubBillingCycle').value || 'חודשי';
+      st.subscriptionPaymentMethod = document.getElementById('admSubPaymentMethod').value || 'כרטיס אשראי';
 
-      const meals = dayLog.meals || [];
-      const totals = meals.reduce((a, m) => ({
-        cal: a.cal + (m.calories || 0), pro: a.pro + (m.protein || 0), carb: a.carb + (m.carbs || 0), fat: a.fat + (m.fat || 0)
-      }), { cal: 0, pro: 0, carb: 0, fat: 0 });
+      const birthDate = document.getElementById('admProfBirthDate').value || '';
+      const bInfo = getBirthdayInfoAdmin(birthDate);
 
-      const mealsListHtml = meals.length
-        ? `<ul class="mt-2 space-y-1.5 text-slate-700 list-disc pr-4">
-            ${meals.map(m => {
-              const title = m.category ? `${m.category}${m.time ? ` (${m.time})` : ''} — ${m.foodName || 'ארוחה'}` : (m.name || m.foodName || 'ארוחה');
-              const subItems = Array.isArray(m.items) && m.items.length
-                ? `<div class="text-[11px] text-slate-500 pr-2 mt-0.5">${m.items.map(it => `${it.foodName} (${it.amountLabel})`).join(' · ')}</div>`
-                : '';
-              return `<li><strong>${title}</strong> — ${Math.round(m.calories || 0)} קק"ל (חלבון: ${(m.protein || 0).toFixed(1)}g, פחמימה: ${(m.carbs || 0).toFixed(1)}g, שומן: ${(m.fat || 0).toFixed(1)}g)${subItems}</li>`;
-            }).join('')}
-           </ul>`
-        : '<p class="text-[11px] text-slate-400 mt-1">לא נרשמו ארוחות בתאריך זה.</p>';
+      st.profile = {
+        ...st.profile,
+        name: (document.getElementById('admProfName').value || '').trim() || 'מתאמן',
+        gender: document.getElementById('admProfGender').value || 'male',
+        phone: (document.getElementById('admProfPhone').value || '').trim(),
+        birthDate,
+        age: bInfo ? bInfo.age : (parseInt(document.getElementById('admProfAge').value, 10) || 28),
+        weight: parseFloat(document.getElementById('admProfWeight').value) || st.profile.weight || 78,
+        height: parseInt(document.getElementById('admProfHeight').value, 10) || st.profile.height || 178
+      };
 
-      const setLogsByEx = dayLog.exerciseSetLogs || {};
-      const allExercises = [];
-      (clientState.workoutSessions || []).forEach(sess => {
-        (sess.exercises || []).forEach(ex => {
-          allExercises.push({
-            key: `${sess.id}_${ex.id}`,
-            name: ex.name,
-            sessionTitle: sess.title,
-            sets: Math.max(1, parseInt(ex.sets, 10) || 1),
-            targetWeights: Array.isArray(ex.setWeights) ? ex.setWeights : []
-          });
-        });
-      });
-
-      const loggedExCards = allExercises
-        .filter(ex => setLogsByEx[ex.key] && Object.keys(setLogsByEx[ex.key]).length > 0)
-        .map(ex => {
-          const exLog = setLogsByEx[ex.key];
-          const totalSetsToShow = exLog.activeSets ? Math.max(1, parseInt(exLog.activeSets, 10) || ex.sets) : ex.sets;
-          let setsBadges = '';
-          for (let s = 0; s < totalSetsToShow; s++) {
-            const actualW = exLog[`w_${s}`];
-            const actualR = exLog[`reps_${s}`] !== undefined && exLog[`reps_${s}`] !== '' ? exLog[`reps_${s}`] : exLog[`r_${s}`];
-            const actualRir = exLog[`rir_${s}`];
-            const targetW = ex.targetWeights[s];
-            const hasActual = actualW !== undefined && actualW !== '';
-            setsBadges += `
-              <div class="bg-white border ${hasActual ? 'border-teal-200' : 'border-slate-200'} rounded-xl p-2 text-center">
-                <span class="block text-[10px] font-bold text-slate-500">סט ${s + 1}</span>
-                <span class="block text-xs font-extrabold ${hasActual ? 'text-teal-900' : 'text-slate-400'}">
-                  ${hasActual ? `${actualW} ק"ג` : 'לא הוזן'}
-                </span>
-                ${actualR ? `<span class="block text-[10px] font-semibold text-slate-600">${actualR} חזרות</span>` : ''}
-                ${actualRir !== undefined && actualRir !== '' ? `<span class="block text-[10px] font-bold text-indigo-700">RIR ${actualRir}</span>` : ''}
-                ${targetW ? `<span class="block text-[10px] text-slate-400">יעד: ${targetW} ק"ג</span>` : ''}
-              </div>
-            `;
-          }
-
-          return `
-            <div class="bg-white border border-slate-200 rounded-xl p-3.5 space-y-2">
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <strong class="text-xs sm:text-sm font-extrabold text-slate-900">${ex.name}</strong>
-                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">${ex.sessionTitle}</span>
-              </div>
-              <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2">
-                ${setsBadges}
-              </div>
-            </div>
-          `;
-        });
-
-      const workoutsSectionHtml = loggedExCards.length
-        ? `<div class="space-y-2.5">
-            <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">🏋️ פירוט תרגילים ומשקלים שהמתאמן הזין בפועל:</h4>
-            <div class="space-y-2.5">${loggedExCards.join('')}</div>
-           </div>`
-        : '<p class="text-xs text-slate-400">לא תועדו משקלי עבודה לתרגילים בתאריך זה.</p>';
-
-      box.innerHTML = `
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs space-y-1">
-          <strong class="text-slate-900">🥗 סיכום תזונה יומי (${meals.length} ארוחות):</strong>
-          <p class="text-teal-800 font-bold">
-            ${Math.round(totals.cal)} / ${clientState.nutritionTargets.calories} קק"ל · חלבון: ${totals.pro.toFixed(1)}g · פחמימה: ${totals.carb.toFixed(1)}g · שומן: ${totals.fat.toFixed(1)}g
-          </p>
-          ${mealsListHtml}
-        </div>
-        ${workoutsSectionHtml}
-      `;
+      saveClientState(activeClientId, st);
+      renderActiveAdminClient();
+      alert('פרטי המנוי והמתאמן נשמרו בהצלחה!');
     };
 
+    // --- ספריית תרגילים ---
     window.addExerciseToLibrary = function() {
       const name = (document.getElementById('libExName').value || '').trim();
-      if (!name) return alert('נא להזין שם תרגיל.');
+      if (!name) return alert('נא להזין שם תרגיל לספרייה.');
+      const muscle = document.getElementById('libExMuscle').value;
+      const setsRepsRaw = (document.getElementById('libExSetsReps').value || '4x10').trim();
+      const match = setsRepsRaw.match(/(\d+)\s*[xX*×]\s*(.+)/);
+      const sets = match ? (parseInt(match[1], 10) || 4) : 4;
+      const reps = match ? match[2].trim() : setsRepsRaw;
+      const videoUrl = (document.getElementById('libExVideo').value || '').trim() || 'https://www.youtube.com/embed/rT7DgCr-3pg';
+
       exerciseLibrary.push({
+        id: `lib-${Date.now()}`,
         name,
-        muscle: document.getElementById('libExMuscle').value,
-        videoUrl: (document.getElementById('libExVideo').value || '').trim() || 'https://www.youtube.com/embed/rT7DgCr-3pg'
+        muscle,
+        sets,
+        reps,
+        defaultWeight: '',
+        videoUrl,
+        coachNotes: ''
       });
-      localStorage.setItem(EXERCISE_LIBRARY_KEY, JSON.stringify(exerciseLibrary));
+      saveExerciseLibrary();
       document.getElementById('libExName').value = '';
-      renderAdminLibrary();
+      document.getElementById('libExSetsReps').value = '';
+      document.getElementById('libExVideo').value = '';
+      renderExerciseLibraryUI();
     };
 
-    window.deleteLibraryExercise = function(idx) {
-      exerciseLibrary.splice(idx, 1);
-      localStorage.setItem(EXERCISE_LIBRARY_KEY, JSON.stringify(exerciseLibrary));
-      renderAdminLibrary();
+    window.assignLibraryExerciseToSession = function(libId) {
+      const item = exerciseLibrary.find(e => e.id === libId);
+      if (!item) return;
+      const st = loadClientState(activeClientId);
+      const sess = st.workoutSessions[activeSessionIdx] || st.workoutSessions[0];
+      if (!sess) return;
+      if (!Array.isArray(sess.exercises)) sess.exercises = [];
+
+      sess.exercises.push({
+        id: `ex-${Date.now()}-${Math.floor(Math.random() * 100)}`,
+        name: item.name,
+        muscle: item.muscle || 'כל הגוף',
+        sets: item.sets || 4,
+        reps: item.reps || '8-10',
+        setWeights: Array.from({ length: item.sets || 4 }, () => item.defaultWeight || ''),
+        videoUrl: item.videoUrl || '',
+        coachNotes: item.coachNotes || ''
+      });
+      saveClientState(activeClientId, st);
+      switchAdminTab('workouts');
     };
 
-    function renderAdminLibrary() {
-      const sel = document.getElementById('quickLibrarySelect');
-      sel.innerHTML = '<option value="">-- בחר תרגיל מהספרייה --</option>' +
-        exerciseLibrary.map((item, idx) => `<option value="${idx}">${item.name} (${item.muscle})</option>`).join('');
+    function renderExerciseLibraryUI() {
+      document.getElementById('libraryCountBadge').textContent = `${exerciseLibrary.length} תרגילים`;
+      document.getElementById('quickLibrarySelect').innerHTML =
+        '<option value="">-- בחר תרגיל מהספרייה --</option>' +
+        exerciseLibrary.map(e => `<option value="${e.id}">${e.name} (${e.muscle})</option>`).join('');
 
-      document.getElementById('adminExerciseLibraryGrid').innerHTML = exerciseLibrary.map((item, idx) => `
-        <div class="border border-slate-200 rounded-xl p-3 flex items-center justify-between gap-2 bg-slate-50/60 text-xs">
+      document.getElementById('exerciseLibraryGrid').innerHTML = exerciseLibrary.map(e => `
+        <div class="border border-slate-200 rounded-xl p-3.5 bg-slate-50/60 flex items-center justify-between gap-3">
           <div>
-            <span class="px-2 py-0.5 rounded-full bg-teal-50 text-teal-800 font-bold text-[10px]">${item.muscle}</span>
-            <strong class="block text-slate-900 mt-1">${item.name}</strong>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-700">${e.muscle}</span>
+            <h4 class="font-extrabold text-slate-900 text-sm mt-1">${e.name}</h4>
+            <p class="text-xs text-slate-500">${e.sets} סטים × ${e.reps} חזרות</p>
           </div>
-          <button type="button" onclick="deleteLibraryExercise(${idx})" class="text-rose-600 font-bold cursor-pointer">✕</button>
+          <button type="button" onclick="assignLibraryExerciseToSession('${e.id}')" class="bg-teal-700 hover:bg-teal-800 text-white font-bold px-3 py-1.5 rounded-xl text-xs cursor-pointer shrink-0">
+            + שבץ לאימון
+          </button>
         </div>
       `).join('');
     }
 
-    function renderAdminWorkouts() {
-      const sessions = clientState.workoutSessions || [];
+    function renderActiveAdminClient() {
+      const sel = document.getElementById('adminClientSelect');
+      sel.innerHTML = clientsIndex.map(c => {
+        const st = loadClientState(c.id);
+        const labelName = st.profile?.name || c.name;
+        return `<option value="${c.id}" ${c.id === activeClientId ? 'selected' : ''}>${labelName} (${c.id})</option>`;
+      }).join('');
+
+      const st = loadClientState(activeClientId);
+      const bInfo = getBirthdayInfoAdmin(st.profile?.birthDate);
+      const hdSigned = !!st.healthDeclaration?.signed;
+      const taAccepted = !!st.termsAcceptance?.accepted;
+
+      document.getElementById('admHeaderClientName').textContent = `${st.profile?.name || 'מתאמן'} (${activeClientId})`;
+      document.getElementById('admHeaderPlanBadge').textContent = `מסלול: ${st.subscriptionTierName || '-'}`;
+
+      const subBadge = document.getElementById('admHeaderSubBadge');
+      if (st.subscriptionActive !== false) {
+        subBadge.textContent = `מנוי פעיל ✓ (${st.subscriptionPrice || 0} ₪)`;
+        subBadge.className = 'px-2.5 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800';
+      } else {
+        subBadge.textContent = 'מנוי מוקפא ✕';
+        subBadge.className = 'px-2.5 py-1 rounded-full font-bold bg-rose-100 text-rose-800';
+      }
+
+      const bdayBadge = document.getElementById('admHeaderBdayBadge');
+      if (bInfo) {
+        bdayBadge.textContent = bInfo.label;
+        bdayBadge.classList.remove('hidden');
+      } else {
+        bdayBadge.classList.add('hidden');
+      }
+
+      const formsBadge = document.getElementById('admHeaderFormsBadge');
+      if (hdSigned && taAccepted) {
+        formsBadge.textContent = 'טפסים: חתום ומאושר ✓';
+        formsBadge.className = 'px-2.5 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800';
+      } else {
+        formsBadge.textContent = 'טפסים: ממתין לאישור';
+        formsBadge.className = 'px-2.5 py-1 rounded-full font-bold bg-amber-100 text-amber-800';
+      }
+
+      // לשונית אימונים
+      const sessions = st.workoutSessions || [];
       if (activeSessionIdx >= sessions.length) activeSessionIdx = 0;
       document.getElementById('adminWeeklyFreqSelect').value = String(sessions.length);
 
       document.getElementById('adminSessionTabs').innerHTML = sessions.map((sess, idx) => {
-        const active = idx === activeSessionIdx;
+        const isAct = idx === activeSessionIdx;
         return `
           <button type="button" onclick="selectAdminSession(${idx})"
-            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold border cursor-pointer ${
-              active ? 'bg-slate-900 text-white border-slate-900' : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100'
+            class="px-4 py-2 rounded-xl text-xs font-extrabold border cursor-pointer ${
+              isAct ? 'bg-slate-900 text-white border-slate-900' : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100'
             }">
-            ${sess.title} (${sess.exercises.length} תרגילים)
+            ${sess.title} (${(sess.exercises || []).length} תרגילים)
           </button>
         `;
       }).join('');
 
+      if (!document.getElementById('newExSetWeightsContainer').innerHTML) {
+        renderNewExSetWeightsInputs();
+      }
+
       const activeSess = sessions[activeSessionIdx];
-      const listEl = document.getElementById('adminSessionExercisesList');
-      if (!activeSess || activeSess.exercises.length === 0) {
-        listEl.innerHTML = '<p class="text-xs text-slate-400">טרם נוספו תרגילים לאימון זה. השתמש בטופס למעלה כדי להוסיף תרגיל ומשקלי עבודה לכל סט.</p>';
-        return;
-      }
+      const exList = activeSess?.exercises || [];
+      document.getElementById('adminSessionExercisesList').innerHTML = exList.length === 0
+        ? '<p class="text-xs text-slate-400">אין תרגילים באימון זה עדיין. הוסף תרגיל בטופס למעלה.</p>'
+        : exList.map(ex => {
+            const sCount = Math.max(1, parseInt(ex.sets, 10) || 4);
+            const wArr = Array.isArray(ex.setWeights) ? ex.setWeights : [];
+            let weightInputsRow = '';
+            for (let i = 0; i < sCount; i++) {
+              weightInputsRow += `
+                <div class="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-center">
+                  <span class="block text-[10px] font-bold text-slate-500">סט ${i + 1}</span>
+                  <input type="number" step="0.5" min="0" value="${wArr[i] || ''}" placeholder="ק&quot;ג"
+                    onchange="updateSavedExerciseSetWeight('${ex.id}', ${i}, this.value)"
+                    class="w-16 border border-slate-300 rounded px-1.5 py-0.5 text-xs font-extrabold bg-white text-center mt-0.5" />
+                </div>
+              `;
+            }
 
-      listEl.innerHTML = activeSess.exercises.map((ex, exIdx) => {
-        const numSets = Math.max(1, parseInt(ex.sets, 10) || 1);
-        const setWeights = Array.isArray(ex.setWeights) ? ex.setWeights : [];
-        let setInputsHtml = '';
-        for (let s = 0; s < numSets; s++) {
-          const wVal = setWeights[s] !== undefined ? setWeights[s] : '';
-          setInputsHtml += `
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-2 flex flex-col items-center">
-              <span class="text-[11px] font-bold text-slate-500 mb-1">סט ${s + 1}</span>
-              <div class="flex items-center gap-1">
-                <input type="number" step="0.5" min="0" value="${wVal}" placeholder="ק&quot;ג"
-                  oninput="updateExistingExerciseSetWeight(${exIdx}, ${s}, this.value)"
-                  class="w-16 border border-slate-300 rounded-lg px-1.5 py-1 text-xs font-extrabold text-center bg-white" />
-                <span class="text-[10px] font-bold text-slate-500">ק"ג</span>
+            return `
+              <div class="border border-slate-200 rounded-2xl p-4 bg-white space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">${ex.muscle}</span>
+                    <h4 class="font-extrabold text-slate-900 text-sm mt-1">${ex.name}</h4>
+                    <p class="text-xs text-slate-500">${sCount} סטים × ${ex.reps} חזרות</p>
+                  </div>
+                  <button type="button" onclick="removeExerciseFromSession('${ex.id}')" class="text-xs text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-xl font-bold cursor-pointer">
+                    הסר תרגיל
+                  </button>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  ${weightInputsRow}
+                </div>
               </div>
-            </div>
-          `;
-        }
+            `;
+          }).join('');
 
-        return `
-          <div class="border border-slate-200 rounded-2xl p-4 bg-white space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-800">${ex.muscle}</span>
-                <h4 class="font-extrabold text-slate-900 text-sm sm:text-base mt-1">${ex.name}</h4>
-                <p class="text-xs text-slate-600 font-semibold">${numSets} סטים × ${ex.reps} חזרות</p>
-              </div>
-              <div class="flex items-center gap-1.5">
-                <button type="button" onclick="addSetToExistingExercise(${exIdx})" class="text-xs bg-teal-50 hover:bg-teal-100 text-teal-800 font-bold px-2.5 py-1.5 rounded-lg cursor-pointer">+ סט</button>
-                <button type="button" onclick="removeSetFromExistingExercise(${exIdx})" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-2.5 py-1.5 rounded-lg cursor-pointer">- סט</button>
-                <button type="button" onclick="deleteExerciseFromSession(${exIdx})" class="text-xs text-rose-600 hover:bg-rose-50 font-bold px-2.5 py-1.5 rounded-lg cursor-pointer">מחק</button>
-              </div>
-            </div>
-
-            <div>
-              <span class="block text-[11px] font-extrabold text-slate-600 mb-1.5">משקלי עבודה יעד לכל סט (ניתן לעדכן ישירות):</span>
-              <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2">
-                ${setInputsHtml}
-              </div>
-            </div>
-
-            ${ex.coachNotes ? `<p class="text-xs text-amber-900 bg-amber-50 border border-amber-200/70 rounded-xl px-3 py-2"><strong>דגשים:</strong> ${ex.coachNotes}</p>` : ''}
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderSubscriptionPlansManager() {
-      const planSel = document.getElementById('admSubPlanPresetSelect');
-      planSel.innerHTML = subscriptionPlans.map(p =>
-        `<option value="${p.id}" ${p.id === clientState.subscriptionPlanId ? 'selected' : ''}>${p.name} — ${p.price} ₪/חודש</option>`
-      ).join('');
-
-      const managerList = document.getElementById('admSubscriptionPlansManagerList');
-      managerList.innerHTML = subscriptionPlans.map((p, idx) => {
-        const isCurrent = p.id === clientState.subscriptionPlanId;
-        return `
-          <div class="flex flex-wrap items-center gap-2 p-2 rounded-xl border ${isCurrent ? 'border-teal-400 bg-teal-50/40' : 'border-slate-200 bg-slate-50/60'}">
-            <input type="text" value="${p.name.replace(/"/g, '&quot;')}"
-              onchange="updateSubscriptionPlanField(${idx}, 'name', this.value)"
-              class="flex-1 min-w-[180px] border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-bold bg-white" />
-            <div class="flex items-center gap-1">
-              <input type="number" min="0" value="${p.price}"
-                onchange="updateSubscriptionPlanField(${idx}, 'price', this.value)"
-                class="w-20 border border-slate-300 rounded-lg px-2 py-1.5 text-xs font-extrabold text-center bg-white" />
-              <span class="text-xs font-bold text-slate-600">₪</span>
-            </div>
-            <button type="button" onclick="onSelectSubscriptionPlanPreset('${p.id}')"
-              class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer ${isCurrent ? 'bg-teal-700 text-white' : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-100'}">
-              ${isCurrent ? 'נבחר ללקוח ✓' : 'בחר ללקוח'}
-            </button>
-            <button type="button" onclick="deleteSubscriptionPlan(${idx})"
-              class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-600 hover:bg-rose-50 cursor-pointer" title="מחק מסלול">
-              🗑️
-            </button>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderAdminAll() {
-      const sel = document.getElementById('adminClientSelect');
-      sel.innerHTML = clientIds.map(id => {
-        const st = loadClientState(id);
-        return `<option value="${id}" ${id === activeClientId ? 'selected' : ''}>${st.profile.name} (#${id})</option>`;
-      }).join('');
-
-      document.getElementById('admHeaderClientName').textContent = `${clientState.profile.name} (#${activeClientId})`;
-      document.getElementById('admHeaderPlanBadge').textContent = `מסלול: ${clientState.subscriptionTierName || 'לא נבחר'}`;
-
-      const subBadge = document.getElementById('admHeaderSubBadge');
-      if (clientState.subscriptionActive) {
-        subBadge.textContent = `מנוי פעיל · ${clientState.subscriptionPrice || 0} ₪`;
-        subBadge.className = 'px-2.5 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800';
-      } else {
-        subBadge.textContent = 'מנוי לא פעיל';
-        subBadge.className = 'px-2.5 py-1 rounded-full font-bold bg-rose-100 text-rose-800';
-      }
-
-      const bdayText = getBirthdayDetails(clientState.profile.birthDate);
-      const bdayBadge = document.getElementById('admHeaderBdayBadge');
-      if (bdayText) { bdayBadge.textContent = bdayText; bdayBadge.classList.remove('hidden'); }
-      else { bdayBadge.classList.add('hidden'); }
-
-      const formsBadge = document.getElementById('admHeaderFormsBadge');
-      const bothSigned = clientState.healthDeclaration?.signed && clientState.termsAcceptance?.accepted;
-      formsBadge.textContent = bothSigned ? 'טפסים: חתומים ומאושרים ✓' : 'טפסים: ממתין לחתימה';
-      formsBadge.className = bothSigned
-        ? 'px-2.5 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800'
-        : 'px-2.5 py-1 rounded-full font-bold bg-amber-100 text-amber-800';
-
-      renderSubscriptionPlansManager();
-
-      document.getElementById('admTargetCal').value = clientState.nutritionTargets.calories;
-      document.getElementById('admTargetPro').value = clientState.nutritionTargets.protein;
-      document.getElementById('admTargetCarb').value = clientState.nutritionTargets.carbs;
-      document.getElementById('admTargetFat').value = clientState.nutritionTargets.fat;
-
-      document.getElementById('admProfName').value = clientState.profile.name || '';
-      document.getElementById('admProfGender').value = clientState.profile.gender === 'female' ? 'female' : 'male';
-      document.getElementById('admProfPhone').value = clientState.profile.phone || '';
-      document.getElementById('admProfBirthDate').value = clientState.profile.birthDate || '';
-      document.getElementById('admProfWeight').value = clientState.profile.weight || '';
-      document.getElementById('admProfHeight').value = clientState.profile.height || '';
-      document.getElementById('admSubTier').value = clientState.subscriptionTierName || '';
-      document.getElementById('admSubPrice').value = clientState.subscriptionPrice ?? '';
-      document.getElementById('admSubRenewal').value = clientState.subscriptionRenewalDate || '';
-      document.getElementById('admSubActive').value = String(!!clientState.subscriptionActive);
-      const cardCfg = clientState.clientCardSettings || { visibilityMode: 'own_only', showSubAndCirc: true };
-      if (document.getElementById('admCardVisibilityMode')) {
-        document.getElementById('admCardVisibilityMode').value = cardCfg.visibilityMode || 'own_only';
-      }
-      if (document.getElementById('admCardShowSubAndCirc')) {
-        document.getElementById('admCardShowSubAndCirc').value = String(cardCfg.showSubAndCirc !== false);
-      }
-      if (document.getElementById('admCardBoundId')) {
-        document.getElementById('admCardBoundId').value = `#${activeClientId} (כרטיס בלעדי ללקוח זה)`;
-      }
-
-      const hd = clientState.healthDeclaration || {};
-      const hdEl = document.getElementById('admHealthStatus');
-      const hdDetails = document.getElementById('admHealthDetailsBox');
-      if (hd.signed) {
-        hdEl.textContent = `חתום ✓ (${hd.signedAt || ''})`;
-        hdEl.className = 'font-bold text-emerald-700 mr-1';
-        hdDetails.innerHTML = `<p>ת.ז: ${hd.idNumber || '-'} ${hd.notes ? `· הערות רפואיות: ${hd.notes}` : ''}</p>`;
-      } else {
-        hdEl.textContent = 'טרם נחתמה';
-        hdEl.className = 'font-bold text-amber-700 mr-1';
-        hdDetails.innerHTML = '';
-      }
-
-      const taEl = document.getElementById('admTermsStatus');
-      if (clientState.termsAcceptance?.accepted) {
-        taEl.textContent = `מאושר ✓ (${clientState.termsAcceptance.acceptedAt || ''})`;
-        taEl.className = 'font-bold text-emerald-700 mr-1';
-      } else {
-        taEl.textContent = 'טרם אושר';
-        taEl.className = 'font-bold text-amber-700 mr-1';
-      }
-
-      renderAdminLibrary();
-      renderAdminWorkouts();
+      // לשונית תזונה
+      document.getElementById('admTargetCal').value = st.nutritionTargets?.calories ?? 2200;
+      document.getElementById('admTargetPro').value = st.nutritionTargets?.protein ?? 160;
+      document.getElementById('admTargetCarb').value = st.nutritionTargets?.carbs ?? 220;
+      document.getElementById('admTargetFat').value = st.nutritionTargets?.fat ?? 70;
       renderAdminDailyLogs();
+
+      // לשונית גרפים ומדדים
+      const gender = st.profile?.gender === 'female' ? 'female' : 'male';
+      document.getElementById('admMeasGenderSelect').value = gender;
+      const measDateEl = document.getElementById('admMeasDateInput');
+      if (measDateEl && !measDateEl.value) measDateEl.value = new Date().toISOString().slice(0, 10);
+      document.getElementById('admMeasChestWrap')?.classList.toggle('hidden', gender === 'female');
+      document.getElementById('admMeasHipsWrap')?.classList.toggle('hidden', gender !== 'female');
+
+      const metricSel = document.getElementById('admMeasChartMetricSelect');
+      const prevMetric = metricSel.value;
+      const metrics = getAdminMeasurementMetrics(gender);
+      metricSel.innerHTML = metrics.map(m => `<option value="${m.key}">${m.label}</option>`).join('');
+      if (prevMetric && metrics.some(m => m.key === prevMetric)) metricSel.value = prevMetric;
+
       renderAdminProgressCharts();
-      renderAdminMeasurements();
+      renderAdminMeasurementChart();
+      renderAdminMeasurementsHistory();
+      refreshMeasurementsWhatsAppText();
+
+      // לשונית מנויים, פרטים וטפסים
+      renderSubscriptionPlansUI(st);
+      document.getElementById('admSubPrice').value = st.subscriptionPrice ?? 550;
+      document.getElementById('admSubActive').value = String(st.subscriptionActive !== false);
+      document.getElementById('admSubRenewalDate').value = st.subscriptionRenewalDate || '';
+      document.getElementById('admSubBillingCycle').value = st.subscriptionBillingCycle || 'חודשי';
+      document.getElementById('admSubPaymentMethod').value = st.subscriptionPaymentMethod || 'כרטיס אשראי';
+
+      document.getElementById('admProfName').value = st.profile?.name || '';
+      document.getElementById('admProfGender').value = gender;
+      document.getElementById('admProfPhone').value = st.profile?.phone || '';
+      document.getElementById('admProfBirthDate').value = st.profile?.birthDate || '';
+      document.getElementById('admProfAge').value = bInfo ? bInfo.age : (st.profile?.age || '');
+      document.getElementById('admProfWeight').value = st.profile?.weight || '';
+      document.getElementById('admProfHeight').value = st.profile?.height || '';
+
+      const hd = st.healthDeclaration || {};
+      const ta = st.termsAcceptance || {};
+      document.getElementById('admSignedFormsSummary').innerHTML = `
+        <p><strong>הצהרת בריאות וחתימה:</strong> ${hd.signed ? `<span class="text-emerald-700 font-bold">נחתם בתאריך ${hd.signedAt || ''} (ת.ז: ${hd.idNumber || '-'})</span>` : '<span class="text-amber-700 font-bold">טרם נחתם</span>'}</p>
+        <p><strong>אישור תקנון ומדיניות שירות:</strong> ${ta.accepted ? `<span class="text-emerald-700 font-bold">אושר בתאריך ${ta.acceptedAt || ''}</span>` : '<span class="text-amber-700 font-bold">טרם אושר</span>'}</p>
+        ${hd.signatureDataUrl ? `<div class="pt-1"><span class="block text-[11px] font-bold text-slate-500 mb-1">חתימה דיגיטלית של המתאמן:</span><img src="${hd.signatureDataUrl}" alt="חתימת מתאמן" class="h-14 border border-slate-200 rounded bg-white p-1" /></div>` : ''}
+      `;
+
+      renderExerciseLibraryUI();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
       renderNewExSetWeightsInputs();
-      renderAdminAll();
+      renderActiveAdminClient();
     });
   </script>
 </body>
