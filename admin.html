@@ -219,29 +219,6 @@
 
     <!-- לשונית 3: גרפי התקדמות ומדדי היקפים -->
     <section id="atab-progress" class="admin-section hidden space-y-6">
-    <!-- סיכום קצב התקדמות וסנכרון נתוני מתאמן -->
-    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
-        <div>
-          <h2 class="text-base sm:text-lg font-extrabold text-slate-900">⚡ קצב התקדמות מתאמן וסנכרון נתונים</h2>
-          <p class="text-xs text-slate-500">מעקב אוטומטי אחר קצב השינוי של המתאמן וסנכרון נתונים בין הממשקים</p>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <span id="admSyncStatusBadge" class="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-teal-50 text-teal-800">סנכרון חי פעיל</span>
-          <button type="button" onclick="syncActiveClientNow()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-3 py-1.5 rounded-xl text-xs cursor-pointer">
-            ↻ סנכרן נתונים כעת
-          </button>
-        </div>
-      </div>
-      <div id="admProgressPaceBox"></div>
-      <div class="flex flex-wrap items-center gap-2 pt-1">
-        <input id="admClientSyncPasteInput" type="text" placeholder="הדבק כאן קוד/קישור סנכרון שהלקוח שלח (לסנכרון בין מכשירים שונים)..." class="flex-1 min-w-[220px] border border-slate-300 rounded-xl px-3 py-1.5 text-xs bg-slate-50" />
-        <button type="button" onclick="importClientSyncPackage()" class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs cursor-pointer">
-          📥 ייבא וטען נתוני לקוח
-        </button>
-      </div>
-    </div>
-
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
           <div class="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -594,7 +571,7 @@
           subscriptionPrice: parsed.subscriptionPrice !== undefined ? parsed.subscriptionPrice : 450,
           subscriptionRenewalDate: parsed.subscriptionRenewalDate || '',
           nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70, ...(parsed.nutritionTargets || {}) },
-          profile: { name: id === 'yoav-01' ? 'יואב כהן' : id, gender: 'male', phone: '', birthDate: '', avatarDataUrl: '', weight: 78, height: 178, age: 28, ...(parsed.profile || {}) },
+          profile: { name: id === 'yoav-01' ? 'יואב כהן' : id, gender: 'male', phone: '', birthDate: '', avatarDataUrl: '', weight: 78, height: 178, age: 28, circumferences: {}, ...(parsed.profile || {}) },
           bodyWeightHistory: Array.isArray(parsed.bodyWeightHistory) ? parsed.bodyWeightHistory : [],
           bodyMeasurementsHistory: Array.isArray(parsed.bodyMeasurementsHistory) ? parsed.bodyMeasurementsHistory : [],
           weeklyWorkoutsPerWeek: (parsed.workoutSessions && parsed.workoutSessions.length) || 3,
@@ -616,13 +593,14 @@
           subscriptionPrice: 450,
           subscriptionRenewalDate: '',
           nutritionTargets: { calories: 2200, protein: 160, carbs: 220, fat: 70 },
-          profile: { name: id, gender: 'male', phone: '', birthDate: '', weight: 75, height: 175, age: 28 },
+          profile: { name: id, gender: 'male', phone: '', birthDate: '', weight: 75, height: 175, age: 28, circumferences: {} },
           bodyWeightHistory: [],
           bodyMeasurementsHistory: [],
           weeklyWorkoutsPerWeek: 3,
           workoutSessions: createDefaultSessions(3),
           healthDeclaration: { signed: false },
           termsAcceptance: { accepted: false },
+          clientCardSettings: { visibilityMode: 'own_only', showSubAndCirc: true },
           dayLogs: {}
         };
       }
@@ -972,6 +950,7 @@
       const diffDays = Math.round((nextBday - today) / (1000 * 60 * 60 * 24));
       const formattedShort = `${String(bDay).padStart(2, '0')}/${String(bMonth).padStart(2, '0')}`;
       if (diffDays === 0) return `🎉 היום יום הולדת! (${formattedShort})`;
+      if (diffDays === 1) return `🎂 יום הולדת מחר! (${formattedShort})`;
       if (diffDays <= 7) return `🎂 יום הולדת בעוד ${diffDays} ימים (${formattedShort})`;
       return `🎂 יום הולדת: ${formattedShort}`;
     }
@@ -1212,11 +1191,10 @@
       }
     };
 
-    window.sendClientLinkWhatsApp = async function() {
-      const fullUrl = buildClientPersonalUrl();
-      const shortOrFullUrl = await shortenUrlForWhatsApp(fullUrl);
+    window.sendClientLinkWhatsApp = function() {
+      const url = buildClientPersonalUrl();
       const intlPhone = normalizeIntlPhone(clientState.profile.phone);
-      const msg = `היי ${clientState.profile.name}! 💪\nזהו הקישור האישי לכרטיס שלך ב-BodyBalance (לצפייה בכרטיס האישי שלך בלבד):\n${shortOrFullUrl}`;
+      const msg = `היי ${clientState.profile.name}! 💪\nעדכנתי עבורך את מסלול המנוי (${clientState.subscriptionTierName}), תוכנית האימונים (כולל משקלי עבודה לכל סט) ואת יעדי התזונה באפליקציית BodyBalance:\n${url}`;
       const waUrl = intlPhone
         ? `https://wa.me/${intlPhone}?text=${encodeURIComponent(msg)}`
         : `https://wa.me/?text=${encodeURIComponent(msg)}`;
@@ -1296,8 +1274,9 @@
       Object.keys(clientState.dayLogs || {}).sort().forEach(d => {
         const setLogs = clientState.dayLogs[d]?.exerciseSetLogs?.[chosen.key];
         if (!setLogs) return;
+        const maxSets = setLogs.activeSets ? parseInt(setLogs.activeSets, 10) : chosen.sets;
         const weights = [];
-        for (let i = 0; i < chosen.sets; i++) {
+        for (let i = 0; i < maxSets; i++) {
           const w = parseFloat(setLogs[`w_${i}`]);
           if (!isNaN(w) && w > 0) weights.push(w);
         }
@@ -1324,8 +1303,14 @@
       }), { cal: 0, pro: 0, carb: 0, fat: 0 });
 
       const mealsListHtml = meals.length
-        ? `<ul class="mt-2 space-y-1 text-slate-700 list-disc pr-4">
-            ${meals.map(m => `<li><strong>${m.name || 'ארוחה'}</strong> — ${Math.round(m.calories || 0)} קק"ל (חלבון: ${(m.protein || 0).toFixed(1)}g, פחמימה: ${(m.carbs || 0).toFixed(1)}g, שומן: ${(m.fat || 0).toFixed(1)}g)</li>`).join('')}
+        ? `<ul class="mt-2 space-y-1.5 text-slate-700 list-disc pr-4">
+            ${meals.map(m => {
+              const title = m.category ? `${m.category}${m.time ? ` (${m.time})` : ''} — ${m.foodName || 'ארוחה'}` : (m.name || m.foodName || 'ארוחה');
+              const subItems = Array.isArray(m.items) && m.items.length
+                ? `<div class="text-[11px] text-slate-500 pr-2 mt-0.5">${m.items.map(it => `${it.foodName} (${it.amountLabel})`).join(' · ')}</div>`
+                : '';
+              return `<li><strong>${title}</strong> — ${Math.round(m.calories || 0)} קק"ל (חלבון: ${(m.protein || 0).toFixed(1)}g, פחמימה: ${(m.carbs || 0).toFixed(1)}g, שומן: ${(m.fat || 0).toFixed(1)}g)${subItems}</li>`;
+            }).join('')}
            </ul>`
         : '<p class="text-[11px] text-slate-400 mt-1">לא נרשמו ארוחות בתאריך זה.</p>';
 
@@ -1347,10 +1332,12 @@
         .filter(ex => setLogsByEx[ex.key] && Object.keys(setLogsByEx[ex.key]).length > 0)
         .map(ex => {
           const exLog = setLogsByEx[ex.key];
+          const totalSetsToShow = exLog.activeSets ? Math.max(1, parseInt(exLog.activeSets, 10) || ex.sets) : ex.sets;
           let setsBadges = '';
-          for (let s = 0; s < ex.sets; s++) {
+          for (let s = 0; s < totalSetsToShow; s++) {
             const actualW = exLog[`w_${s}`];
-            const actualR = exLog[`r_${s}`];
+            const actualR = exLog[`reps_${s}`] !== undefined && exLog[`reps_${s}`] !== '' ? exLog[`reps_${s}`] : exLog[`r_${s}`];
+            const actualRir = exLog[`rir_${s}`];
             const targetW = ex.targetWeights[s];
             const hasActual = actualW !== undefined && actualW !== '';
             setsBadges += `
@@ -1360,6 +1347,7 @@
                   ${hasActual ? `${actualW} ק"ג` : 'לא הוזן'}
                 </span>
                 ${actualR ? `<span class="block text-[10px] font-semibold text-slate-600">${actualR} חזרות</span>` : ''}
+                ${actualRir !== undefined && actualRir !== '' ? `<span class="block text-[10px] font-bold text-indigo-700">RIR ${actualRir}</span>` : ''}
                 ${targetW ? `<span class="block text-[10px] text-slate-400">יעד: ${targetW} ק"ג</span>` : ''}
               </div>
             `;
@@ -1620,7 +1608,6 @@
       renderAdminLibrary();
       renderAdminWorkouts();
       renderAdminDailyLogs();
-      renderAdminPaceSummary();
       renderAdminProgressCharts();
       renderAdminMeasurements();
     }
@@ -1629,210 +1616,6 @@
       renderNewExSetWeightsInputs();
       renderAdminAll();
     });
-
-    // --- סנכרון חי וקצב התקדמות מתאמן עבור ממשק המנהל ---
-    const BB_SYNC_CHANNEL_NAME = 'BodyBalanceSync_v1';
-    let bbAdminChannel = null;
-    try {
-      if ('BroadcastChannel' in window) {
-        bbAdminChannel = new BroadcastChannel(BB_SYNC_CHANNEL_NAME);
-        bbAdminChannel.onmessage = (ev) => {
-          if (ev && ev.data && (!ev.data.clientId || ev.data.clientId === activeClientId)) {
-            clientState = loadClientState(activeClientId);
-            renderAdminAll();
-          }
-        };
-      }
-    } catch (e) {}
-
-    window.addEventListener('storage', (ev) => {
-      if (!ev || !ev.key) return;
-      if (ev.key === stateStorageKey(activeClientId) || ev.key === CLIENTS_LIST_KEY) {
-        clientIds = JSON.parse(localStorage.getItem(CLIENTS_LIST_KEY) || '["yoav-01"]');
-        clientState = loadClientState(activeClientId);
-        renderAdminAll();
-      }
-    });
-
-    window.syncActiveClientNow = function() {
-      clientIds = JSON.parse(localStorage.getItem(CLIENTS_LIST_KEY) || '["yoav-01"]');
-      clientState = loadClientState(activeClientId);
-      renderAdminAll();
-      const statusEl = document.getElementById('admSyncStatusBadge');
-      if (statusEl) {
-        statusEl.textContent = 'סונכרן כעת ✓';
-        statusEl.className = 'text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800';
-      }
-    };
-
-    window.importClientSyncPackage = function() {
-      const box = document.getElementById('admClientSyncPasteInput');
-      const raw = (box?.value || '').trim();
-      if (!raw) return alert('נא להדביק קוד או קישור סנכרון שהלקוח שלח.');
-      try {
-        let encoded = raw;
-        const syncMatch = raw.match(/[?&]sync=([^&]+)/);
-        if (syncMatch) encoded = decodeURIComponent(syncMatch[1]);
-        const jsonStr = decodeURIComponent(escape(atob(encoded)));
-        const pkg = JSON.parse(jsonStr);
-        if (!pkg || typeof pkg !== 'object') throw new Error('Invalid package');
-
-        const targetId = (pkg.clientId || activeClientId || 'yoav-01').replace(/[^a-zA-Z0-9_-]/g, '');
-        if (!clientIds.includes(targetId)) {
-          clientIds.push(targetId);
-          localStorage.setItem(CLIENTS_LIST_KEY, JSON.stringify(clientIds));
-        }
-        activeClientId = targetId;
-        const current = loadClientState(targetId);
-
-        if (pkg.profile) {
-          current.profile = {
-            ...current.profile,
-            ...pkg.profile,
-            circumferences: { ...(current.profile.circumferences || {}), ...(pkg.profile.circumferences || {}) }
-          };
-        }
-        if (Array.isArray(pkg.bodyWeightHistory) && pkg.bodyWeightHistory.length > 0) {
-          const mapBw = new Map((current.bodyWeightHistory || []).map(x => [x.date, x]));
-          pkg.bodyWeightHistory.forEach(x => { if (x && x.date) mapBw.set(x.date, x); });
-          current.bodyWeightHistory = Array.from(mapBw.values()).sort((a, b) => a.date.localeCompare(b.date));
-        }
-        if (Array.isArray(pkg.bodyMeasurementsHistory) && pkg.bodyMeasurementsHistory.length > 0) {
-          const mapMeas = new Map((current.bodyMeasurementsHistory || []).map(x => [x.id || `${x.date}_${idx}`, x]));
-          pkg.bodyMeasurementsHistory.forEach((x, idx) => {
-            if (x) mapMeas.set(x.id || `${x.date}_${idx}`, x);
-          });
-          current.bodyMeasurementsHistory = Array.from(mapMeas.values()).sort((a, b) => (a.date || '').localeCompare(b.date || ''));
-        }
-        if (pkg.dayLogs && typeof pkg.dayLogs === 'object') {
-          current.dayLogs = { ...(current.dayLogs || {}), ...pkg.dayLogs };
-        }
-        if (pkg.healthDeclaration) current.healthDeclaration = pkg.healthDeclaration;
-        if (pkg.termsAcceptance) current.termsAcceptance = pkg.termsAcceptance;
-
-        localStorage.setItem(stateStorageKey(targetId), JSON.stringify(current));
-        clientState = loadClientState(targetId);
-        if (box) box.value = '';
-        renderAdminAll();
-        alert(`נתוני ההתקדמות של ${clientState.profile.name} סונכרנו בהצלחה!`);
-      } catch (e) {
-        alert('קוד הסנכרון אינו תקין. ודא שהועתק קוד או קישור הסנכרון המלא מהלקוח.');
-      }
-    };
-
-    function computeClientProgressPace() {
-      const bwHist = [...(clientState.bodyWeightHistory || [])].sort((a, b) => a.date.localeCompare(b.date));
-      let bwPaceText = 'אין מספיק שקילות';
-      if (bwHist.length >= 2) {
-        const first = bwHist[0];
-        const last = bwHist[bwHist.length - 1];
-        const diff = Number((last.weight - first.weight).toFixed(1));
-        const days = Math.max(1, (new Date(last.date + 'T00:00:00') - new Date(first.date + 'T00:00:00')) / (1000 * 60 * 60 * 24));
-        const weeklyRate = Number(((diff / days) * 7).toFixed(2));
-        bwPaceText = `${diff > 0 ? '+' : ''}${diff} ק"ג (${weeklyRate > 0 ? '+' : ''}${weeklyRate} ק"ג/שבוע)`;
-      } else if (bwHist.length === 1) {
-        bwPaceText = `שקילה אחת (${bwHist[0].weight} ק"ג)`;
-      }
-
-      const dayKeys = Object.keys(clientState.dayLogs || {}).sort();
-      let completedExCount = 0;
-      let loggedSetsCount = 0;
-      let totalCal = 0;
-      let daysWithMeals = 0;
-
-      dayKeys.forEach(d => {
-        const dl = clientState.dayLogs[d] || {};
-        completedExCount += Object.values(dl.completedExercises || {}).filter(Boolean).length;
-        Object.values(dl.exerciseSetLogs || {}).forEach(exLog => {
-          if (!exLog || typeof exLog !== 'object') return;
-          Object.keys(exLog).forEach(k => {
-            if (k.startsWith('w_') && exLog[k] !== '' && exLog[k] !== undefined) loggedSetsCount += 1;
-          });
-        });
-        const meals = dl.meals || [];
-        if (meals.length > 0) {
-          daysWithMeals += 1;
-          totalCal += meals.reduce((s, m) => s + (m.calories || 0), 0);
-        }
-      });
-
-      const targetCal = Math.max(1, Number(clientState.nutritionTargets?.calories) || 2200);
-      const avgCalPct = daysWithMeals > 0 ? Math.round(((totalCal / daysWithMeals) / targetCal) * 100) : 0;
-
-      const measSorted = [...(clientState.bodyMeasurementsHistory || [])].sort((a, b) => a.date.localeCompare(b.date));
-      let circPaceText = `${measSorted.length} מדידות היקפים`;
-      if (measSorted.length >= 2) {
-        const newest = measSorted[measSorted.length - 1];
-        const prev = measSorted[measSorted.length - 2];
-        if (newest.waist !== null && newest.waist !== undefined && prev.waist !== null && prev.waist !== undefined) {
-          const wDiff = Number((newest.waist - prev.waist).toFixed(1));
-          circPaceText = `מותניים: ${wDiff > 0 ? '+' : ''}${wDiff} ס"מ (${measSorted.length} מדידות)`;
-        }
-      }
-
-      return {
-        bwPaceText,
-        workoutPaceText: `${completedExCount} תרגילים הושלמו · ${loggedSetsCount} סטים מתועדים`,
-        nutritionPaceText: daysWithMeals > 0 ? `${avgCalPct}% מיעד הקלוריות (${daysWithMeals} ימים)` : 'טרם תועדו ארוחות',
-        circPaceText
-      };
-    }
-
-    function renderAdminPaceSummary() {
-      const pace = computeClientProgressPace();
-      const targetContainer = document.getElementById('admProgressPaceBox');
-      if (!targetContainer) return;
-      targetContainer.innerHTML = `
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-          <div class="bg-teal-50/70 border border-teal-200 rounded-xl p-3">
-            <span class="block font-bold text-teal-800">⚖️ קצב שינוי משקל גוף</span>
-            <strong class="block text-sm font-extrabold text-slate-900 mt-1">${pace.bwPaceText}</strong>
-          </div>
-          <div class="bg-indigo-50/70 border border-indigo-200 rounded-xl p-3">
-            <span class="block font-bold text-indigo-800">🏋️ קצב ביצוע אימונים וסטים</span>
-            <strong class="block text-sm font-extrabold text-slate-900 mt-1">${pace.workoutPaceText}</strong>
-          </div>
-          <div class="bg-amber-50/70 border border-amber-200 rounded-xl p-3">
-            <span class="block font-bold text-amber-800">🥗 עמידה ביעדי תזונה</span>
-            <strong class="block text-sm font-extrabold text-slate-900 mt-1">${pace.nutritionPaceText}</strong>
-          </div>
-          <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3">
-            <span class="block font-bold text-emerald-800">📏 מגמת היקפים</span>
-            <strong class="block text-sm font-extrabold text-slate-900 mt-1">${pace.circPaceText}</strong>
-          </div>
-        </div>
-      `;
-    }
-
-    async function shortenUrlForWhatsApp(longUrl) {
-      const services = [
-        async () => {
-          const r = await fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(longUrl)}`);
-          if (!r.ok) throw new Error('is.gd failed');
-          const txt = (await r.text()).trim();
-          if (txt.startsWith('http')) return txt;
-          throw new Error('bad is.gd response');
-        },
-        async () => {
-          const r = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
-          if (!r.ok) throw new Error('tinyurl failed');
-          const txt = (await r.text()).trim();
-          if (txt.startsWith('http')) return txt;
-          throw new Error('bad tinyurl response');
-        }
-      ];
-      for (const fn of services) {
-        try {
-          const shortLink = await Promise.race([
-            fn(),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2200))
-          ]);
-          if (shortLink) return shortLink;
-        } catch (e) {}
-      }
-      return longUrl;
-    }
-
   </script>
 </body>
 </html>
